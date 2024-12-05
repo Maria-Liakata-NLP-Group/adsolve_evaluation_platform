@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "deploy": "gh-pages -d dist"
   },
-  "homepage": "https://username.github.io/repo-name/",
+  "homepage": "https://sfrl.github.io/adsolve_evaluation_platform/",
   "dependencies": {
     "bulma": "^1.0.2",
     "react": "^18.3.1",
