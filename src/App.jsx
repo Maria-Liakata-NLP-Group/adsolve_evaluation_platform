@@ -10,8 +10,6 @@ import './style.scss';
 const App = () => (
   <div className="is-flex is-justify-content-center">
     <div style={{"width": "100%", "maxWidth": "1400px"}}>
-    {/* <Header /> */}
-    {/* <Button /> */}
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/intrinsic-metrics" element={<IntrinsicMetrics />} />
