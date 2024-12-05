@@ -10,6 +10,6 @@ export default defineConfig(({ command, mode }) =>{
       server: {
         host: true, // Allows access from the local network
         port: 5173, // Optional: Specify a custom port
-    },
-  }
+      },
+    };
 });
