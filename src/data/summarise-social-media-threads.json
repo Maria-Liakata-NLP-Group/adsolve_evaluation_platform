@@ -1,0 +1,78 @@
+{
+    "Salient Meaning Preservation (SMP)": {
+        "MHIC_sem":{
+            "LLaMA": {
+                "TalkLife": 65,
+                "Dummy1": 60,
+                "Dummy2": 63
+            },
+            "TH-VAE": {
+                "TalkLife": 66,
+                "Dummy1": 68,
+                "Dummy2": 67
+            },
+            "Skeleton": {
+                "TalkLife": 57,
+                "Dummy1": 55,
+                "Dummy2": 57
+            }
+        }
+    },
+    "Factual Consistency (FC)": {
+        "FC_timeline": {
+            "LLaMA": {
+                "TalkLife": 63,
+                "Dummy1": 65,
+                "Dummy2": 62
+            },
+            "TH-VAE": {
+                "TalkLife": 63,
+                "Dummy1": 64,
+                "Dummy2": 65
+            },
+            "Skeleton": {
+                "TalkLife": 21,
+                "Dummy1": 20,
+                "Dummy2": 20
+            }
+        }
+    },
+    "Evidence Appropriateness (EA)": {
+        "EA": {
+            "LLaMA": {
+                "TalkLife": 97,
+                "Dummy1": 91,
+                "Dummy2": 93
+            },
+            "TH-VAE": {
+                "TalkLife": 97,
+                "Dummy1": 94,
+                "Dummy2": 93
+            },
+            "Skeleton": {
+                "TalkLife": 95,
+                "Dummy1": 96,
+                "Dummy2": 89
+            }
+        } 
+    },
+    "Coherence": {
+        "IntraNLI": {
+            "LLaMA": {
+                "TalkLife": 95,
+                "Dummy1": 96,
+                "Dummy2": 96
+            },
+            "TH-VAE": {
+                "TalkLife": 97,
+                "Dummy1": 96,
+                "Dummy2": 96
+            },
+            "Skeleton": {
+                "TalkLife": 95,
+                "Dummy1": 93,
+                "Dummy2": 94
+            }
+        }
+    }
+}

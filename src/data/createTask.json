@@ -1,0 +1,30 @@
+{
+    "order": ["useCase", "goal", "task", "aspect", "dataset", "model"],
+
+    "useCase": {
+        "title": "Choose a use case",
+        "options": ["AI for Mental Health", "AI Legal Support", "Multimodal Medical Diagnostics Tool"]
+    }, 
+
+    "goal": {
+        "title": "Choose a goal",
+        "options": ["Making legal information more accessible", "Supporting access to justice", "Reducing repetitive work for legal professionals", "Improving management of legal services"]
+    },
+    "task": {
+        "title": "Choose a task",
+        "options": ["Summarisation", "Dialogue", "Generation"]
+    },
+
+    "aspect": {
+        "title": "Choose an aspect",
+        "options": ["Accuracy", "Fluency", "Correctness", "Tonality Alignment", "Readability", "Safety", "Confidentiality"]
+    },
+    "dataset": {
+        "title": "Add datasets",
+        "options": ["Legal Information", "Legal Questions", "Legal Documents", "Contracts"]
+    },
+    "model": {
+        "title": "Choose models",
+        "options": ["Llama-2-7b", "Llama-3.1-8B", "Llama-3.1-70B", "SaulLM-7B"]
+    }
+}
