@@ -6,7 +6,7 @@ export default defineConfig(({ command, mode }) =>{
 
     return {
       plugins: [react()],
-      base: mode === "development" ? "/" : "/adsolve_evaluation_platform/",
+      base: "/adsolve_evaluation_platform/",
       server: {
         host: true, // Allows access from the local network
         port: 5173, // Optional: Specify a custom port
