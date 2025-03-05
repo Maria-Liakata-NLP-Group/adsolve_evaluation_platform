@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import {useEffect, useState} from "react";
 import LeaderBoard from "../components/leaderBoard";
+import ExampleModal from "../components/exampleModal";
 
 
 const sortValuesAndKeys = (values, keys) => {
@@ -28,9 +29,18 @@ const Dashboard = () => {
     const [currentModel, setCurrentModel] = useState(null);
     const [leaderBoardData, setLeaderBoardData] = useState({});
     const [error, setError] = useState(null); 
+    const [showModal, setShowModal] = useState(false);
+    const [modalDetails, setModalDetails] = useState(null);
+
+    const getModalDetails = (gold, llm) => {
+        setShowModal(true);
+        setModalDetails({
+                "gold": gold,
+                "llm": llm
+            });
+    }
 
     useEffect(() => {
-        
         if (useCase && task) {
             // replace dashes with spaces
             const useCaseTitle = useCase.replace(/-/g, " ");
@@ -51,12 +61,14 @@ const Dashboard = () => {
                 const datasetName = datasetNames[currentDataset];
                 for (const aspect of aspectNames) {
                     for (const metric in data[aspect]) {
+                        if (metric === "detail") continue;
                         const metricValues = []
                         for (const model of modelNames) {
                             metricValues.push(data[aspect][metric][model][datasetName])
                         }
                         const [sortedValues, sortedKeys] = sortValuesAndKeys(metricValues, modelNames)
                         leaderBoards[aspect] = {
+                            "detail": data[aspect]["detail"],
                             "metric": metric,
                             "values": sortedValues,
                             "tags": sortedKeys
@@ -69,12 +81,14 @@ const Dashboard = () => {
                 const modelName = modelNames[currentModel];
                 for (const aspect of aspectNames) {
                     for (const metric in data[aspect]) {
+                        if (metric === "detail") continue;
                         const metricValues = []
                         for (const dataset of datasetNames) {
                             metricValues.push(data[aspect][metric][modelName][dataset])
                         }
                         const [sortedValues, sortedKeys] = sortValuesAndKeys(metricValues, datasetNames)
                         leaderBoards[aspect] = {
+                            "detail": data[aspect]["detail"],
                             "metric": metric,
                             "values": sortedValues,
                             "tags": sortedKeys
@@ -145,58 +159,72 @@ const Dashboard = () => {
 
 
     return (
-        <div>
-            <h1 className="title">{title}</h1>
-            <section className="block">
-                <div>
-                    <h2 className="subtitle">Filter by</h2>  
-                </div>
-                <div className="is-flex is-flex-direction-row">
+        <>
+            <ExampleModal 
+                gold={modalDetails?.gold} 
+                llm={modalDetails?.llm} 
+                active={showModal} 
+                onClickFunction={() => setShowModal(false)}/>
+            <div>
+                <h1 className="title">{title}</h1>
+                <section className="block">
                     <div>
-                        <div className="is-flex is-align-items-center">
-                            <div style={{"width": "80px"}}>
-                                Datasets:
-                            </div>
-                            <div>
-                                <div className="tags">
-                                    {datasetNames ? datasetNames.map((datasetName, index) => (
-                                        <span key={index} className={`tag has-border ${currentDataset === index ? "is-dark" : "is-light"}`} onClick={() => clickOnDataset(index)}>{datasetName}</span>
-                                    )) : "No datasets to display"}
-                                </div>   
-                            </div>
-                        </div>
-                        <div className="is-flex is-align-items-center">
-                            <div style={{"width": "80px"}}>
-                                Models:
-                            </div>
-                            <div className="tags">
-                                {modelNames ? modelNames.map((modelName, index) => (
-                                    
-                                    <span key={index} className={`tag has-border ${currentModel === index ? "is-dark" : "is-light"}`} onClick={() => clickOnModel(index)}>{modelName}</span>
-                                )) : "No models to display"}
-                            </div>
-                        </div>
+                        <h2 className="subtitle">Filter by</h2>  
                     </div>
-                    <div className="is-flex is-flex-direction-column is-justify-content-space-between ml-5">
-                        <button className="button is-dark mt-2">Add dataset</button>
-                        <button className="button is-dark mb-2">Add model</button>
-                    </div>
-                </div>
-            </section>
-            <section className="block">
-                <div className="grid is-col-min-20 is-gap-8">
-                    {
-                        leaderBoardData ?
-                            Object.entries(leaderBoardData).map(([aspect, { metric, values, tags }], index) => (
-                                <div key={index}>
-                                    <LeaderBoard key={index} aspect={aspect} metric={metric} values={values} tags={tags} />
+                    <div className="is-flex is-flex-direction-row">
+                        <div>
+                            <div className="is-flex is-align-items-center">
+                                <div style={{"width": "80px"}}>
+                                    Datasets:
                                 </div>
-                            ))
-                        : "Nothing to see here"
-                    }
-                </div>
-            </section>
-        </div>
+                                <div>
+                                    <div className="tags">
+                                        {datasetNames ? datasetNames.map((datasetName, index) => (
+                                            <span key={index} className={`tag has-border ${currentDataset === index ? "is-dark" : "is-light"}`} onClick={() => clickOnDataset(index)}>{datasetName}</span>
+                                        )) : "No datasets to display"}
+                                    </div>   
+                                </div>
+                            </div>
+                            <div className="is-flex is-align-items-center">
+                                <div style={{"width": "80px"}}>
+                                    Models:
+                                </div>
+                                <div className="tags">
+                                    {modelNames ? modelNames.map((modelName, index) => (
+                                        
+                                        <span key={index} className={`tag has-border ${currentModel === index ? "is-dark" : "is-light"}`} onClick={() => clickOnModel(index)}>{modelName}</span>
+                                    )) : "No models to display"}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="is-flex is-flex-direction-column is-justify-content-space-between ml-5">
+                            <button className="button is-dark mt-2">Add dataset</button>
+                            <button className="button is-dark mb-2">Add model</button>
+                        </div>
+                    </div>
+                </section>
+                <section className="block">
+                    <div className="grid is-col-min-20 is-gap-8">
+                        {
+                            leaderBoardData ?
+                                Object.entries(leaderBoardData).map(([aspect, { detail, metric, values, tags }], index) => (
+                                    <div key={index}>
+                                        <LeaderBoard 
+                                            key={index} 
+                                            detail={detail}
+                                            showDetails={getModalDetails} 
+                                            aspect={aspect} 
+                                            metric={metric} 
+                                            values={values} 
+                                            tags={tags} />
+                                    </div>
+                                ))
+                            : "Nothing to see here"
+                        }
+                    </div>
+                </section>
+            </div>
+        </>
     );
 }
 

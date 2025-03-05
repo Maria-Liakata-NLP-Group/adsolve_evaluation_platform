@@ -84,3 +84,15 @@ body {
             }
         }
 }
+
+.timeline-dot {
+    position: absolute;
+    width: var(--bulma-size-large);
+    height: var(--bulma-size-large);
+    border-radius: 50%;
+    border: 1px solid black;
+}
+
+.timeline-dot:hover {
+    cursor: pointer;
+}

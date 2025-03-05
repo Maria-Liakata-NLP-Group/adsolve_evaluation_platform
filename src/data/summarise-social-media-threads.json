@@ -2,76 +2,29 @@
     "Salient Meaning Preservation (SMP)": {
         "MHIC_sem":{
             "LLaMA": {
-                "TalkLife": 65,
-                "Reddit": 60,
-                "Mumsnet": 63
-            },
-            "TH-VAE": {
-                "TalkLife": 66,
-                "Reddit": 68,
-                "Mumsnet": 67
-            },
-            "Skeleton": {
-                "TalkLife": 57,
-                "Reddit": 55,
-                "Mumsnet": 57
+                "Reddit": 60
             }
         }
     },
     "Factual Consistency (FC)": {
         "FC_timeline": {
             "LLaMA": {
-                "TalkLife": 63,
-                "Reddit": 65,
-                "Mumsnet": 62
-            },
-            "TH-VAE": {
-                "TalkLife": 63,
-                "Reddit": 64,
-                "Mumsnet": 65
-            },
-            "Skeleton": {
-                "TalkLife": 21,
-                "Reddit": 20,
-                "Mumsnet": 20
+                "Reddit": 99.92098868672092
             }
-        }
+        },
+        "detail": "fc_scores.json"
     },
     "Evidence Appropriateness (EA)": {
         "EA": {
             "LLaMA": {
-                "TalkLife": 97,
-                "Reddit": 91,
-                "Mumsnet": 93
-            },
-            "TH-VAE": {
-                "TalkLife": 97,
-                "Reddit": 94,
-                "Mumsnet": 93
-            },
-            "Skeleton": {
-                "TalkLife": 95,
-                "Reddit": 96,
-                "Mumsnet": 89
+                "Reddit": 91
             }
         } 
     },
     "Coherence": {
         "IntraNLI": {
             "LLaMA": {
-                "TalkLife": 95,
-                "Reddit": 96,
-                "Mumsnet": 96
-            },
-            "TH-VAE": {
-                "TalkLife": 97,
-                "Reddit": 96,
-                "Mumsnet": 96
-            },
-            "Skeleton": {
-                "TalkLife": 95,
-                "Reddit": 93,
-                "Mumsnet": 94
+                "Reddit": 96
             }
         }
     }
