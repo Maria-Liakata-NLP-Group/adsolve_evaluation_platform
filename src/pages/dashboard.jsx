@@ -32,11 +32,13 @@ const Dashboard = () => {
     const [showModal, setShowModal] = useState(false);
     const [modalDetails, setModalDetails] = useState(null);
 
-    const getModalDetails = (gold, llm) => {
+    const getModalDetails = (gold, llm_sents, llm_sent_scores) => {
         setShowModal(true);
+        console.log(`Sents: ${llm_sents}`);
         setModalDetails({
                 "gold": gold,
-                "llm": llm
+                "llm_sents": llm_sents,
+                "llm_sent_scores": llm_sent_scores
             });
     }
 
@@ -63,12 +65,17 @@ const Dashboard = () => {
                     for (const metric in data[aspect]) {
                         if (metric === "detail") continue;
                         const metricValues = []
+                        const metricDetails = []
                         for (const model of modelNames) {
                             metricValues.push(data[aspect][metric][model][datasetName])
+
+                            if (Object.keys(data[aspect][metric][model]).includes("detail")) {
+                                metricDetails.push(data[aspect][metric][model]["detail"])
+                            }   
                         }
                         const [sortedValues, sortedKeys] = sortValuesAndKeys(metricValues, modelNames)
                         leaderBoards[aspect] = {
-                            "detail": data[aspect]["detail"],
+                            "detail": metricDetails,
                             "metric": metric,
                             "values": sortedValues,
                             "tags": sortedKeys
@@ -83,12 +90,16 @@ const Dashboard = () => {
                     for (const metric in data[aspect]) {
                         if (metric === "detail") continue;
                         const metricValues = []
+                        const metricDetails = []
                         for (const dataset of datasetNames) {
                             metricValues.push(data[aspect][metric][modelName][dataset])
                         }
+                        if (Object.keys(data[aspect][metric][modelName]).includes("detail")) {
+                            metricDetails.push(data[aspect][metric][modelName]["detail"])
+                        }
                         const [sortedValues, sortedKeys] = sortValuesAndKeys(metricValues, datasetNames)
                         leaderBoards[aspect] = {
-                            "detail": data[aspect]["detail"],
+                            "detail": metricDetails,
                             "metric": metric,
                             "values": sortedValues,
                             "tags": sortedKeys
@@ -162,7 +173,8 @@ const Dashboard = () => {
         <>
             <ExampleModal 
                 gold={modalDetails?.gold} 
-                llm={modalDetails?.llm} 
+                llm_sents={modalDetails?.llm_sents}
+                llm_sent_scores={modalDetails?.llm_sent_scores} 
                 active={showModal} 
                 onClickFunction={() => setShowModal(false)}/>
             <div>

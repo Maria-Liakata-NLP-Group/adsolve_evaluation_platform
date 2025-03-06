@@ -20,26 +20,35 @@ const LeaderBoard = ({detail, showDetails, aspect, metric, values, tags}) => {
     }, [aspect, metric, values, tags])
 
     useEffect(() => {
-        const loadData = async (path) => {
-            // load json file with data
-            const module = await import(path);
-            const tempData = module.default;
-            const dataPoints = []
-            for (const timelineId in tempData) {
-                dataPoints.push(createTimelineDataPoint(
-                    tempData[timelineId]["consistency_mean"],
-                    () => showDetails(tempData[timelineId].gold, tempData[timelineId].llm)
-                ))
+        const loadData = async (details) => {
+            const allDetailPoints = []
+            for (const path of details) {
+                const fullPath = `../data/${path}`
+                // load json file with data
+                const module = await import(fullPath);
+                const tempData = module.default;
+                const dataPoints = []
+                for (const timelineId in tempData) {
+                    dataPoints.push(createTimelineDataPoint(
+                        tempData[timelineId]["consistency_mean"],
+                        () => showDetails(
+                                            tempData[timelineId].gold, 
+                                            tempData[timelineId].llm_sents,
+                                            tempData[timelineId].consistency_by_sents,
+                                        )
+                    ))
+                }
+                allDetailPoints.push(dataPoints)
             }
-            setTimelineDataPoints(dataPoints)
+            setTimelineDataPoints(allDetailPoints)
 
         }   
         if (detail) {
             // load json file with detailed info
-            loadData(`../data/${detail}`);
+            loadData(detail);
         }
         
-    }, [detail])
+    }, [detail, showDetails])
 
     useEffect(() => {
         console.log(timelineDataPoints)
@@ -52,7 +61,6 @@ const LeaderBoard = ({detail, showDetails, aspect, metric, values, tags}) => {
         <div className="cell">
             {/* <h1>Leaderboard</h1> */}
             <h2 className="subtitle">{aspect}</h2>
-            <h2 className="subtitle">{detail}</h2>
             <b>Metric: </b> {metric}
             <div className="has-border has-rounded p-5">
                 <ul>
@@ -68,7 +76,7 @@ const LeaderBoard = ({detail, showDetails, aspect, metric, values, tags}) => {
                                             </progress>
                                 <div style={{width: "100%", position: "absolute", top: 0}}>
                                     {
-                                        timelineDataPoints
+                                        timelineDataPoints[index]
                                     }
                                 </div>
                                 <span>{tags[index]}</span>

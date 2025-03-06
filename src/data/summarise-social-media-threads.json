@@ -3,21 +3,31 @@
         "MHIC_sem":{
             "LLaMA": {
                 "Reddit": 60
+            },
+            "Generic Base": {
+                "Reddit": 49
             }
         }
     },
     "Factual Consistency (FC)": {
-        "FC_timeline": {
+        "FC_expert": {
             "LLaMA": {
-                "Reddit": 99.92098868672092
+                "Reddit": 99.92098868672092,
+                "detail": "fc_scores.json"
+            }, 
+            "Generic Base": {
+                "Reddit": 66,
+                "detail": "fc_scores_bad.json"
             }
-        },
-        "detail": "fc_scores.json"
+        }    
     },
     "Evidence Appropriateness (EA)": {
         "EA": {
             "LLaMA": {
                 "Reddit": 91
+            },
+            "Generic Base": {
+                "Reddit": 66
             }
         } 
     },
@@ -25,6 +35,9 @@
         "IntraNLI": {
             "LLaMA": {
                 "Reddit": 96
+            },
+            "Generic Base": {
+                "Reddit": 78
             }
         }
     }
