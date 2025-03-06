@@ -11,6 +11,13 @@ const createTimelineDataPoint = (mean, onClickFunction) => {
     
 }
 
+const metricToTooltip = {
+    "MHIC_sem": "This reflects whether the output captures relevant mental health concepts.",
+    "FC_expert": "This reflects the average logical consistency of sentences in the generated output relative to the human-written document.",
+    "EA": "This reflects whether the final output is consistent with the intermediate outputs.",
+    "IntraNLI": "This reflects whether information presented in a model output is logically consistent with the rest of the generated document."
+}
+
 const LeaderBoard = ({detail, showDetails, aspect, metric, values, tags}) => {
 
     const [timelineDataPoints, setTimelineDataPoints] = useState([]);
@@ -60,8 +67,18 @@ const LeaderBoard = ({detail, showDetails, aspect, metric, values, tags}) => {
         
         <div className="cell">
             {/* <h1>Leaderboard</h1> */}
-            <h2 className="subtitle">{aspect}</h2>
-            <b>Metric: </b> {metric}
+            <div className="is-flex is-align-items-center">
+                <div>
+                    <h2 className="subtitle">{aspect}</h2>
+                    <b>Metric: </b> {metric} 
+                </div>
+                <div className='ml-4'>
+                    <div className="tooltip">?
+                        <span className="tooltiptext">{metricToTooltip[metric]}</span>
+                    </div>
+                    
+                </div>
+            </div>
             <div className="has-border has-rounded p-5">
                 <ul>
                     {
