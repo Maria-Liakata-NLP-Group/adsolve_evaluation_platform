@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# python files
+/evaluation_bundles/metrics/__pycache__/
