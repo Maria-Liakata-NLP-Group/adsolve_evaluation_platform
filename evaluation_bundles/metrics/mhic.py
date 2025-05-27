@@ -12,7 +12,7 @@ class MHIC:
             lang="en"
         ) 
 
-    def calculate_metric(self, candidate, references):
+    def calculate_metric(self, candidate: str, references: list[str]) -> float:
         results = []
         candidate_sentences = sent_tokenize(candidate)
         
