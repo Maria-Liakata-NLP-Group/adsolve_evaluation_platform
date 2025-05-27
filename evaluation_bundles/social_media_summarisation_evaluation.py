@@ -1,6 +1,13 @@
-from metrics.mhic import MHIC
-from metrics.intra_nli import IntraNLI
-from metrics.fc_expert import FCExpert
+# add metrics folder to paths from which to import classes
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/metrics")
+
+from mhic import MHIC
+from intra_nli import IntraNLI
+from fc_expert import FCExpert
+
+import numpy as np
 
 
 class SocialMediaSummarisationEvaluationBundle:
@@ -15,9 +22,18 @@ class SocialMediaSummarisationEvaluationBundle:
 
         # Dictionary to store results
         results = {
-            'mhic': [],
-            'intra_nli': [],
-            'fc_expert': [],
+            'mhic': {
+                "timeline_level": [],
+                "mean": None,
+            },
+            'intra_nli': {
+                "timeline_level": [],
+                "mean": None,
+            },
+            'fc_expert': {
+                "timeline_level": [],
+                "mean": None,
+            },
             'timeline_ids': timeline_ids
         }
 
@@ -29,14 +45,18 @@ class SocialMediaSummarisationEvaluationBundle:
 
             # Evaluate MHIC
             mhic_score = self.mhic.calculate_metric(llm_summary, timeline_posts)
-            results['mhic'].append(mhic_score)
+            results['mhic']['timeline_level'].append(mhic_score)
 
             # Evaluate IntraNLI
             intra_nli_score = self.intra_nli.calculate_metric(llm_summary)
-            results['intra_nli'].append(intra_nli_score)
+            results['intra_nli']['timeline_level'].append(intra_nli_score)
 
             # Evaluate FCExpert
             fc_expert_score = self.fc_expert.calculate_metric(llm_summary, gold_summary)
-            results['fc_expert'].append(fc_expert_score)
+            results['fc_expert']['timeline_level'].append(fc_expert_score)
 
+
+        for metric in ['mhic', 'intra_nli', 'fc_expert']:
+            # Calculate mean for each metric
+            results[metric]['mean'] = np.mean(results[metric]['timeline_level'])
         return results
