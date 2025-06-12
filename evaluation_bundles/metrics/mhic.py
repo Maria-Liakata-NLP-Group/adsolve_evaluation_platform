@@ -1,4 +1,4 @@
-import bert_score
+import bert_score as bertscore
 from nltk import sent_tokenize
 import numpy as np
 
@@ -6,7 +6,7 @@ import numpy as np
 
 class MHIC:
     def __init__(self):
-        self.bs_scorer = bert_score.BERTScorer(
+        self.bs_scorer = bertscore.BERTScorer(
             model_type="microsoft/deberta-xlarge-mnli",
             device="cuda",
             lang="en"

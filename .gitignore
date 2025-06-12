@@ -24,4 +24,5 @@ dist-ssr
 *.sw?
 
 # python files
-/evaluation_bundles/metrics/__pycache__/
+**/__pycache__/
+

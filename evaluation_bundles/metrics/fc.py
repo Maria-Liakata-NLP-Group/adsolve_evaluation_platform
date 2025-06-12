@@ -136,16 +136,38 @@ class NLIScorer:
 
 
 
-class FCExpert:
+class FactualConsistency:
     def __init__(self):
         self.ns = NLIScorer()
     
-    def calculate_metric(self, llm_text: str, gold_text: str) -> dict:
+    
+    def _calculate_fc_expert_metric(self, llm_text: str, gold_text: str) -> float:
         llm_sentences = sent_tokenize(llm_text)
         gold_sentences = sent_tokenize(gold_text)
         # Compute NLI scores
         result = self.ns.compute_timeline_nli_gold(gold_sentences, llm_sentences)
 
         return result
+    
+    def _calculate_fc_timeline_metric(self, llm_text: str, timeline_text: str) -> float:
+        llm_sentences = sent_tokenize(llm_text)
+        timeline_sentences = sent_tokenize(timeline_text)
+        # Compute NLI scores
+        result = self.ns.compute_timeline_nli_timeline(timeline_sentences, llm_sentences)
+
+        return result
+    
+    def calculate_metric(self, llm_text: str, reference_text: str | List[str]) -> float:
+
+        if isinstance(reference_text, str):
+            # If reference_text is a single string it is treated as the gold summary
+            return self._calculate_fc_expert_metric(llm_text, reference_text)
+        elif isinstance(reference_text, list):
+            # If reference_text is a list, it is treated as the timeline posts
+            # convert timeline posts to a single string
+            reference_text = " ".join(reference_text)
+            return self._calculate_fc_timeline_metric(llm_text, reference_text)
+        else:
+            raise ValueError("reference_text must be a string or a list of strings")
 
 
