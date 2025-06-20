@@ -39,7 +39,8 @@ def build_model(model_name: str, hf_cache: str = "/import/nlp-datasets/LLMs/") -
     Build and return an LLMGenerator instance with the specified model name.
     """
     # Log into huggingface
-    hf_token = "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"
+    with open(os.path.join(ROOT_DIR, "hf_token.txt"), "r") as f:
+        hf_token = f.read().strip()
     login(token=hf_token)
     if model_name == "llama":
         model_id = "meta-llama/Meta-Llama-3.1-8B-Instruct" 
