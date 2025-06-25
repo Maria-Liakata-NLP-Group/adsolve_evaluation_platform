@@ -5,7 +5,7 @@ import json
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from metrics.intra_nli import IntraNLI
-from metrics.readability import ReadabilityMetric
+from metrics.readability_metric import ReadabilityMetric
 
 
 class CourtCaseSummarisationEvaluationBundle:
