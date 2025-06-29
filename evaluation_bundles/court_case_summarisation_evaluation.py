@@ -2,16 +2,19 @@ import argparse
 import sys
 import os
 import json
+from tqdm import tqdm
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from metrics.intra_nli import IntraNLI
 from metrics.readability_metric import ReadabilityMetric
+from metrics.fc import FactualConsistency
 
 
 class CourtCaseSummarisationEvaluationBundle:
     def __init__(self):
         self.readability_metric = ReadabilityMetric("flesch_kincaid")
         self.intra_nli = IntraNLI()
+        self.fc_expert = FactualConsistency()
 
     def evaluate(self, llm_summaries: dict, gold_summaries: dict) -> dict:
         # Dictionary to store results
@@ -24,11 +27,16 @@ class CourtCaseSummarisationEvaluationBundle:
                 "document_level": [],
                 "mean": None,
             },
+            'fc_expert': {
+                "document_level": [],
+                "mean": None,
+                "detail": [],
+            },
             'document_ids': list(llm_summaries.keys())
         }
 
         # iterate over each document
-        for document_id in results['document_ids']:
+        for document_id in tqdm(results['document_ids']):
             llm_summary = llm_summaries[document_id]
             gold_summary = gold_summaries[document_id]
 
@@ -40,28 +48,46 @@ class CourtCaseSummarisationEvaluationBundle:
             intra_nli_score = self.intra_nli.calculate_metric(llm_summary)
             results['intra_nli']['document_level'].append(intra_nli_score)
 
+            # Calculate factual consistency expert score
+            fc_expert_score, detail = self.fc_expert.calculate_metric(llm_summary, gold_summary)
+            results['fc_expert']['document_level'].append(fc_expert_score)
+            results['fc_expert']['detail'].append(detail)
+
         # Calculate mean scores
         results['readability']['mean'] = sum(results['readability']['document_level']) / len(results['readability']['document_level'])
         results['intra_nli']['mean'] = sum(results['intra_nli']['document_level']) / len(results['intra_nli']['document_level'])
+        results['fc_expert']['mean'] = sum(results['fc_expert']['document_level']) / len(results['fc_expert']['document_level'])
 
         return results
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Evaluate court case summarisation.")
-    parser.add_argument('--llm_summaries', type=str, required=True, help=' Path to the LLM summaries JSON file.')
-    parser.add_argument('--gold_summaries', type=str, required=True, help='Path to the gold summaries JSON file.')
+    parser.add_argument('--llm_summaries', type=str, help=' Path to the LLM summaries JSON file.')
+    parser.add_argument('--gold_summaries', type=str, help='Path to the gold summaries JSON file.')
+    parser.add_argument('--combined_summaries', type=str, default=None, help='Path to the combined summaries JSON file (optional). If provided, it will be used instead of LLM summaries and gold summaries.')
     parser.add_argument('--output_file', type=str, default='court_case_summarisation_evaluation_results.json', help='Path to save the evaluation results JSON file.')
     args = parser.parse_args()
 
-    # Load LLM summaries
-    print(f"Loading LLM summaries from {args.llm_summaries}")
-    with open(args.llm_summaries, 'r') as f:
-        llm_summaries = json.load(f)    
-    # Load gold summaries
-    print(f"Loading gold summaries from {args.gold_summaries}")
-    with open(args.gold_summaries, 'r') as f:
-        gold_summaries = json.load(f)   
+    if args.combined_summaries:
+        # Load combined summaries
+        print(f"Loading combined summaries from {args.combined_summaries}")
+        with open(args.combined_summaries, 'r') as f:
+            combined_summaries = json.load(f)
+        llm_summaries = {key: value["summary"] for key, value in combined_summaries.items()}    
+        gold_summaries = {key: value["reference"] for key, value in combined_summaries.items()}
+    elif args.llm_summaries and args.gold_summaries:
+        # Load LLM summaries
+        print(f"Loading LLM summaries from {args.llm_summaries}")
+        with open(args.llm_summaries, 'r') as f:
+            llm_summaries = json.load(f)    
+        # Load gold summaries
+        print(f"Loading gold summaries from {args.gold_summaries}")
+        with open(args.gold_summaries, 'r') as f:
+            gold_summaries = json.load(f) 
+    else:
+        raise ValueError("Either --combined_summaries or both --llm_summaries and --gold_summaries must be provided.")  
+    
     # Create evaluation bundle
     print("Creating evaluation bundle for court case summarisation.")
     evaluation_bundle = CourtCaseSummarisationEvaluationBundle()

@@ -52,8 +52,8 @@ class NLIScorer:
         Returns:
             Dictionary with computed NLI metrics
         """
+        entail_scores, contradict_scores = [], []
         if predicted_sents:
-            entail_scores, contradict_scores = [], []
             for source_sent in source_sents:
                 for predicted_sent in predicted_sents:
                     scores = self._compute_nli_scores(source_sent, predicted_sent)
@@ -70,25 +70,18 @@ class NLIScorer:
             max_entailment = 0.0
             max_contradiction = 1.0
         
-        return mean_consistency
-
-        # TODO: think about how to return sentence level metrics, the structure should be consistent across all metrics
-        # return {
-        #     f"{prefix}_consistencies_{source_name}": contradict_scores,
-        #     f"{prefix}_entailments_{source_name}": entail_scores,
-        #     f"{prefix}_mean_consistency_{source_name}": {
-        #         "value": mean_consistency,
-        #         "task": task,
-        #     },
-        #     f"{prefix}_max_entailment_{source_name}": {
-        #         "value": max_entailment,
-        #         "task": task,
-        #     },
-        #     f"{prefix}_max_contradiction_{source_name}": {
-        #         "value": max_contradiction,
-        #         "task": task,
-        #     },
-        # }
+        consistency_scores = []
+        # consisteny scores for each predict sentence against all source sentences
+        for i, predicted_sent in enumerate(predicted_sents):
+            sentence_level_consistency = [
+                1 - contradict_scores[i * len(source_sents) + j]
+                for j in range(len(source_sents))
+            ]
+            consistency_scores.append(np.mean(sentence_level_consistency))
+        return {"mean_consistency": mean_consistency, 
+                "sentence_level_consistencies": consistency_scores,
+                "sentences": predicted_sents,
+                }
 
     def compute_post_nli_gold(self, gold_sents: List[str], predicted_sents: List[str]):
         """Compute NLI scores for post-level summary against gold summary."""
@@ -161,7 +154,9 @@ class FactualConsistency:
 
         if isinstance(reference_text, str):
             # If reference_text is a single string it is treated as the gold summary
-            return self._calculate_fc_expert_metric(llm_text, reference_text)
+            result = self._calculate_fc_expert_metric(llm_text, reference_text)
+            # split into right format
+            return result["mean_consistency"], {"scores": result["sentence_level_consistencies"], "sentences": result["sentences"]}
         elif isinstance(reference_text, list):
             # If reference_text is a list, it is treated as the timeline posts
             # convert timeline posts to a single string
