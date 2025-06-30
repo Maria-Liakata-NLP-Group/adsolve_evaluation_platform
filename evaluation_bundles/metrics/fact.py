@@ -359,10 +359,9 @@ class FactScorer:
     
     def calculate_metric(self, type: str, claims: list[str], reference: str) -> dict:
         results = self.verify_claims(claims, reference)
-        return {
-            f"{type}_claims": claims,
-            f"{type}_mean": np.mean(results),
-            f"{type}_results": results,
+        return np.mean(results), {
+            f"claims": claims,
+            f"results": results,
         }
 
 

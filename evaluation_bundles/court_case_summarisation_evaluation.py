@@ -7,6 +7,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from metrics.intra_nli import IntraNLI
 from metrics.readability_metric import ReadabilityMetric
+from metrics.fact import FactScorer
 from metrics.fc import FactualConsistency
 
 
@@ -15,6 +16,7 @@ class CourtCaseSummarisationEvaluationBundle:
         self.readability_metric = ReadabilityMetric("flesch_kincaid")
         self.intra_nli = IntraNLI()
         self.fc_expert = FactualConsistency()
+        self.fact_scorer = FactScorer(llm_text=llm_summaries, reference=gold_summaries, min_claim=1, max_claim=30)
 
     def evaluate(self, llm_summaries: dict, gold_summaries: dict) -> dict:
         # Dictionary to store results
@@ -32,8 +34,16 @@ class CourtCaseSummarisationEvaluationBundle:
                 "mean": None,
                 "detail": [],
             },
+            'conciseness': {
+                "document_level": [],
+                "mean": None,
+                "detail": [],
+            },
             'document_ids': list(llm_summaries.keys())
         }
+
+        print("Generating claims for conciseness evaluation.")
+        llm_claims = self.fact_scorer.get_claims(llm_summaries)
 
         # iterate over each document
         for document_id in tqdm(results['document_ids']):
@@ -49,14 +59,24 @@ class CourtCaseSummarisationEvaluationBundle:
             results['intra_nli']['document_level'].append(intra_nli_score)
 
             # Calculate factual consistency expert score
-            fc_expert_score, detail = self.fc_expert.calculate_metric(llm_summary, gold_summary)
+            fc_expert_score, fc_expert_detail = self.fc_expert.calculate_metric(llm_summary, gold_summary)
             results['fc_expert']['document_level'].append(fc_expert_score)
-            results['fc_expert']['detail'].append(detail)
+            results['fc_expert']['detail'].append(fc_expert_detail)
+
+            # Calculate conciseness score
+            conciseness_score, conciseness_detail = self.fact_scorer.calculate_metric(
+                type="recall",
+                claims=llm_claims[document_id],
+                reference=gold_summary
+            )
+            results['conciseness']['document_level'].append(conciseness_score)
+            results['conciseness']['detail'].append(conciseness_detail)
 
         # Calculate mean scores
         results['readability']['mean'] = sum(results['readability']['document_level']) / len(results['readability']['document_level'])
         results['intra_nli']['mean'] = sum(results['intra_nli']['document_level']) / len(results['intra_nli']['document_level'])
         results['fc_expert']['mean'] = sum(results['fc_expert']['document_level']) / len(results['fc_expert']['document_level'])
+        results['conciseness']['mean'] = sum(results['conciseness']['document_level']) / len(results['conciseness']['document_level'])
 
         return results
 
