@@ -20,6 +20,14 @@ class ReadabilityMetric:
   
 
     def calculate_metric(self, text: str) -> float:
+        # check that text has at least 100 words. If not, add sentences from the beginning until it has at least 100 words.
+        if len(text.split()) < 100:
+            sentences = text.split('. ')
+            while len(text.split()) < 100 and sentences:
+                text += ' ' + sentences.pop(0)
+        # if text is still less than 100 words, return 0
+        if len(text.split()) < 100:
+            return 0.0
         r = Readability(text)
         if self.type == ReadabilityType.FLESCH_KINCAID:
             return r.flesch_kincaid().score
