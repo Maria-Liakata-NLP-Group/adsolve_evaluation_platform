@@ -2,16 +2,8 @@
 
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import LeaderBoard from "../components/leaderBoard";
+import DocumentDisplay from "../components/documentDisplay";
 import MetricsScatterPlot from "../components/metricsScatterPlot";
-import ExampleModal from "../components/exampleModal";
-
-const getScoreColour = (score) => {
-	// fade from red to green
-	const r = Math.floor(255 * (1 - score));
-	const g = Math.floor(255 * score);
-	return `rgb(${r}, ${g}, 0)`;
-};
 
 // write a function that sorts an array of values and returns the sorted indicies
 const getSortedIndices = (values) => {
@@ -34,17 +26,7 @@ const Dashboard = () => {
 	const [currentModel, setCurrentModel] = useState(null);
 	const [leaderBoardData, setLeaderBoardData] = useState({});
 	const [error, setError] = useState(null);
-	const [showModal, setShowModal] = useState(false);
 	const [modalDetails, setModalDetails] = useState(null);
-
-	const getModalDetails = (gold, llm_sents, llm_sent_scores) => {
-		// setShowModal(true);
-		setModalDetails({
-			gold: gold,
-			llm_sents: llm_sents,
-			llm_sent_scores: llm_sent_scores,
-		});
-	};
 
 	useEffect(() => {
 		if (useCase && task) {
@@ -237,63 +219,58 @@ const Dashboard = () => {
 
 	return (
 		<>
-			<ExampleModal
-				gold={modalDetails?.gold}
-				llm_sents={modalDetails?.llm_sents}
-				llm_sent_scores={modalDetails?.llm_sent_scores}
-				active={showModal}
-				onClickFunction={() => setShowModal(false)}
-			/>
 			<div>
 				<h1 className="title">{title}</h1>
 				<section className="block">
-					<div>
-						<h2 className="subtitle">Filter by</h2>
-					</div>
 					<div className="is-flex">
-						{/* <div> */}
-						<div className="is-flex is-align-items-center">
+						<div className="is-flex is-align-items-center mr-5">
 							<div style={{ width: "80px" }}>Datasets:</div>
 							<div>
-								<div className="tags">
-									{datasetNames
-										? datasetNames.map((datasetName, index) => (
-												<span
-													key={index}
-													className={`tag has-border ${
-														currentDataset === index ? "is-dark" : "is-light"
-													}`}
-													onClick={() => clickOnDataset(index)}
-												>
-													{datasetName}
-												</span>
-										  ))
-										: "No datasets to display"}
+								<div className="tabs is-toggle">
+									<ul>
+										{datasetNames
+											? datasetNames.map((datasetName, index) => (
+													<li
+														key={index}
+														className={`${
+															currentDataset === index ? "is-active" : ""
+														}`}
+														onClick={() => clickOnDataset(index)}
+													>
+														<a>
+															<span>{datasetName}</span>
+														</a>
+													</li>
+											  ))
+											: "No datasets to display"}
+									</ul>
 								</div>
 							</div>
-							<button className="button is-dark mt-2">Add dataset</button>
+							<button className="button dark ml-2 is-small">Add dataset</button>
 						</div>
 						<div className="is-flex is-align-items-center">
 							<div style={{ width: "80px" }}>Models:</div>
-							<div className="tags">
-								{modelNames
-									? modelNames.map((modelName, index) => (
-											<span
-												key={index}
-												className={`tag has-border ${
-													currentModel === index ? "is-dark" : "is-light"
-												}`}
-												onClick={() => clickOnModel(index)}
-											>
-												{modelName}
-											</span>
-									  ))
-									: "No models to display"}
+							<div className="tabs is-toggle">
+								<ul>
+									{modelNames
+										? modelNames.map((modelName, index) => (
+												<li
+													key={index}
+													className={`${
+														currentModel === index ? "is-active" : ""
+													}`}
+													onClick={() => clickOnModel(index)}
+												>
+													<a>
+														<span>{modelName}</span>
+													</a>
+												</li>
+										  ))
+										: "No models to display"}
+								</ul>
 							</div>
-							<button className="button is-dark mb-2">Add model</button>
+							<button className="button ml-2 is-small">Add model</button>
 						</div>
-						{/* </div> */}
-						{/* <div className="is-flex is-flex-direction-row is-justify-content-space-between ml-5"></div> */}
 					</div>
 				</section>
 				<section className="block">
@@ -317,18 +294,23 @@ const Dashboard = () => {
 											],
 											index
 										) => (
-											<div key={index}>
+											<div
+												key={index}
+												// style={{ marginBottom: "-120px" }}
+											>
 												<MetricsScatterPlot
 													key={index}
 													dataPoints={dataPoints}
 													documentIds={documentIds}
+													highlightedId={modalDetails?.documentId}
+													highlightedTag={modalDetails?.tag}
 													goldSummaries={goldSummaries}
 													llmSummaries={llmSummaries}
 													detail={detail}
-													showDetails={getModalDetails}
+													showDetails={setModalDetails}
 													aspect={aspect}
 													metric={metric}
-													values={values}
+													means={values}
 													tags={tags}
 												/>
 											</div>
@@ -337,21 +319,15 @@ const Dashboard = () => {
 								: "Nothing to see here"}
 						</div>
 						<div>
-							<h2 className="subtitle">LLM</h2>
-							{modalDetails?.llm_sents?.map((sentence, index) => (
-								<span
-									key={index}
-									style={{
-										textDecoration: "underline",
-										textDecorationColor: getScoreColour(
-											modalDetails.llm_sent_scores[index]
-										),
-										textDecorationThickness: "2px",
-									}}
-								>
-									{sentence}{" "}
-								</span>
-							))}
+							<DocumentDisplay
+								gold={modalDetails?.gold}
+								llm={modalDetails?.llm_sents}
+								documentScore={modalDetails?.value}
+								scores={modalDetails?.llm_sent_scores}
+								tag={modalDetails?.tag}
+								documentId={modalDetails?.documentId}
+								aspect={modalDetails?.aspect}
+							/>
 						</div>
 					</div>
 				</section>

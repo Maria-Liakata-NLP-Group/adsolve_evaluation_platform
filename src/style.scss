@@ -40,16 +40,20 @@ body {
 }
 
 .has-border {
-    border-width: 2px;
+    border-width: 1px;
     border-style: solid;
     border-color: var(--border-color);
+}
+
+.is-rounded {
+    border-radius: 0.5rem;
 }
 
 .box {
 
     &.has-border {
-        border-width: 4px;
-        border-style: dashed;
+        border-width: 1px;
+        border-style: solid;
         position: relative;
         &:hover {
             cursor: pointer !important;
