@@ -101,7 +101,7 @@ const getGoldContent = (gold, documentId) => {
 };
 
 const defaultSentence =
-	"Please select a datapoint from the metrics to the left to vew summaries.";
+	"Please select a datapoint from the metrics to the left to view summaries.";
 
 const DocumentDisplay = ({
 	llm = [defaultSentence],

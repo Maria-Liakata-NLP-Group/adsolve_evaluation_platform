@@ -294,10 +294,7 @@ const Dashboard = () => {
 											],
 											index
 										) => (
-											<div
-												key={index}
-												// style={{ marginBottom: "-120px" }}
-											>
+											<div key={index}>
 												<MetricsScatterPlot
 													key={index}
 													dataPoints={dataPoints}

@@ -132,9 +132,9 @@ const MetricsScatterPlot = ({
 			categoryarray: tags,
 			autorange: "reversed",
 		},
-		margin: { l: 70, r: 20, t: 40, b: 0, pad: 0 },
+		margin: { l: 70, r: 20, t: 40, b: 20, pad: 0 },
 		width: 600,
-		height: tags.length * 30 + 40, // Adjust height based on number of tags
+		height: tags.length * 30 + 60, // Adjust height based on number of tags
 	};
 
 	const handlePointClick = (event) => {
