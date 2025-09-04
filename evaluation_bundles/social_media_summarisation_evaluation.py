@@ -1,18 +1,11 @@
-# add metrics folder to paths from which to import classes
 import argparse
-import sys
-import os
 import json
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/metrics")
-
-from mhic import MHIC
-from intra_nli import IntraNLI
-from fc import FactualConsistency
-from style_roberta import StyleSimilarity
-from bertscore import BERTScore
-
 import numpy as np
 
+from adsolve_utils.evaluation_bundles.metrics.mhic import MHIC 
+from adsolve_utils.evaluation_bundles.metrics.intra_nli import IntraNLI
+from adsolve_utils.evaluation_bundles.metrics.fc import FactualConsistency
+from adsolve_utils.evaluation_bundles.metrics.style_roberta import StyleSimilarity
 
 class SocialMediaSummarisationEvaluationBundle:
     def __init__(self):
@@ -20,7 +13,6 @@ class SocialMediaSummarisationEvaluationBundle:
         self.intra_nli = IntraNLI()
         self.fc = FactualConsistency()
         self.style_similarity = StyleSimilarity()
-        self.bert_score = BERTScore()
 
     def evaluate(self, posts: dict, llm_summaries: dict, gold_summaries: dict) -> dict:
         # extract document ids from posts dict
@@ -39,16 +31,14 @@ class SocialMediaSummarisationEvaluationBundle:
             'fc_expert': {
                 "document_level": [],
                 "mean": None,
+                "detail": [],
             },
             'fc_document': {
                 "document_level": [],
                 "mean": None,
+                "detail": [],
             },
             'style_similarity': {
-                "document_level": [],
-                "mean": None,
-            },
-            'bert_score': {
                 "document_level": [],
                 "mean": None,
             },
@@ -70,23 +60,21 @@ class SocialMediaSummarisationEvaluationBundle:
             results['intra_nli']['document_level'].append(intra_nli_score)
 
             # Evaluate FCExpert
-            fc_expert_score = self.fc.calculate_metric(llm_summary, gold_summary)
+            fc_expert_score, fc_expert_detail = self.fc.calculate_metric(llm_summary, gold_summary)
             results['fc_expert']['document_level'].append(fc_expert_score)
+            results['fc_expert']['detail'].append(fc_expert_detail)
 
             # Evaluate FCdocument 
-            fc_document_score = self.fc.calculate_metric(llm_summary, document_posts)
+            fc_document_score, fc_document_detail = self.fc.calculate_metric(llm_summary, document_posts)
             results['fc_document']['document_level'].append(fc_document_score)
+            results['fc_document']['detail'].append(fc_document_detail)
 
             # Evaluate Style Similarity
             style_similarity_score = self.style_similarity.calculate_metric(llm_summary, gold_summary)
             results['style_similarity']['document_level'].append(style_similarity_score)
 
-            # Evaluate BERT Score
-            bert_score = self.bert_score.calculate_metric(llm_summary, gold_summary)
-            results['bert_score']['document_level'].append(bert_score)
 
-
-        for metric in ['mhic', 'intra_nli', 'fc_expert', 'fc_document', 'style_similarity', 'bert_score']:
+        for metric in ['mhic', 'intra_nli', 'fc_expert', 'fc_document', 'style_similarity']:
             # Calculate mean for each metric
             results[metric]['mean'] = np.mean(results[metric]['document_level'])
         return results

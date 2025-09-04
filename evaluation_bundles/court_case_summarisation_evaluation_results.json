@@ -1,0 +1,17 @@
+{
+    "readability": {
+        "document_level": [
+            15.149911646586347
+        ],
+        "mean": 15.149911646586347
+    },
+    "intra_nli": {
+        "document_level": [
+            0.964742715957714
+        ],
+        "mean": 0.964742715957714
+    },
+    "document_ids": [
+        "uksc-2014-0231"
+    ]
+}

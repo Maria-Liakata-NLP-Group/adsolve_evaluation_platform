@@ -1,53 +1,78 @@
 {
     "metadata": {
-        "models": ["LLaMA", "Generic Base"],
-        "datasets": ["Reddit"],
-        "metrics": ["SMP", "FC", "EA", "Coherence"],
+        "models": [
+            "Llama",
+            "Generic Base"
+        ],
+        "datasets": [
+            "CLPsych 2025"
+        ],
+        "metrics": [
+            "fc_expert",
+            "fc_document",
+            "intra_nli",
+            "mhic",
+            "style_similarity"
+        ],
         "metric_details": {
-            "SMP": "Salient Meaning Preservation (SMP)",
-            "FC": "Factual Consistency (FC_expert)",
-            "EA": "Evidence Appropriateness (EA)",
-            "Coherence": "Coherende (IntraNLI)"
+            "fc_expert": "Factual Consistency (FC_expert)",
+            "fc_document": "Factual Consistency (FC_document)",
+            "intra_nli": "Coherence (IntraNLI)",
+            "mhic": "Salient Meaning Preservation (MHIC)",
+            "style_similarity": "Style Similarity"
         }
     },
     "data": {
-        "Reddit": {
+        "CLPsych 2025": {
             "gold_summary": {
                 "83997cd4e7": "In this timeline, there appears to be a fluctuation between an adaptive and a maladaptive self-state. In the last post, the fluctuation is noticeable, with the maladaptive self-state being reflected first, followed by an adaptive self-state where he perceives others as connected to him and behaves in a related way toward them. However, in the second post, this adaptive self-state is not evident.",
-                "46f4bb3ada":"The dominant self-state is marked by an anxious and depressed affect, accompanied by avoidance and self-harm behaviors, with a perception of others as detached and not understanding her.\r\n\r\nThe adaptive self-state is a faint attempt to be attuned to her own needs, though it is close to engaging in avoidance behaviors as a way to temporarily feel better.",
-                "0cac13e357":"The self-states in this timeline fluctuate between adaptive and maladaptive both within individual posts and across different posts. In some posts, both voices are present in varying intensities, while in others, such as the one mentioning her depression, the maladaptive voice is particularly dominant.\r\n\r\nOn one hand, she perceives herself and others as capable and believes in her ability to provide help and support. On the other hand, she sometimes views people as manipulative and exploitative, feeling taken advantage of.",
-                "5da839acb5":"Throughout the timeline, the self states were mostly maladaptive, sometimes present by themselves with no adaptive counterparts. this very severe maladaptive dominance was mainly characterized by the expectation that the writer will hurt themselves, and that their relatedness needs will never be met. the two intertwined throughout the timeline. these were strongly influenced by the presence of idealization of the ex boyfriend. that being said, the adaptive cognition of her best friend as someone she loves, allowed her through most of the timeline to postpone her suicide plans. this adaptive voice grew weaker by the end of the timeline.",
+                "46f4bb3ada": "The dominant self-state is marked by an anxious and depressed affect, accompanied by avoidance and self-harm behaviors, with a perception of others as detached and not understanding her.\r\n\r\nThe adaptive self-state is a faint attempt to be attuned to her own needs, though it is close to engaging in avoidance behaviors as a way to temporarily feel better.",
+                "0cac13e357": "The self-states in this timeline fluctuate between adaptive and maladaptive both within individual posts and across different posts. In some posts, both voices are present in varying intensities, while in others, such as the one mentioning her depression, the maladaptive voice is particularly dominant.\r\n\r\nOn one hand, she perceives herself and others as capable and believes in her ability to provide help and support. On the other hand, she sometimes views people as manipulative and exploitative, feeling taken advantage of.",
+                "5da839acb5": "Throughout the timeline, the self states were mostly maladaptive, sometimes present by themselves with no adaptive counterparts. this very severe maladaptive dominance was mainly characterized by the expectation that the writer will hurt themselves, and that their relatedness needs will never be met. the two intertwined throughout the timeline. these were strongly influenced by the presence of idealization of the ex boyfriend. that being said, the adaptive cognition of her best friend as someone she loves, allowed her through most of the timeline to postpone her suicide plans. this adaptive voice grew weaker by the end of the timeline.",
                 "6c9677b482": "although the presence of the maladaptive self states in the post changed quite a bit, the presence of the adaptive voices was always medium-high. it seems that when the writer dares to get out and deal with her social anxiety, although she sometimes faces difficulties, it is  also a rewarding experience that boosts the presence of the adaptive self state and ignites other elements of the adaptive self state, such as having more positive cognitions of others."
             },
-            "LLaMA": {
-                "document_ids":["83997cd4e7", "46f4bb3ada", "0cac13e357",  "5da839acb5", "6c9677b482"],
+            "Llama": {
                 "llm_summary": {
-                    "83997cd4e7":"The interplay between adaptive and maladaptive self-states is characterized by a dynamic interplay between flexibility and rigidity, with maladaptive self-states often dominating the narrative, driven by negative Affect, critical Cognition, and hindering the fulfillment of basic psychological needs such as relatedness, autonomy, and competence, while adaptive self-states are less prominent, driven by Desire/Need for understanding, tolerance, and connection, but are hindered by the maladaptive self-states, with some instances showing a shift towards adaptive self-states as the individual seeks external validation and a sense of belonging, and others remaining stuck in maladaptive self-states, characterized by negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs.  The maladaptive self-states seem to be more dominant in most instances, driven by negative Affect, critical Cognition, and hindering the fulfillment of basic psychological needs, while adaptive self-states are less prominent, driven by Desire/Need for understanding, tolerance, and connection.",
-                    "46f4bb3ada":"The individual's self-states have been characterized by a maladaptive self-state, where negative emotions, thoughts, and behaviors have hindered their psychological needs, particularly relatedness, autonomy, and competence, with a central organizing aspect of Desire/Need for escape or avoidance, and a mix of adaptive and maladaptive self-states, where the maladaptive self-state was more dominant, driven by negative Affect, influencing Behavior and Cognition, and hindering the fulfillment of basic psychological needs, while the adaptive self-state was less prominent, driven by a positive Desire/Need for connection and understanding, and the maladaptive self-state's negative Affect and Cognition had a causal relationship, creating a self-reinforcing cycle.  The maladaptive self-state was driven by a central organizing aspect of negative Affect, which influenced the individual's Cognition and Behavior, leading to feelings of disconnection and self-doubt, and the maladaptive self-state was characterized by a negative Cognition and a maladaptive Behavior, hindering the fulfillment of the psychological need for relatedness,",
-                    "0cac13e357":  "The individual's self-states have fluctuated over time, with maladaptive self-states being more dominant in the early stages, characterized by negative Affect, maladaptive Behavior, and maladaptive Cognition, hindering the fulfillment of basic desires/needs such as relatedness and autonomy. However, as time progressed, adaptive self-states began to emerge, driven by positive Affect, adaptive Behavior, and adaptive Cognition, supporting the psychological need for autonomy and relatedness. The adaptive self-states were initially overshadowed by the maladaptive self-states, but eventually gained prominence, indicating a shift towards greater flexibility and resilience. The individual's ability to access and maintain adaptive self-states improved over time, allowing them to better cope with challenges and maintain a sense of self-worth. The maladaptive self-states, however, continued to be present, often triggered by specific situations or emotions, highlighting the need for ongoing self-reflection and therapeutic intervention to address these negative patterns. Overall, the individual's self-states have demonstrated a dynamic interplay between adaptive and maladaptive components, with a gradual shift towards greater balance and well-being.",
-                    "5da839acb5":"The individual's self-states have been characterized by a maladaptive pattern of negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs, with a dominant central organizing aspect of Affect driving the maladaptive self-states, influencing the other aspects, and leading to maladaptive behaviors and cognitions, with a notable lack of adaptive self-states and a persistent nature of the maladaptive self-states over time.  The maladaptive self-states have been marked by a range of negative emotions, including emotional numbness, sadness, longing, despair, guilt, inadequacy, and hopelessness, which have driven maladaptive behaviors, such as suppressing emotions, feeling disconnected from others, and struggling to cope with reality, and maladaptive cognitions, such as negative thoughts about oneself and the world, and a sense of hopelessness about the future.  The maladaptive self-states have hindered the fulfillment of basic psychological needs, including relatedness, autonomy, and competence, with a notable impact on the individual's desire/need for relatedness, as they have struggled with feelings of abandonment and rejection, and a lack of autonomy and competence, as they have felt unable to express themselves authentically and connect with others on a deeper level.  The maladaptive self-states have been persistent over time, with no clear indication of an adaptive self-state, and a notable lack of flexibility and rigidity in the individual's self-states, suggesting a need for further exploration and intervention to support the development of adaptive.",
+                    "83997cd4e7": "The interplay between adaptive and maladaptive self-states is characterized by a dynamic interplay between flexibility and rigidity, with maladaptive self-states often dominating the narrative, driven by negative Affect, critical Cognition, and hindering the fulfillment of basic psychological needs such as relatedness, autonomy, and competence, while adaptive self-states are less prominent, driven by Desire/Need for understanding, tolerance, and connection, but are hindered by the maladaptive self-states, with some instances showing a shift towards adaptive self-states as the individual seeks external validation and a sense of belonging, and others remaining stuck in maladaptive self-states, characterized by negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs.  The maladaptive self-states seem to be more dominant in most instances, driven by negative Affect, critical Cognition, and hindering the fulfillment of basic psychological needs, while adaptive self-states are less prominent, driven by Desire/Need for understanding, tolerance, and connection.",
+                    "46f4bb3ada": "The individual's self-states have been characterized by a maladaptive self-state, where negative emotions, thoughts, and behaviors have hindered their psychological needs, particularly relatedness, autonomy, and competence, with a central organizing aspect of Desire/Need for escape or avoidance, and a mix of adaptive and maladaptive self-states, where the maladaptive self-state was more dominant, driven by negative Affect, influencing Behavior and Cognition, and hindering the fulfillment of basic psychological needs, while the adaptive self-state was less prominent, driven by a positive Desire/Need for connection and understanding, and the maladaptive self-state's negative Affect and Cognition had a causal relationship, creating a self-reinforcing cycle.  The maladaptive self-state was driven by a central organizing aspect of negative Affect, which influenced the individual's Cognition and Behavior, leading to feelings of disconnection and self-doubt, and the maladaptive self-state was characterized by a negative Cognition and a maladaptive Behavior, hindering the fulfillment of the psychological need for relatedness,",
+                    "0cac13e357": "The individual's self-states have fluctuated over time, with maladaptive self-states being more dominant in the early stages, characterized by negative Affect, maladaptive Behavior, and maladaptive Cognition, hindering the fulfillment of basic desires/needs such as relatedness and autonomy. However, as time progressed, adaptive self-states began to emerge, driven by positive Affect, adaptive Behavior, and adaptive Cognition, supporting the psychological need for autonomy and relatedness. The adaptive self-states were initially overshadowed by the maladaptive self-states, but eventually gained prominence, indicating a shift towards greater flexibility and resilience. The individual's ability to access and maintain adaptive self-states improved over time, allowing them to better cope with challenges and maintain a sense of self-worth. The maladaptive self-states, however, continued to be present, often triggered by specific situations or emotions, highlighting the need for ongoing self-reflection and therapeutic intervention to address these negative patterns. Overall, the individual's self-states have demonstrated a dynamic interplay between adaptive and maladaptive components, with a gradual shift towards greater balance and well-being.",
+                    "5da839acb5": "The individual's self-states have been characterized by a maladaptive pattern of negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs, with a dominant central organizing aspect of Affect driving the maladaptive self-states, influencing the other aspects, and leading to maladaptive behaviors and cognitions, with a notable lack of adaptive self-states and a persistent nature of the maladaptive self-states over time.  The maladaptive self-states have been marked by a range of negative emotions, including emotional numbness, sadness, longing, despair, guilt, inadequacy, and hopelessness, which have driven maladaptive behaviors, such as suppressing emotions, feeling disconnected from others, and struggling to cope with reality, and maladaptive cognitions, such as negative thoughts about oneself and the world, and a sense of hopelessness about the future.  The maladaptive self-states have hindered the fulfillment of basic psychological needs, including relatedness, autonomy, and competence, with a notable impact on the individual's desire/need for relatedness, as they have struggled with feelings of abandonment and rejection, and a lack of autonomy and competence, as they have felt unable to express themselves authentically and connect with others on a deeper level.  The maladaptive self-states have been persistent over time, with no clear indication of an adaptive self-state, and a notable lack of flexibility and rigidity in the individual's self-states, suggesting a need for further exploration and intervention to support the development of adaptive.",
                     "6c9677b482": "The individual's self-states are characterized by a mix of maladaptive and adaptive states, with maladaptive states dominating their emotions and behaviors in situations of perceived lack of control, fear, and anxiety, while adaptive states emerge in situations of connection and support, highlighting the interplay between these states and the importance of flexibility in coping with challenging situations.  The maladaptive self-states are driven by intense negative emotions, such as fear, anger, and self-disgust, which influence the individual's behavior and cognition, hindering the fulfillment of basic psychological needs like autonomy, competence, and relatedness. In contrast, the adaptive self-states are driven by positive emotions, such as a desire for connection and relatedness, which support the individual's psychological needs and promote healthy behaviors and thoughts. The individual's self-states are in a state of tension, with maladaptive states dominating their emotions and behaviors in situations of perceived lack of control, but adaptive states providing a sense of purpose and connection in situations of support and connection. The individual's maladaptive self-states are characterized by a sense of rigidity, as they are driven by intense negative emotions and a lack of flexibility in coping with challenging situations, while their adaptive self-states are marked by a sense of improvement, as they emerge in situations of connection and support. The individual's self-states are also marked by a sense of deterioration, as their maladaptive self-states can lead to feelings of hopelessness and helplessness, but also by a sense of improvement."
                 },
-                "SMP": {
-                    "mean": 60,
-                    "document_level": []
+                "mhic": {
+                    "document_level": [
+                        0.46292678117752073,
+                        0.41288084189097085,
+                        0.46947742170757717,
+                        0.47942020893096926,
+                        0.4570826562968167
+                    ],
+                    "mean": 0.4563575820007709
                 },
-                "EA": {
-                    "mean": 91,
-                    "document_level": []
+                "intra_nli": {
+                    "document_level": [
+                        0.9976019610767253,
+                        0.8690558294765651,
+                        0.9717558947081367,
+                        0.9993168591906093,
+                        0.9747474076476161
+                    ],
+                    "mean": 0.9624955904199306
                 },
-                "Coherence": {
-                    "mean": 96,
-                    "document_level": [] 
-                },                
-                "FC": {
-                    "mean": 0.9992,
-                    "document_level": [0.9987580382730812, 0.9893296358641237, 0.9994957879859309, 0.9139926519516545, 0.9979318150920639],
+                "fc_expert": {
+                    "document_level": [
+                        0.9987580396797663,
+                        0.9893296459922567,
+                        0.9994957877402157,
+                        0.9139925892341125,
+                        0.9979318181164368
+                    ],
+                    "mean": 0.9799015761525576,
                     "detail": [
                         {
                             "scores": [
-                                0.9986181173395986,
-                                0.9988979592065638
+                                0.998618119105231,
+                                0.9988979602543017
                             ],
                             "sents": [
                                 "The interplay between adaptive and maladaptive self-states is characterized by a dynamic interplay between flexibility and rigidity, with maladaptive self-states often dominating the narrative, driven by negative Affect, critical Cognition, and hindering the fulfillment of basic psychological needs such as relatedness, autonomy, and competence, while adaptive self-states are less prominent, driven by Desire/Need for understanding, tolerance, and connection, but are hindered by the maladaptive self-states, with some instances showing a shift towards adaptive self-states as the individual seeks external validation and a sense of belonging, and others remaining stuck in maladaptive self-states, characterized by negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs.",
@@ -56,8 +81,8 @@
                         },
                         {
                             "scores": [
-                                0.9926000447012484,
-                                0.986059227026999
+                                0.9926000575069338,
+                                0.9860592344775796
                             ],
                             "sents": [
                                 "The individual's self-states have been characterized by a maladaptive self-state, where negative emotions, thoughts, and behaviors have hindered their psychological needs, particularly relatedness, autonomy, and competence, with a central organizing aspect of Desire/Need for escape or avoidance, and a mix of adaptive and maladaptive self-states, where the maladaptive self-state was more dominant, driven by negative Affect, influencing Behavior and Cognition, and hindering the fulfillment of basic psychological needs, while the adaptive self-state was less prominent, driven by a positive Desire/Need for connection and understanding, and the maladaptive self-state's negative Affect and Cognition had a causal relationship, creating a self-reinforcing cycle.",
@@ -66,12 +91,12 @@
                         },
                         {
                             "scores": [
-                                0.9994911954745476,
-                                0.9995197008138348,
-                                0.9992838567341096,
-                                0.999121705073776,
-                                0.9997494475046551,
-                                0.9998088223146624
+                                0.9994911948051595,
+                                0.9995197014868609,
+                                0.9992838569814921,
+                                0.9991217037386377,
+                                0.9997494471344908,
+                                0.9998088222946535
                             ],
                             "sents": [
                                 "The individual's self-states have fluctuated over time, with maladaptive self-states being more dominant in the early stages, characterized by negative Affect, maladaptive Behavior, and maladaptive Cognition, hindering the fulfillment of basic desires/needs such as relatedness and autonomy.",
@@ -84,10 +109,10 @@
                         },
                         {
                             "scores": [
-                                0.9913374674215447,
-                                0.998848319601772,
-                                0.9994092350195084,
-                                0.6663755857637927
+                                0.9913374438280395,
+                                0.9988483188693257,
+                                0.9994092346605612,
+                                0.6663753595785238
                             ],
                             "sents": [
                                 "The individual's self-states have been characterized by a maladaptive pattern of negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs, with a dominant central organizing aspect of Affect driving the maladaptive self-states, influencing the other aspects, and leading to maladaptive behaviors and cognitions, with a notable lack of adaptive self-states and a persistent nature of the maladaptive self-states over time.",
@@ -98,12 +123,12 @@
                         },
                         {
                             "scores": [
-                                0.999143112130696,
-                                0.9996602677274495,
-                                0.9983905682893237,
-                                0.9991177489428082,
-                                0.9984556613781024,
-                                0.9928235320840031
+                                0.9991431123053189,
+                                0.9996602675528266,
+                                0.9983905696426518,
+                                0.9991177521442296,
+                                0.998455662978813,
+                                0.9928235440747812
                             ],
                             "sents": [
                                 "The individual's self-states are characterized by a mix of maladaptive and adaptive states, with maladaptive states dominating their emotions and behaviors in situations of perceived lack of control, fear, and anxiety, while adaptive states emerge in situations of connection and support, highlighting the interplay between these states and the importance of flexibility in coping with challenging situations.",
@@ -115,50 +140,162 @@
                             ]
                         }
                     ]
-                    }
                 },
-            "Generic Base": {
-                "document_ids":["83997cd4e7", "46f4bb3ada", "0cac13e357",  "5da839acb5", "6c9677b482"],
-                "llm_summary": {
-                    "83997cd4e7":"The interplay between adaptive and maladaptive self-states is characterized by a dynamic interplay between flexibility and rigidity, with maladaptive self-states often dominating the narrative, driven by negative Affect, critical Cognition, and hindering the fulfillment of basic psychological needs such as relatedness, autonomy, and competence, while adaptive self-states are less prominent, driven by Desire/Need for understanding, tolerance, and connection, but are hindered by the maladaptive self-states, with some instances showing a shift towards adaptive self-states as the individual seeks external validation and a sense of belonging, and others remaining stuck in maladaptive self-states, characterized by negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs.  The maladaptive self-states seem to be more dominant in most instances, driven by negative Affect, critical Cognition, and hindering the fulfillment of basic psychological needs, while adaptive self-states are less prominent, driven by Desire/Need for understanding, tolerance, and connection.",
-                    "46f4bb3ada":"The individual's self-states have been characterized by a maladaptive self-state, where negative emotions, thoughts, and behaviors have hindered their psychological needs, particularly relatedness, autonomy, and competence, with a central organizing aspect of Desire/Need for escape or avoidance, and a mix of adaptive and maladaptive self-states, where the maladaptive self-state was more dominant, driven by negative Affect, influencing Behavior and Cognition, and hindering the fulfillment of basic psychological needs, while the adaptive self-state was less prominent, driven by a positive Desire/Need for connection and understanding, and the maladaptive self-state's negative Affect and Cognition had a causal relationship, creating a self-reinforcing cycle.  The maladaptive self-state was driven by a central organizing aspect of negative Affect, which influenced the individual's Cognition and Behavior, leading to feelings of disconnection and self-doubt, and the maladaptive self-state was characterized by a negative Cognition and a maladaptive Behavior, hindering the fulfillment of the psychological need for relatedness,",
-                    "0cac13e357":  "The individual's self-states have fluctuated over time, with maladaptive self-states being more dominant in the early stages, characterized by negative Affect, maladaptive Behavior, and maladaptive Cognition, hindering the fulfillment of basic desires/needs such as relatedness and autonomy. However, as time progressed, adaptive self-states began to emerge, driven by positive Affect, adaptive Behavior, and adaptive Cognition, supporting the psychological need for autonomy and relatedness. The adaptive self-states were initially overshadowed by the maladaptive self-states, but eventually gained prominence, indicating a shift towards greater flexibility and resilience. The individual's ability to access and maintain adaptive self-states improved over time, allowing them to better cope with challenges and maintain a sense of self-worth. The maladaptive self-states, however, continued to be present, often triggered by specific situations or emotions, highlighting the need for ongoing self-reflection and therapeutic intervention to address these negative patterns. Overall, the individual's self-states have demonstrated a dynamic interplay between adaptive and maladaptive components, with a gradual shift towards greater balance and well-being.",
-                    "5da839acb5":"The individual's self-states have been characterized by a maladaptive pattern of negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs, with a dominant central organizing aspect of Affect driving the maladaptive self-states, influencing the other aspects, and leading to maladaptive behaviors and cognitions, with a notable lack of adaptive self-states and a persistent nature of the maladaptive self-states over time.  The maladaptive self-states have been marked by a range of negative emotions, including emotional numbness, sadness, longing, despair, guilt, inadequacy, and hopelessness, which have driven maladaptive behaviors, such as suppressing emotions, feeling disconnected from others, and struggling to cope with reality, and maladaptive cognitions, such as negative thoughts about oneself and the world, and a sense of hopelessness about the future.  The maladaptive self-states have hindered the fulfillment of basic psychological needs, including relatedness, autonomy, and competence, with a notable impact on the individual's desire/need for relatedness, as they have struggled with feelings of abandonment and rejection, and a lack of autonomy and competence, as they have felt unable to express themselves authentically and connect with others on a deeper level.  The maladaptive self-states have been persistent over time, with no clear indication of an adaptive self-state, and a notable lack of flexibility and rigidity in the individual's self-states, suggesting a need for further exploration and intervention to support the development of adaptive.",
-                    "6c9677b482": "The individual's self-states are characterized by a mix of maladaptive and adaptive states, with maladaptive states dominating their emotions and behaviors in situations of perceived lack of control, fear, and anxiety, while adaptive states emerge in situations of connection and support, highlighting the interplay between these states and the importance of flexibility in coping with challenging situations.  The maladaptive self-states are driven by intense negative emotions, such as fear, anger, and self-disgust, which influence the individual's behavior and cognition, hindering the fulfillment of basic psychological needs like autonomy, competence, and relatedness. In contrast, the adaptive self-states are driven by positive emotions, such as a desire for connection and relatedness, which support the individual's psychological needs and promote healthy behaviors and thoughts. The individual's self-states are in a state of tension, with maladaptive states dominating their emotions and behaviors in situations of perceived lack of control, but adaptive states providing a sense of purpose and connection in situations of support and connection. The individual's maladaptive self-states are characterized by a sense of rigidity, as they are driven by intense negative emotions and a lack of flexibility in coping with challenging situations, while their adaptive self-states are marked by a sense of improvement, as they emerge in situations of connection and support. The individual's self-states are also marked by a sense of deterioration, as their maladaptive self-states can lead to feelings of hopelessness and helplessness, but also by a sense of improvement."
-                },
-                "SMP": {
-                    "mean": 49,
-                    "document_level": []
-                },
-                "EA": {
-                    "mean": 66,
-                    "document_level": []
-                },
-                "Coherence": {
-                    "mean": 78,
-                    "document_level": [] 
-                },
-                "FC": {
-                    "mean": 0.66,
-                    "document_level": [0.7736074394682267, 0.5338238963255815, 0.6745255812905573, 0.8119815266901342, 0.49639263695280533],
+                "fc_document": {
+                    "document_level": [
+                        0.9986981222773466,
+                        0.9928253473278702,
+                        0.9775168457819442,
+                        0.9929988048790995,
+                        0.9853677180125734
+                    ],
+                    "mean": 0.9894813676557668,
                     "detail": [
                         {
                             "scores": [
-                                0.3329923519243797,
-                                0.9882723230402917,
-                                0.9995576434400087
+                                0.9989224735854805,
+                                0.9984737709692126
+                            ],
+                            "sents": [
+                                "The interplay between adaptive and maladaptive self-states is characterized by a dynamic interplay between flexibility and rigidity, with maladaptive self-states often dominating the narrative, driven by negative Affect, critical Cognition, and hindering the fulfillment of basic psychological needs such as relatedness, autonomy, and competence, while adaptive self-states are less prominent, driven by Desire/Need for understanding, tolerance, and connection, but are hindered by the maladaptive self-states, with some instances showing a shift towards adaptive self-states as the individual seeks external validation and a sense of belonging, and others remaining stuck in maladaptive self-states, characterized by negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs.",
+                                "The maladaptive self-states seem to be more dominant in most instances, driven by negative Affect, critical Cognition, and hindering the fulfillment of basic psychological needs, while adaptive self-states are less prominent, driven by Desire/Need for understanding, tolerance, and connection."
+                            ]
+                        },
+                        {
+                            "scores": [
+                                0.9920647664542269,
+                                0.9935859282015135
+                            ],
+                            "sents": [
+                                "The individual's self-states have been characterized by a maladaptive self-state, where negative emotions, thoughts, and behaviors have hindered their psychological needs, particularly relatedness, autonomy, and competence, with a central organizing aspect of Desire/Need for escape or avoidance, and a mix of adaptive and maladaptive self-states, where the maladaptive self-state was more dominant, driven by negative Affect, influencing Behavior and Cognition, and hindering the fulfillment of basic psychological needs, while the adaptive self-state was less prominent, driven by a positive Desire/Need for connection and understanding, and the maladaptive self-state's negative Affect and Cognition had a causal relationship, creating a self-reinforcing cycle.",
+                                "The maladaptive self-state was driven by a central organizing aspect of negative Affect, which influenced the individual's Cognition and Behavior, leading to feelings of disconnection and self-doubt, and the maladaptive self-state was characterized by a negative Cognition and a maladaptive Behavior, hindering the fulfillment of the psychological need for relatedness,"
+                            ]
+                        },
+                        {
+                            "scores": [
+                                0.9995109419345075,
+                                0.998300454408915,
+                                0.996567605324041,
+                                0.8756410765672626,
+                                0.9995264772417917,
+                                0.9955545192151476
+                            ],
+                            "sents": [
+                                "The individual's self-states have fluctuated over time, with maladaptive self-states being more dominant in the early stages, characterized by negative Affect, maladaptive Behavior, and maladaptive Cognition, hindering the fulfillment of basic desires/needs such as relatedness and autonomy.",
+                                "However, as time progressed, adaptive self-states began to emerge, driven by positive Affect, adaptive Behavior, and adaptive Cognition, supporting the psychological need for autonomy and relatedness.",
+                                "The adaptive self-states were initially overshadowed by the maladaptive self-states, but eventually gained prominence, indicating a shift towards greater flexibility and resilience.",
+                                "The individual's ability to access and maintain adaptive self-states improved over time, allowing them to better cope with challenges and maintain a sense of self-worth.",
+                                "The maladaptive self-states, however, continued to be present, often triggered by specific situations or emotions, highlighting the need for ongoing self-reflection and therapeutic intervention to address these negative patterns.",
+                                "Overall, the individual's self-states have demonstrated a dynamic interplay between adaptive and maladaptive components, with a gradual shift towards greater balance and well-being."
+                            ]
+                        },
+                        {
+                            "scores": [
+                                0.9927149143695715,
+                                0.9995826481476954,
+                                0.9974747619605202,
+                                0.9822228950386113
+                            ],
+                            "sents": [
+                                "The individual's self-states have been characterized by a maladaptive pattern of negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs, with a dominant central organizing aspect of Affect driving the maladaptive self-states, influencing the other aspects, and leading to maladaptive behaviors and cognitions, with a notable lack of adaptive self-states and a persistent nature of the maladaptive self-states over time.",
+                                "The maladaptive self-states have been marked by a range of negative emotions, including emotional numbness, sadness, longing, despair, guilt, inadequacy, and hopelessness, which have driven maladaptive behaviors, such as suppressing emotions, feeling disconnected from others, and struggling to cope with reality, and maladaptive cognitions, such as negative thoughts about oneself and the world, and a sense of hopelessness about the future.",
+                                "The maladaptive self-states have hindered the fulfillment of basic psychological needs, including relatedness, autonomy, and competence, with a notable impact on the individual's desire/need for relatedness, as they have struggled with feelings of abandonment and rejection, and a lack of autonomy and competence, as they have felt unable to express themselves authentically and connect with others on a deeper level.",
+                                "The maladaptive self-states have been persistent over time, with no clear indication of an adaptive self-state, and a notable lack of flexibility and rigidity in the individual's self-states, suggesting a need for further exploration and intervention to support the development of adaptive."
+                            ]
+                        },
+                        {
+                            "scores": [
+                                0.9985483002188829,
+                                0.9986266414175703,
+                                0.9966579907205193,
+                                0.9947429651882648,
+                                0.998263366106837,
+                                0.9253670444233664
+                            ],
+                            "sents": [
+                                "The individual's self-states are characterized by a mix of maladaptive and adaptive states, with maladaptive states dominating their emotions and behaviors in situations of perceived lack of control, fear, and anxiety, while adaptive states emerge in situations of connection and support, highlighting the interplay between these states and the importance of flexibility in coping with challenging situations.",
+                                "The maladaptive self-states are driven by intense negative emotions, such as fear, anger, and self-disgust, which influence the individual's behavior and cognition, hindering the fulfillment of basic psychological needs like autonomy, competence, and relatedness.",
+                                "In contrast, the adaptive self-states are driven by positive emotions, such as a desire for connection and relatedness, which support the individual's psychological needs and promote healthy behaviors and thoughts.",
+                                "The individual's self-states are in a state of tension, with maladaptive states dominating their emotions and behaviors in situations of perceived lack of control, but adaptive states providing a sense of purpose and connection in situations of support and connection.",
+                                "The individual's maladaptive self-states are characterized by a sense of rigidity, as they are driven by intense negative emotions and a lack of flexibility in coping with challenging situations, while their adaptive self-states are marked by a sense of improvement, as they emerge in situations of connection and support.",
+                                "The individual's self-states are also marked by a sense of deterioration, as their maladaptive self-states can lead to feelings of hopelessness and helplessness, but also by a sense of improvement."
+                            ]
+                        }
+                    ]
+                },
+                "style_similarity": {
+                    "document_level": [
+                        0.21693121693121692,
+                        0.21864406779661016,
+                        0.2396804260985353,
+                        0.23192019950124687,
+                        0.20262390670553937
+                    ],
+                    "mean": 0.22195996340662974
+                },
+                "document_ids": [
+                    "83997cd4e7",
+                    "46f4bb3ada",
+                    "0cac13e357",
+                    "5da839acb5",
+                    "6c9677b482"
+                ]
+            },
+            "Generic Base": {
+                "llm_summary": {
+                    "83997cd4e7": "The interplay between adaptive and maladaptive self-states in this timeline is not noticeable.  The adaptive self-states are often dominating the narrative, driven by positive Affect, while maladaptive self-states are less prominent. The individual seeks external validation and a sense of belonging, and in rare occasions remain stuck in maladaptive self-states, characterized by negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs.",
+                    "46f4bb3ada": "This timeline is occasionally characterized by maladaptive self-states, where some negative emotions, thoughts, and behaviors have hindered their psychological needs, particularly relatedness, autonomy, and competence, with a central organizing aspect of Desire/Need for escape or avoidance. However, the adaptive self-state is generally more dominant., marked by positive affect. The individual is attuned to her own needs.",
+                    "0cac13e357": "The individual's self-states have not fluctuated over time. Maladaptive self-states are dominant, characterized by negative Affect, maladaptive Behavior, and maladaptive Cognition, hindering the fulfillment of basic desires/needs such as relatedness and autonomy. The adaptive self-states tend to be overshadowed by the maladaptive self-states, which are often triggered by specific situations or emotions, highlighting the need for ongoing self-reflection and therapeutic intervention to address these negative patterns.",
+                    "5da839acb5": "This timeline began with prominent adaptive self-states. Subsequent posts were then solely characterized by a maladaptive pattern of negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs, with a dominant central organizing aspect of Affect driving the maladaptive self-states, influencing the other aspects, and leading to maladaptive behaviors and cognitions, with a notable lack of adaptive self-states and a persistent nature of the maladaptive self-states over time. The adaptive voice then grew stronger towards the end of the timeline, strongly influenced by the idealization of the ex partner.",
+                    "6c9677b482": "The individual\u2019s self-states are very consistent. In particular, the timeline is dominated by maladaptive voices, overwhelming their emotions and behaviors in situations of perceived lack of control, fear, and anxiety. The maladaptive self-states are driven by intense negative emotions, such as fear, anger, and self-disgust, which influence the individual's behavior and cognition, hindering the fulfillment of basic psychological needs like autonomy, competence, and relatedness. In contrast, the adaptive self-states are driven by positive emotions, such as a desire for connection and relatedness, which support the individual's psychological needs and promote healthy behaviors and thoughts. Adaptive self states are not noticeable in this timeline, and they remain having negative cognitions of others in the face of social situations."
+                },
+                "mhic": {
+                    "document_level": [
+                        0.45846316814422605,
+                        0.4285210192203522,
+                        0.46789206398857963,
+                        0.4560086756944656,
+                        0.45082141865383496
+                    ],
+                    "mean": 0.45234126914029166
+                },
+                "intra_nli": {
+                    "document_level": [
+                        0.8681234450389942,
+                        0.8345856672773758,
+                        0.683036226100133,
+                        0.4836078348259131,
+                        0.717099644249538
+                    ],
+                    "mean": 0.7172905634983907
+                },
+                "fc_expert": {
+                    "document_level": [
+                        0.773607419396285,
+                        0.5338241520706408,
+                        0.6745254756527477,
+                        0.8119815136160469,
+                        0.4963930782629177
+                    ],
+                    "mean": 0.6580663277997276,
+                    "detail": [
+                        {
+                            "scores": [
+                                0.33299234850953024,
+                                0.9882722665400555,
+                                0.9995576431392692
                             ],
                             "sents": [
                                 "The interplay between adaptive and maladaptive self-states in this timeline is not noticeable.",
                                 "The adaptive self-states are often dominating the narrative, driven by positive Affect, while maladaptive self-states are less prominent.",
                                 "The individual seeks external validation and a sense of belonging, and in rare occasions remain stuck in maladaptive self-states, characterized by negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs."
                             ]
-                        }, 
+                        },
                         {
                             "scores": [
-                                0.9891270812659059,
-                                0.44559483230113983,
-                                0.1667497754096985
+                                0.9891270587395411,
+                                0.4455954134464264,
+                                0.1667499840259552
                             ],
                             "sents": [
                                 "This timeline is occasionally characterized by maladaptive self-states, where some negative emotions, thoughts, and behaviors have hindered their psychological needs, particularly relatedness, autonomy, and competence, with a central organizing aspect of Desire/Need for escape or avoidance.",
@@ -168,9 +305,9 @@
                         },
                         {
                             "scores": [
-                                0.26095424333470874,
-                                0.7629155187751167,
-                                0.9997069817618467
+                                0.26095413995790295,
+                                0.7629153055313509,
+                                0.9997069814689894
                             ],
                             "sents": [
                                 "The individual's self-states have not fluctuated over time.",
@@ -180,9 +317,9 @@
                         },
                         {
                             "scores": [
-                                0.6266055281739682,
-                                0.9769021045649424,
-                                0.8324369473314922
+                                0.6266053978276128,
+                                0.9769021963390211,
+                                0.8324369466815066
                             ],
                             "sents": [
                                 "This timeline began with prominent adaptive self-states.",
@@ -192,10 +329,10 @@
                         },
                         {
                             "scores": [
-                                0.24854284524917603,
-                                0.23264601826667786,
-                                0.9996602677274495,
-                                0.9983905682893237,
+                                0.24854180216789246,
+                                0.23264926671981812,
+                                0.9996602675528266,
+                                0.9983905696426518,
                                 0.002723485231399536
                             ],
                             "sents": [
@@ -205,9 +342,102 @@
                                 "In contrast, the adaptive self-states are driven by positive emotions, such as a desire for connection and relatedness, which support the individual's psychological needs and promote healthy behaviors and thoughts.",
                                 "Adaptive self states are not noticeable in this timeline, and they remain having negative cognitions of others in the face of social situations."
                             ]
-                        }      
+                        }
                     ]
-                }
+                },
+                "fc_document": {
+                    "document_level": [
+                        0.7635360465619669,
+                        0.9073708281825732,
+                        0.832778250425387,
+                        0.9522909866338795,
+                        0.7739304023465761
+                    ],
+                    "mean": 0.8459813028300764,
+                    "detail": [
+                        {
+                            "scores": [
+                                0.3047651732340455,
+                                0.9882177210974987,
+                                0.9976252453543566
+                            ],
+                            "sents": [
+                                "The interplay between adaptive and maladaptive self-states in this timeline is not noticeable.",
+                                "The adaptive self-states are often dominating the narrative, driven by positive Affect, while maladaptive self-states are less prominent.",
+                                "The individual seeks external validation and a sense of belonging, and in rare occasions remain stuck in maladaptive self-states, characterized by negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs."
+                            ]
+                        },
+                        {
+                            "scores": [
+                                0.9957705957108967,
+                                0.9992736176424407,
+                                0.7270682711943822
+                            ],
+                            "sents": [
+                                "This timeline is occasionally characterized by maladaptive self-states, where some negative emotions, thoughts, and behaviors have hindered their psychological needs, particularly relatedness, autonomy, and competence, with a central organizing aspect of Desire/Need for escape or avoidance.",
+                                "However, the adaptive self-state is generally more dominant., marked by positive affect.",
+                                "The individual is attuned to her own needs."
+                            ]
+                        },
+                        {
+                            "scores": [
+                                0.5053842129927943,
+                                0.9934464852558449,
+                                0.9995040530275219
+                            ],
+                            "sents": [
+                                "The individual's self-states have not fluctuated over time.",
+                                "Maladaptive self-states are dominant, characterized by negative Affect, maladaptive Behavior, and maladaptive Cognition, hindering the fulfillment of basic desires/needs such as relatedness and autonomy.",
+                                "The adaptive self-states tend to be overshadowed by the maladaptive self-states, which are often triggered by specific situations or emotions, highlighting the need for ongoing self-reflection and therapeutic intervention to address these negative patterns."
+                            ]
+                        },
+                        {
+                            "scores": [
+                                0.8733065898122732,
+                                0.9907973807639792,
+                                0.9927689893253862
+                            ],
+                            "sents": [
+                                "This timeline began with prominent adaptive self-states.",
+                                "Subsequent posts were then solely characterized by a maladaptive pattern of negative emotions, behaviors, and thoughts that hinder the fulfillment of basic psychological needs, with a dominant central organizing aspect of Affect driving the maladaptive self-states, influencing the other aspects, and leading to maladaptive behaviors and cognitions, with a notable lack of adaptive self-states and a persistent nature of the maladaptive self-states over time.",
+                                "The adaptive voice then grew stronger towards the end of the timeline, strongly influenced by the idealization of the ex partner."
+                            ]
+                        },
+                        {
+                            "scores": [
+                                0.4718628109231231,
+                                0.9321504353430413,
+                                0.9986266414175703,
+                                0.9966579907205193,
+                                0.4703541333286264
+                            ],
+                            "sents": [
+                                "The individual\u2019s self-states are very consistent.",
+                                "In particular, the timeline is dominated by maladaptive voices, overwhelming their emotions and behaviors in situations of perceived lack of control, fear, and anxiety.",
+                                "The maladaptive self-states are driven by intense negative emotions, such as fear, anger, and self-disgust, which influence the individual's behavior and cognition, hindering the fulfillment of basic psychological needs like autonomy, competence, and relatedness.",
+                                "In contrast, the adaptive self-states are driven by positive emotions, such as a desire for connection and relatedness, which support the individual's psychological needs and promote healthy behaviors and thoughts.",
+                                "Adaptive self states are not noticeable in this timeline, and they remain having negative cognitions of others in the face of social situations."
+                            ]
+                        }
+                    ]
+                },
+                "style_similarity": {
+                    "document_level": [
+                        0.22939866369710468,
+                        0.26371308016877637,
+                        0.225,
+                        0.3197158081705151,
+                        0.23953098827470687
+                    ],
+                    "mean": 0.2554717080622206
+                },
+                "document_ids": [
+                    "83997cd4e7",
+                    "46f4bb3ada",
+                    "0cac13e357",
+                    "5da839acb5",
+                    "6c9677b482"
+                ]
             }
         }
     }
