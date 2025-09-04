@@ -1,11 +1,20 @@
 {
     "metadata": {
+        "title": "Summarise social media threads",
+        "description": "Evaluate the ability of LLMs to summarise social media threads related for mental health support.",
+        "goals": "Training therapists",
         "models": [
             "Llama",
             "Generic Base"
         ],
         "datasets": [
             "CLPsych 2025"
+        ],
+        "aspects": [
+            "Factual Consistency",
+            "Coherence",
+            "Salient Meaning Preservation",
+            "Style Similarity"
         ],
         "metrics": [
             "fc_expert",

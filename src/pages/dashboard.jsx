@@ -2,6 +2,7 @@
 
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Breadcrumbs from "../components/breadcrumbs";
 import DocumentDisplay from "../components/documentDisplay";
 import MetricsScatterPlot from "../components/metricsScatterPlot";
 
@@ -31,12 +32,11 @@ const Dashboard = () => {
 	useEffect(() => {
 		if (useCase && task) {
 			// replace dashes with spaces
-			const useCaseTitle = useCase.replace(/-/g, " ");
 			const taskTitle = task.replace(/-/g, " ");
 
 			// create title dom element
 			const titleElement = (
-				<h1 className="title is-capitalized">{`${useCaseTitle} -> ${taskTitle}`}</h1>
+				<h1 className="title is-capitalized">{taskTitle}</h1>
 			);
 			setTitle(titleElement);
 		}
@@ -220,6 +220,7 @@ const Dashboard = () => {
 	return (
 		<>
 			<div>
+				<Breadcrumbs />
 				<h1 className="title">{title}</h1>
 				<section className="block">
 					<div className="is-flex">

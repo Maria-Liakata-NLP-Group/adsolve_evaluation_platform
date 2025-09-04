@@ -1,45 +1,70 @@
+/** @format */
+
 import { useParams, useNavigate } from "react-router-dom";
+import { loadAllJsonInFolder } from "../utils/loadJsonFolder";
+import Breadcrumbs from "../components/breadcrumbs";
 import ContentSquare from "../components/contentSquare";
 
-const content = {
-    "useCase1": ["Example 1", "Example 2", "Example 3"],
-    "useCase2": ["TalkLife", "AnnoMI", "Example 6", "Example 7", "Example 8"],
-    "useCase3": ["Xingwei", "Example 10", "Example 11"],
-}
-
-const useCaseNames = {
-    "useCase1": "Multi-modal medical diagnostics and monitoring",
-    "useCase2": "AI support for mental health",
-    "useCase3": "AI legal support",
-}
-
+const createCardContent = (title, goal, description, aspects) => {
+	return (
+		<div>
+			<h3 className="subtitle is-capitalized has-text-weight-semibold">
+				{title}
+			</h3>
+			<p>
+				<strong>Goals:</strong> {goal}
+			</p>
+			<p className="mt-2">
+				<i>{description}</i>
+			</p>
+			<p className="mt-2">
+				<strong>Aspects:</strong>{" "}
+				{aspects.map((aspect, index) => (
+					<span
+						className="tag is-info is-light"
+						key={index}
+					>
+						{aspect}
+					</span>
+				))}
+			</p>
+		</div>
+	);
+};
 
 const UseCaseExamples = () => {
-    const { useCase } = useParams();
+	const { useCase } = useParams();
 
-    const navigate = useNavigate();
+	const navigate = useNavigate();
 
-    const onClick = (title) => navigate(`/use-cases/${useCase}/${title}`);
+	const onClick = (title) => navigate(`/use-cases/${useCase}/${title}`);
 
-    return (            
-    
-            <section className="block">
-                <div className="content">
-                    <h2 className="subtitle">{useCaseNames[useCase]}</h2>
-                    <p>THIS IS PLACEHOLDER TEXT FOR A DESCRIPTION Ipsum quis deserunt fugiat deserunt laboris velit. Et voluptate eiusmod deserunt enim cillum ea nulla adipisicing est voluptate voluptate exercitation magna. Eiusmod incididunt do deserunt adipisicing non anim. Aliquip tempor qui ipsum elit ea exercitation enim incididunt ex qui dolore minim. Velit occaecat occaecat Lorem voluptate eiusmod. Excepteur minim enim id Lorem id ea minim adipisicing ipsum nulla.</p>
+	const tasks = loadAllJsonInFolder(useCase);
+	return (
+		<div>
+			<Breadcrumbs />
+			<h1 className="title is-capitalized">Select a task!</h1>
+			<div className="m-5"></div>
+			<div className="fixed-grid has-4-cols has-2-cols-mobile">
+				<div className="grid">
+					{tasks.map((task) => {
+						return (
+							<ContentSquare
+								content={createCardContent(
+									task.data.metadata.title,
+									task.data.metadata.goals,
+									task.data.metadata.description,
+									task.data.metadata.aspects
+								)}
+								onClick={() => onClick(task.slug)}
+								key={task.path}
+							/>
+						);
+					})}
+				</div>
+			</div>
+		</div>
+	);
+};
 
-                </div>
-                <div className="m-5"></div>
-                <div className="fixed-grid has-4-cols has-2-cols-mobile">
-                    <div className="grid">
-                    {
-                        content[useCase].map((title) => {
-                            return <ContentSquare title={title} onClick={() => onClick(title)} key={title}/>
-                        })
-                    }
-                    </div>
-                </div>
-            </section>);
-}
-
-export default UseCaseExamples
+export default UseCaseExamples;

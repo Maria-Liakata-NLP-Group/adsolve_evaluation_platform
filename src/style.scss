@@ -52,12 +52,13 @@ body {
 .box {
 
     &.has-border {
-        border-width: 1px;
+        border-width: 3px;
         border-style: solid;
         position: relative;
         &:hover {
             cursor: pointer !important;
             transform: translate(0, -0.25rem);
+            box-shadow: 0.25rem 0.25rem;
         }
     }
 }
