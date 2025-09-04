@@ -181,7 +181,7 @@ const Dashboard = () => {
 		const loadData = async () => {
 			try {
 				// Dynamically import the JSON file based on the title
-				const module = await import(`../data/${task}.json`);
+				const module = await import(`../data/${useCase}/${task}.json`);
 				const tempData = module.default;
 
 				// Set the data and names
