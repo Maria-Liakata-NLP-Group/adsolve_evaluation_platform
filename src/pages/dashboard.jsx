@@ -42,6 +42,8 @@ const Dashboard = () => {
 		}
 	}, [useCase, task]);
 
+	// useEffect(() => console.log(modalDetails), [modalDetails]);
+
 	useEffect(() => {
 		const calculateLeaderboards = async () => {
 			const leaderBoards = {};
@@ -55,6 +57,7 @@ const Dashboard = () => {
 					const documentIds = [];
 					const goldSummaries = [];
 					const llmSummaries = [];
+					const inputs = [];
 					for (const model of modelNames) {
 						metricValues.push(data[datasetName][model][aspect]["mean"]);
 						metricDataPoints.push(
@@ -66,6 +69,10 @@ const Dashboard = () => {
 						) {
 							metricDetails.push(data[datasetName][model][aspect]["detail"]);
 						}
+						if (Object.keys(data[datasetName][model]).includes("inputs")) {
+							inputs.push(data[datasetName][model]["inputs"]);
+						}
+
 						goldSummaries.push(data[datasetName]["gold_summary"]);
 						llmSummaries.push(data[datasetName][model]["llm_summary"]);
 					}
@@ -89,11 +96,13 @@ const Dashboard = () => {
 					const sortedLlmSummaries = sortedIndices.map(
 						(index) => llmSummaries[index]
 					);
+					const sortedInputs = sortedIndices.map((index) => inputs[index]);
 
 					leaderBoards[aspect] = {
 						documentIds: sortedDocumentIds,
 						goldSummaries: goldSummaries,
 						llmSummaries: sortedLlmSummaries,
+						inputs: sortedInputs,
 						dataPoints: sortedMetricDataPoints,
 						detail: sortedMetricDetails,
 						metric: aspectDetails[aspect],
@@ -112,6 +121,7 @@ const Dashboard = () => {
 					const documentIds = [];
 					const goldSummaries = [];
 					const llmSummaries = [];
+					const inputs = [];
 					for (const dataset of datasetNames) {
 						metricValues.push(data[dataset][modelName][aspect]["mean"]);
 						metricDataPoints.push(
@@ -122,6 +132,9 @@ const Dashboard = () => {
 							Object.keys(data[dataset][modelName][aspect]).includes("detail")
 						) {
 							metricDetails.push(data[dataset][modelName][aspect]["detail"]);
+						}
+						if (Object.keys(data[dataset][modelName]).includes("inputs")) {
+							inputs.push(data[dataset][modelName]["inputs"]);
 						}
 						goldSummaries.push(data[dataset]["gold_summary"]);
 						llmSummaries.push(data[dataset][modelName]["llm_summary"]);
@@ -146,11 +159,13 @@ const Dashboard = () => {
 					const sortedLlmSummaries = sortedIndices.map(
 						(index) => llmSummaries[index]
 					);
+					const sortedInputs = sortedIndices.map((index) => inputs[index]);
 
 					leaderBoards[aspect] = {
 						documentIds: sortedDocumentIds,
 						goldSummaries: goldSummaries,
 						llmSummaries: sortedLlmSummaries,
+						inputs: sortedInputs,
 						dataPoints: sortedMetricDataPoints,
 						detail: sortedMetricDetails,
 						metric: aspectDetails[aspect],
@@ -197,7 +212,7 @@ const Dashboard = () => {
 		};
 
 		loadData();
-	}, [task, data]);
+	}, [useCase, task, data]);
 
 	if (error) {
 		return <div>Error: {error}</div>;
@@ -286,6 +301,7 @@ const Dashboard = () => {
 													documentIds,
 													goldSummaries,
 													llmSummaries,
+													inputs,
 													dataPoints,
 													detail,
 													metric,
@@ -304,6 +320,7 @@ const Dashboard = () => {
 													highlightedTag={modalDetails?.tag}
 													goldSummaries={goldSummaries}
 													llmSummaries={llmSummaries}
+													inputs={inputs}
 													detail={detail}
 													showDetails={setModalDetails}
 													aspect={aspect}
@@ -320,6 +337,7 @@ const Dashboard = () => {
 							<DocumentDisplay
 								gold={modalDetails?.gold}
 								llm={modalDetails?.llm_sents}
+								input={modalDetails?.input}
 								documentScore={modalDetails?.value}
 								scores={modalDetails?.llm_sent_scores}
 								tag={modalDetails?.tag}

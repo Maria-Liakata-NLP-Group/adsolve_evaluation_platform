@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import PropTypes from "prop-types";
+import InputDisplay from "./inputDisplay";
 
 const getScoreColour = (score) => {
 	// fade from red to green
@@ -23,7 +24,15 @@ const mdToHtml = (markdown) => {
 	return <span dangerouslySetInnerHTML={{ __html: safeHtml }} />;
 };
 
-const getLLMContent = (llm, documentScore, scores, documentId, aspect, tag) => {
+const getLLMContent = (
+	llm,
+	documentScore,
+	scores,
+	documentId,
+	aspect,
+	tag,
+	inputButton
+) => {
 	const documentIdText = documentId ? `Summary of document ${documentId}` : "";
 	const tagText = tag ? ` for ${tag}.` : "";
 	const aspectText =
@@ -36,6 +45,7 @@ const getLLMContent = (llm, documentScore, scores, documentId, aspect, tag) => {
 						for ${aspect} are underlined with red indicated the worst and green
 						the best score.`
 			: "";
+
 	if (scores?.length > 0) {
 		const summary = llm.map((sentence, index) => (
 			<span
@@ -51,6 +61,7 @@ const getLLMContent = (llm, documentScore, scores, documentId, aspect, tag) => {
 		));
 		return (
 			<>
+				{inputButton}
 				<p className="pt-5">
 					<b>
 						{documentIdText} {tagText} {aspectText} {aspectDetail}
@@ -67,6 +78,7 @@ const getLLMContent = (llm, documentScore, scores, documentId, aspect, tag) => {
 	} else {
 		return (
 			<>
+				{inputButton}
 				<p className="pt-5">
 					<b>
 						{documentIdText} {tagText} {aspectText}
@@ -106,6 +118,7 @@ const defaultSentence =
 const DocumentDisplay = ({
 	llm = [defaultSentence],
 	gold = defaultSentence,
+	input = [],
 	scores = [],
 	documentId = "",
 	aspect = "",
@@ -113,14 +126,31 @@ const DocumentDisplay = ({
 	documentScore = "",
 }) => {
 	const [selection, setSelection] = useState("LLM");
+	const [showInput, setShowInput] = useState(false);
 	const handleSelectionChange = (newSelection) => {
 		setSelection(newSelection);
 	};
 	useEffect(() => {
 		console.log(documentScore);
 	}, [documentScore]);
+	const inputButton =
+		input.length > 0 ? (
+			<button
+				className={"button"}
+				onClick={() => setShowInput(true)}
+			>
+				Show Input
+			</button>
+		) : (
+			<></>
+		);
 	return (
 		<>
+			<InputDisplay
+				input={input}
+				active={showInput}
+				onClose={() => setShowInput(false)}
+			/>
 			<div className="tabs is-toggle">
 				<ul>
 					<li
@@ -143,7 +173,15 @@ const DocumentDisplay = ({
 			</div>
 			<div className="is-box has-border is-rounded p-5">
 				{selection === "LLM"
-					? getLLMContent(llm, documentScore, scores, documentId, aspect, tag)
+					? getLLMContent(
+							llm,
+							documentScore,
+							scores,
+							documentId,
+							aspect,
+							tag,
+							inputButton
+					  )
 					: getGoldContent(gold, documentId)}
 			</div>
 		</>
@@ -158,6 +196,10 @@ DocumentDisplay.propTypes = {
 	aspect: PropTypes.string,
 	tag: PropTypes.string,
 	documentScore: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	input: PropTypes.oneOfType([
+		PropTypes.arrayOf(PropTypes.string),
+		PropTypes.undefined,
+	]),
 };
 
 DocumentDisplay.defaultProps = {
@@ -168,6 +210,7 @@ DocumentDisplay.defaultProps = {
 	aspect: "",
 	tag: "",
 	documentScore: "",
+	input: undefined,
 };
 
 export default DocumentDisplay;
