@@ -3,6 +3,20 @@
 // import { useState } from "react";
 import PropTypes from "prop-types";
 
+const createInputContent = (inp, index) => {
+	// check if inp starts with "/images/"
+	if (inp.startsWith("/images/")) {
+		return (
+			<img
+				src={inp}
+				key={index}
+			></img>
+		);
+	} else {
+		return <p key={index}>{inp}</p>;
+	}
+};
+
 const InputDisplay = ({ input, active, onClose }) => {
 	return (
 		<div
@@ -20,19 +34,9 @@ const InputDisplay = ({ input, active, onClose }) => {
 				}}
 			>
 				<div className="is-flex is-flex-direction-column">
-					{input.map((inp, index) => (
-						<img
-							src={inp}
-							key={index}
-						></img>
-					))}
+					{input.map((inp, index) => createInputContent(inp, index))}
 				</div>
 			</div>
-			<button
-				className="modal-close is-large"
-				aria-label="close"
-				onClick={onClose}
-			></button>
 		</div>
 	);
 };

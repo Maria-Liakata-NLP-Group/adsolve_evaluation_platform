@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import InputDisplay from "./inputDisplay";
 
 const getScoreColour = (score) => {
+	if (!score) return "transparent";
 	// fade from red to green
 	const r = Math.floor(255 * (1 - score));
 	const g = Math.floor(255 * score);
