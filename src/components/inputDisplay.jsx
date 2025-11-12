@@ -46,7 +46,7 @@ const InputDisplay = ({ input, active, onClose }) => {
 			>
 				<div
 					className="box is-flex is-flex-direction-column"
-					style={{ height: "90vh" }}
+					style={{ height: "90vh", width: "100%" }}
 				>
 					{input.map((inp, index) => createInputContent(inp, index))}
 				</div>
