@@ -70,7 +70,7 @@ const getLLMContent = (
 				</p>
 				<p
 					className="pt-3"
-					style={{ height: "500px", overflowY: "scroll" }}
+					style={{ height: "40vh", overflowY: "scroll" }}
 				>
 					{summary}
 				</p>
@@ -87,7 +87,7 @@ const getLLMContent = (
 				</p>
 				<p
 					className="pt-3"
-					style={{ height: "500px", overflowY: "scroll" }}
+					style={{ height: "40vh", overflowY: "scroll" }}
 				>
 					{mdToHtml(llm[0])}
 				</p>
@@ -105,7 +105,7 @@ const getGoldContent = (gold, documentId) => {
 			</p>
 			<p
 				className="pt-3"
-				style={{ height: "500px", overflowY: "scroll" }}
+				style={{ height: "40vh", overflowY: "scroll" }}
 			>
 				{gold}
 			</p>
@@ -172,7 +172,13 @@ const DocumentDisplay = ({
 					</li>
 				</ul>
 			</div>
-			<div className="is-box has-border is-rounded p-5">
+			<div
+				className="is-box has-border is-rounded p-5"
+				style={{
+					maxWidth: "40vw",
+					overflowWrap: "break-word",
+				}}
+			>
 				{selection === "LLM"
 					? getLLMContent(
 							llm,
