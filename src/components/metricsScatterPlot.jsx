@@ -58,10 +58,10 @@ const MetricsScatterPlot = ({
 						});
 					}
 					if (id == highlightedId && tags[i] == highlightedTag) {
-						tempColours.push("rgba(255, 0, 0, 1})");
+						tempColours.push("rgba(255, 0, 0, 1)");
 						tempSizes.push(16);
 					} else {
-						tempColours.push("rgba(0, 0, 255, 0.5})");
+						tempColours.push("rgba(0, 0, 255, 0.5)");
 						tempSizes.push(12);
 					}
 				}
@@ -135,9 +135,10 @@ const MetricsScatterPlot = ({
 			categoryorder: "array",
 			categoryarray: tags,
 			autorange: "reversed",
+			automargin: true,
 		},
 		margin: { l: 70, r: 20, t: 40, b: 20, pad: 0 },
-		width: 600,
+		width: 700,
 		height: tags.length * 30 + 60, // Adjust height based on number of tags
 	};
 
