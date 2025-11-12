@@ -21,7 +21,8 @@
             "bertscore",
             "bleu_score",
             "evidence_appropriateness",
-            "rouge"
+            "rouge-1",
+            "rouge-L"
         ],
         "metric_details": {
             "green_score": "Clinical Relevance (Green Score)",
@@ -29,7 +30,8 @@
             "bleu_score": "Clinical Relevance (BLEU Score)",
             "bertscore": "Clinical Relevance (Bert Score)",
             "evidence_appropriateness": "Conciseness (Evidence Appropriateness)",
-            "rouge": "Conciseness (ROUGE-1 Precision Score)"
+            "rouge-1": "Conciseness (ROUGE-1 Precision Score)",
+            "rouge-L": "Conciseness (ROUGE-L Precision Score)"
         }
     },
     "data": {
@@ -428,7 +430,7 @@
                         0.5181301556888988
                     ]
                 },
-                "rouge": {
+                "rouge-1": {
                     "mean": 0.35426901561361457,
                     "document_level": [
                         0.375,
@@ -451,6 +453,41 @@
                         0.4444444444444444,
                         0.15151515151515152,
                         0.3170731707317073,
+                        0.15384615384615385,
+                        0.25806451612903225,
+                        0.15,
+                        0.35714285714285715,
+                        0.45454545454545453,
+                        0.38461538461538464,
+                        0.3888888888888889,
+                        0.05405405405405406,
+                        0.2777777777777778,
+                        0.6153846153846154
+                    ]
+                },
+                "rouge-L": {
+                    "mean": 0.3422122689514572,
+                    "document_level": [
+                        0.3333333333333333,
+                        0.3333333333333333,
+                        0.3103448275862069,
+                        0.4583333333333333,
+                        0.4117647058823529,
+                        0.41935483870967744,
+                        0.14285714285714285,
+                        0.3103448275862069,
+                        0.2,
+                        0.6111111111111112,
+                        0.391304347826087,
+                        0.5555555555555556,
+                        0.1,
+                        0.4444444444444444,
+                        0.35714285714285715,
+                        0.5,
+                        0.42857142857142855,
+                        0.4444444444444444,
+                        0.15151515151515152,
+                        0.2682926829268293,
                         0.15384615384615385,
                         0.25806451612903225,
                         0.15,
@@ -826,7 +863,7 @@
                         0.5737696412755516
                     ]
                 },
-                "rouge": {
+                "rouge-1": {
                     "mean": 0.275257092021777,
                     "document_level": [
                         0.36,
@@ -857,6 +894,41 @@
                         0.2962962962962963,
                         0.391304347826087,
                         0.07142857142857142,
+                        0.2692307692307692,
+                        0.3181818181818182
+                    ]
+                },
+                "rouge-L": {
+                    "mean": 0.2650871586413173,
+                    "document_level": [
+                        0.36,
+                        0.3888888888888889,
+                        0.1875,
+                        0.25925925925925924,
+                        0.3125,
+                        0.3333333333333333,
+                        0.4,
+                        0.25,
+                        0.13636363636363635,
+                        0.4444444444444444,
+                        0.25,
+                        0.32,
+                        0.0,
+                        0.23076923076923078,
+                        0.22727272727272727,
+                        0.5172413793103449,
+                        0.38235294117647056,
+                        0.23076923076923078,
+                        0.15384615384615385,
+                        0.22857142857142856,
+                        0.09090909090909091,
+                        0.2222222222222222,
+                        0.125,
+                        0.3684210526315789,
+                        0.2222222222222222,
+                        0.2962962962962963,
+                        0.391304347826087,
+                        0.03571428571428571,
                         0.2692307692307692,
                         0.3181818181818182
                     ]
@@ -1224,7 +1296,7 @@
                         0.5471874914469986
                     ]
                 },
-                "rouge": {
+                "rouge-1": {
                     "mean": 0.28819131393667313,
                     "document_level": [
                         0.3,
@@ -1252,6 +1324,41 @@
                         0.13513513513513514,
                         0.1896551724137931,
                         0.3870967741935484,
+                        0.28125,
+                        0.2962962962962963,
+                        0.09375,
+                        0.3333333333333333,
+                        0.3076923076923077
+                    ]
+                },
+                "rouge-L": {
+                    "mean": 0.2591902567114961,
+                    "document_level": [
+                        0.3,
+                        0.23333333333333334,
+                        0.32432432432432434,
+                        0.48,
+                        0.25862068965517243,
+                        0.15151515151515152,
+                        0.11594202898550725,
+                        0.20454545454545456,
+                        0.28,
+                        0.3888888888888889,
+                        0.2903225806451613,
+                        0.45714285714285713,
+                        0.125,
+                        0.13636363636363635,
+                        0.3548387096774194,
+                        0.4074074074074074,
+                        0.25,
+                        0.24,
+                        0.2857142857142857,
+                        0.21621621621621623,
+                        0.15217391304347827,
+                        0.14864864864864866,
+                        0.13513513513513514,
+                        0.1724137931034483,
+                        0.3548387096774194,
                         0.28125,
                         0.2962962962962963,
                         0.09375,
@@ -1656,7 +1763,7 @@
                         0.9998129433224676
                     ]
                 },
-                "rouge": {
+                "rouge-1": {
                     "mean": 0.2974924333062878,
                     "document_level": [
                         0.0625,
@@ -1685,6 +1792,41 @@
                         0.4230769230769231,
                         0.21875,
                         0.34615384615384615,
+                        0.3333333333333333,
+                        0.17647058823529413,
+                        0.0,
+                        0.0
+                    ]
+                },
+                "rouge-L": {
+                    "mean": 0.289276508879837,
+                    "document_level": [
+                        0.0625,
+                        0.24,
+                        0.2,
+                        0.23076923076923078,
+                        0.3181818181818182,
+                        0.2,
+                        0.5,
+                        0.13333333333333333,
+                        0.125,
+                        0.47058823529411764,
+                        0.36,
+                        0.42105263157894735,
+                        0.3076923076923077,
+                        0.23529411764705882,
+                        0.5,
+                        0.2857142857142857,
+                        0.4444444444444444,
+                        0.2692307692307692,
+                        0.36666666666666664,
+                        0.375,
+                        0.46153846153846156,
+                        0.4,
+                        0.3888888888888889,
+                        0.34615384615384615,
+                        0.21875,
+                        0.3076923076923077,
                         0.3333333333333333,
                         0.17647058823529413,
                         0.0,
@@ -2054,7 +2196,7 @@
                         0.998930734305759
                     ]
                 },
-                "rouge": {
+                "rouge-1": {
                     "mean": 0.29319114219114223,
                     "document_level": [
                         0.15384615384615385,
@@ -2064,6 +2206,41 @@
                         0.22727272727272727,
                         0.2,
                         0.5,
+                        0.2,
+                        0.0,
+                        0.45454545454545453,
+                        0.29411764705882354,
+                        0.16666666666666666,
+                        0.2,
+                        0.2,
+                        0.4,
+                        0.2,
+                        0.36363636363636365,
+                        0.7,
+                        0.25,
+                        0.38461538461538464,
+                        0.25,
+                        0.7,
+                        0.4444444444444444,
+                        0.4,
+                        0.26666666666666666,
+                        0.20588235294117646,
+                        0.25,
+                        0.2222222222222222,
+                        0.0,
+                        0.0
+                    ]
+                },
+                "rouge-L": {
+                    "mean": 0.2887751877751878,
+                    "document_level": [
+                        0.07692307692307693,
+                        0.7,
+                        0.18181818181818182,
+                        0.28,
+                        0.22727272727272727,
+                        0.2,
+                        0.4444444444444444,
                         0.2,
                         0.0,
                         0.45454545454545453,
@@ -2125,123 +2302,123 @@
                 },
                 "inputs": {
                     "pGRDNE20NE6K6OSQY_aGRDNGARSNKIVQMQE_s1.2.826.0.1.3680043.8.498.26428229790848072405572454862304567026": [
-                        "/images/RexGradient_pGRDNE20NE6K6OSQY_aGRDNGARSNKIVQMQE_s1.2.826.0.1.3680043.8.498.26428229790848072405572454862304567026_frontal.png",
+                        "/images/_ReXGradient_pGRDNE20NE6K6OSQY_aGRDNGARSNKIVQMQE_s1.2.826.0.1.3680043.8.498.26428229790848072405572454862304567026_frontal.png",
                         "/images/ReXGradient_pGRDNE20NE6K6OSQY_aGRDNGARSNKIVQMQE_s1.2.826.0.1.3680043.8.498.26428229790848072405572454862304567026_lateral.png"
                     ],
                     "pGRDNYWTLB2ATNNB2_aGRDNQFK18NUISEA7_s1.2.826.0.1.3680043.8.498.67157117545630697868919012885625080587": [
-                        "/images/RexGradient_pGRDNYWTLB2ATNNB2_aGRDNQFK18NUISEA7_s1.2.826.0.1.3680043.8.498.67157117545630697868919012885625080587_frontal.png",
+                        "/images/_ReXGradient_pGRDNYWTLB2ATNNB2_aGRDNQFK18NUISEA7_s1.2.826.0.1.3680043.8.498.67157117545630697868919012885625080587_frontal.png",
                         "/images/ReXGradient_pGRDNYWTLB2ATNNB2_aGRDNQFK18NUISEA7_s1.2.826.0.1.3680043.8.498.67157117545630697868919012885625080587_lateral.png"
                     ],
                     "pGRDN1776Y1HONA18_aGRDNXNMC54J0Q3BY_s1.2.826.0.1.3680043.8.498.49799040468410430741980818959993115541": [
-                        "/images/RexGradient_pGRDN1776Y1HONA18_aGRDNXNMC54J0Q3BY_s1.2.826.0.1.3680043.8.498.49799040468410430741980818959993115541_frontal.png",
+                        "/images/_ReXGradient_pGRDN1776Y1HONA18_aGRDNXNMC54J0Q3BY_s1.2.826.0.1.3680043.8.498.49799040468410430741980818959993115541_frontal.png",
                         "/images/ReXGradient_pGRDN1776Y1HONA18_aGRDNXNMC54J0Q3BY_s1.2.826.0.1.3680043.8.498.49799040468410430741980818959993115541_lateral.png"
                     ],
                     "pGRDNVTXGZMDCIPP6_aGRDNLB7YA42QDIR1_s1.2.826.0.1.3680043.8.498.41431420968944194149793976715736517734": [
-                        "/images/RexGradient_pGRDNVTXGZMDCIPP6_aGRDNLB7YA42QDIR1_s1.2.826.0.1.3680043.8.498.41431420968944194149793976715736517734_frontal.png",
+                        "/images/_ReXGradient_pGRDNVTXGZMDCIPP6_aGRDNLB7YA42QDIR1_s1.2.826.0.1.3680043.8.498.41431420968944194149793976715736517734_frontal.png",
                         "/images/ReXGradient_pGRDNVTXGZMDCIPP6_aGRDNLB7YA42QDIR1_s1.2.826.0.1.3680043.8.498.41431420968944194149793976715736517734_lateral.png"
                     ],
                     "pGRDNM6RGMSPKGW0I_aGRDNB1CE0WTJK9HD_s1.2.826.0.1.3680043.8.498.80408523911840629053647543987145693384": [
-                        "/images/RexGradient_pGRDNM6RGMSPKGW0I_aGRDNB1CE0WTJK9HD_s1.2.826.0.1.3680043.8.498.80408523911840629053647543987145693384_frontal.png",
+                        "/images/_ReXGradient_pGRDNM6RGMSPKGW0I_aGRDNB1CE0WTJK9HD_s1.2.826.0.1.3680043.8.498.80408523911840629053647543987145693384_frontal.png",
                         "/images/ReXGradient_pGRDNM6RGMSPKGW0I_aGRDNB1CE0WTJK9HD_s1.2.826.0.1.3680043.8.498.80408523911840629053647543987145693384_lateral.png"
                     ],
                     "pGRDNLUFAX1XOF61Y_aGRDNQQZV2D03J0GI_s1.2.826.0.1.3680043.8.498.93880593537613310842774590918898530321": [
-                        "/images/RexGradient_pGRDNLUFAX1XOF61Y_aGRDNQQZV2D03J0GI_s1.2.826.0.1.3680043.8.498.93880593537613310842774590918898530321_frontal.png",
+                        "/images/_ReXGradient_pGRDNLUFAX1XOF61Y_aGRDNQQZV2D03J0GI_s1.2.826.0.1.3680043.8.498.93880593537613310842774590918898530321_frontal.png",
                         "/images/ReXGradient_pGRDNLUFAX1XOF61Y_aGRDNQQZV2D03J0GI_s1.2.826.0.1.3680043.8.498.93880593537613310842774590918898530321_lateral.png"
                     ],
                     "pGRDNWFEH2D0KEV5H_aGRDNPV6B9U2OLX2O_s1.2.826.0.1.3680043.8.498.24402564363181223950461144325915030377": [
-                        "/images/RexGradient_pGRDNWFEH2D0KEV5H_aGRDNPV6B9U2OLX2O_s1.2.826.0.1.3680043.8.498.24402564363181223950461144325915030377_frontal.png",
+                        "/images/_ReXGradient_pGRDNWFEH2D0KEV5H_aGRDNPV6B9U2OLX2O_s1.2.826.0.1.3680043.8.498.24402564363181223950461144325915030377_frontal.png",
                         "/images/ReXGradient_pGRDNWFEH2D0KEV5H_aGRDNPV6B9U2OLX2O_s1.2.826.0.1.3680043.8.498.24402564363181223950461144325915030377_lateral.png"
                     ],
                     "pGRDN23FOTCXBXQE3_aGRDN57EMOD4AI3WO_s1.2.826.0.1.3680043.8.498.56995302332411182210755567913690984879": [
-                        "/images/RexGradient_pGRDN23FOTCXBXQE3_aGRDN57EMOD4AI3WO_s1.2.826.0.1.3680043.8.498.56995302332411182210755567913690984879_frontal.png",
+                        "/images/_ReXGradient_pGRDN23FOTCXBXQE3_aGRDN57EMOD4AI3WO_s1.2.826.0.1.3680043.8.498.56995302332411182210755567913690984879_frontal.png",
                         "/images/ReXGradient_pGRDN23FOTCXBXQE3_aGRDN57EMOD4AI3WO_s1.2.826.0.1.3680043.8.498.56995302332411182210755567913690984879_lateral.png"
                     ],
                     "pGRDN0Z023H8598OA_aGRDN1W54RAHY1TDM_s1.2.826.0.1.3680043.8.498.18266177970266702458533966522596186112": [
-                        "/images/RexGradient_pGRDN0Z023H8598OA_aGRDN1W54RAHY1TDM_s1.2.826.0.1.3680043.8.498.18266177970266702458533966522596186112_frontal.png",
+                        "/images/_ReXGradient_pGRDN0Z023H8598OA_aGRDN1W54RAHY1TDM_s1.2.826.0.1.3680043.8.498.18266177970266702458533966522596186112_frontal.png",
                         "/images/ReXGradient_pGRDN0Z023H8598OA_aGRDN1W54RAHY1TDM_s1.2.826.0.1.3680043.8.498.18266177970266702458533966522596186112_lateral.png"
                     ],
                     "pGRDNURFDG9P7173M_aGRDNGKD9AN8TIW4O_s1.2.826.0.1.3680043.8.498.19861742465644457912147661934401905886": [
-                        "/images/RexGradient_pGRDNURFDG9P7173M_aGRDNGKD9AN8TIW4O_s1.2.826.0.1.3680043.8.498.19861742465644457912147661934401905886_frontal.png",
+                        "/images/_ReXGradient_pGRDNURFDG9P7173M_aGRDNGKD9AN8TIW4O_s1.2.826.0.1.3680043.8.498.19861742465644457912147661934401905886_frontal.png",
                         "/images/ReXGradient_pGRDNURFDG9P7173M_aGRDNGKD9AN8TIW4O_s1.2.826.0.1.3680043.8.498.19861742465644457912147661934401905886_lateral.png"
                     ],
                     "pGRDN2BI51Y93FX5A_aGRDNS2MCAE5P7CSW_s1.2.826.0.1.3680043.8.498.81128988821927715277670370243072546341": [
-                        "/images/RexGradient_pGRDN2BI51Y93FX5A_aGRDNS2MCAE5P7CSW_s1.2.826.0.1.3680043.8.498.81128988821927715277670370243072546341_frontal.png",
+                        "/images/_ReXGradient_pGRDN2BI51Y93FX5A_aGRDNS2MCAE5P7CSW_s1.2.826.0.1.3680043.8.498.81128988821927715277670370243072546341_frontal.png",
                         "/images/ReXGradient_pGRDN2BI51Y93FX5A_aGRDNS2MCAE5P7CSW_s1.2.826.0.1.3680043.8.498.81128988821927715277670370243072546341_lateral.png"
                     ],
                     "pGRDNLJ0J4U0SI915_aGRDNSUBUIORKTQNY_s1.2.826.0.1.3680043.8.498.51185031963248666911315889722243900169": [
-                        "/images/RexGradient_pGRDNLJ0J4U0SI915_aGRDNSUBUIORKTQNY_s1.2.826.0.1.3680043.8.498.51185031963248666911315889722243900169_frontal.png",
+                        "/images/_ReXGradient_pGRDNLJ0J4U0SI915_aGRDNSUBUIORKTQNY_s1.2.826.0.1.3680043.8.498.51185031963248666911315889722243900169_frontal.png",
                         "/images/ReXGradient_pGRDNLJ0J4U0SI915_aGRDNSUBUIORKTQNY_s1.2.826.0.1.3680043.8.498.51185031963248666911315889722243900169_lateral.png"
                     ],
                     "pGRDNKLN31OXPJKX9_aGRDNWSUQVPM6PHGS_s1.2.826.0.1.3680043.8.498.10320931501271804362095746674383203455": [
-                        "/images/RexGradient_pGRDNKLN31OXPJKX9_aGRDNWSUQVPM6PHGS_s1.2.826.0.1.3680043.8.498.10320931501271804362095746674383203455_frontal.png",
+                        "/images/_ReXGradient_pGRDNKLN31OXPJKX9_aGRDNWSUQVPM6PHGS_s1.2.826.0.1.3680043.8.498.10320931501271804362095746674383203455_frontal.png",
                         "/images/ReXGradient_pGRDNKLN31OXPJKX9_aGRDNWSUQVPM6PHGS_s1.2.826.0.1.3680043.8.498.10320931501271804362095746674383203455_lateral.png"
                     ],
                     "pGRDNDU780EGESWBX_aGRDNHE4V2JBQFUR2_s1.2.826.0.1.3680043.8.498.10351016142693854806347783809055972830": [
-                        "/images/RexGradient_pGRDNDU780EGESWBX_aGRDNHE4V2JBQFUR2_s1.2.826.0.1.3680043.8.498.10351016142693854806347783809055972830_frontal.png",
+                        "/images/_ReXGradient_pGRDNDU780EGESWBX_aGRDNHE4V2JBQFUR2_s1.2.826.0.1.3680043.8.498.10351016142693854806347783809055972830_frontal.png",
                         "/images/ReXGradient_pGRDNDU780EGESWBX_aGRDNHE4V2JBQFUR2_s1.2.826.0.1.3680043.8.498.10351016142693854806347783809055972830_lateral.png"
                     ],
                     "pGRDNKPMO5847THI4_aGRDNQS36N4X7X6RM_s1.2.826.0.1.3680043.8.498.44117906551054420956628364587919300333": [
-                        "/images/RexGradient_pGRDNKPMO5847THI4_aGRDNQS36N4X7X6RM_s1.2.826.0.1.3680043.8.498.44117906551054420956628364587919300333_frontal.png",
+                        "/images/_ReXGradient_pGRDNKPMO5847THI4_aGRDNQS36N4X7X6RM_s1.2.826.0.1.3680043.8.498.44117906551054420956628364587919300333_frontal.png",
                         "/images/ReXGradient_pGRDNKPMO5847THI4_aGRDNQS36N4X7X6RM_s1.2.826.0.1.3680043.8.498.44117906551054420956628364587919300333_lateral.png"
                     ],
                     "pGRDNJ0UPI04MQHCH_aGRDNKDL90OKMCOB0_s1.2.826.0.1.3680043.8.498.82785087604815822025301417642831917366": [
-                        "/images/RexGradient_pGRDNJ0UPI04MQHCH_aGRDNKDL90OKMCOB0_s1.2.826.0.1.3680043.8.498.82785087604815822025301417642831917366_frontal.png",
+                        "/images/_ReXGradient_pGRDNJ0UPI04MQHCH_aGRDNKDL90OKMCOB0_s1.2.826.0.1.3680043.8.498.82785087604815822025301417642831917366_frontal.png",
                         "/images/ReXGradient_pGRDNJ0UPI04MQHCH_aGRDNKDL90OKMCOB0_s1.2.826.0.1.3680043.8.498.82785087604815822025301417642831917366_lateral.png"
                     ],
                     "pGRDNBHRN659TKZD7_aGRDNI8V3XYUWVKA8_s1.2.826.0.1.3680043.8.498.75812008943463000074883194713185166735": [
-                        "/images/RexGradient_pGRDNBHRN659TKZD7_aGRDNI8V3XYUWVKA8_s1.2.826.0.1.3680043.8.498.75812008943463000074883194713185166735_frontal.png",
+                        "/images/_ReXGradient_pGRDNBHRN659TKZD7_aGRDNI8V3XYUWVKA8_s1.2.826.0.1.3680043.8.498.75812008943463000074883194713185166735_frontal.png",
                         "/images/ReXGradient_pGRDNBHRN659TKZD7_aGRDNI8V3XYUWVKA8_s1.2.826.0.1.3680043.8.498.75812008943463000074883194713185166735_lateral.png"
                     ],
                     "pGRDNH7TSTIV8766O_aGRDNJ2IQXZWAVYW8_s1.2.826.0.1.3680043.8.498.65133143467277958194293177153008460867": [
-                        "/images/RexGradient_pGRDNH7TSTIV8766O_aGRDNJ2IQXZWAVYW8_s1.2.826.0.1.3680043.8.498.65133143467277958194293177153008460867_frontal.png",
+                        "/images/_ReXGradient_pGRDNH7TSTIV8766O_aGRDNJ2IQXZWAVYW8_s1.2.826.0.1.3680043.8.498.65133143467277958194293177153008460867_frontal.png",
                         "/images/ReXGradient_pGRDNH7TSTIV8766O_aGRDNJ2IQXZWAVYW8_s1.2.826.0.1.3680043.8.498.65133143467277958194293177153008460867_lateral.png"
                     ],
                     "pGRDNE13PCH00R6KD_aGRDNC8M11EQV6M6E_s1.2.826.0.1.3680043.8.498.65410104509456274182131970705227267973": [
-                        "/images/RexGradient_pGRDNE13PCH00R6KD_aGRDNC8M11EQV6M6E_s1.2.826.0.1.3680043.8.498.65410104509456274182131970705227267973_frontal.png",
+                        "/images/_ReXGradient_pGRDNE13PCH00R6KD_aGRDNC8M11EQV6M6E_s1.2.826.0.1.3680043.8.498.65410104509456274182131970705227267973_frontal.png",
                         "/images/ReXGradient_pGRDNE13PCH00R6KD_aGRDNC8M11EQV6M6E_s1.2.826.0.1.3680043.8.498.65410104509456274182131970705227267973_lateral.png"
                     ],
                     "pGRDNWYCB7BGR5R69_aGRDNLUDWGS997SWP_s1.2.826.0.1.3680043.8.498.22560308155954024671929869771317825337": [
-                        "/images/RexGradient_pGRDNWYCB7BGR5R69_aGRDNLUDWGS997SWP_s1.2.826.0.1.3680043.8.498.22560308155954024671929869771317825337_frontal.png",
+                        "/images/_ReXGradient_pGRDNWYCB7BGR5R69_aGRDNLUDWGS997SWP_s1.2.826.0.1.3680043.8.498.22560308155954024671929869771317825337_frontal.png",
                         "/images/ReXGradient_pGRDNWYCB7BGR5R69_aGRDNLUDWGS997SWP_s1.2.826.0.1.3680043.8.498.22560308155954024671929869771317825337_lateral.png"
                     ],
                     "pGRDN9C6BCGQ8D5AO_aGRDNMUNV3I1YZ7IA_s1.2.826.0.1.3680043.8.498.24772530685666079282242358425632996730": [
-                        "/images/RexGradient_pGRDN9C6BCGQ8D5AO_aGRDNMUNV3I1YZ7IA_s1.2.826.0.1.3680043.8.498.24772530685666079282242358425632996730_frontal.png",
+                        "/images/_ReXGradient_pGRDN9C6BCGQ8D5AO_aGRDNMUNV3I1YZ7IA_s1.2.826.0.1.3680043.8.498.24772530685666079282242358425632996730_frontal.png",
                         "/images/ReXGradient_pGRDN9C6BCGQ8D5AO_aGRDNMUNV3I1YZ7IA_s1.2.826.0.1.3680043.8.498.24772530685666079282242358425632996730_lateral.png"
                     ],
                     "pGRDN3YG8JT5ZJGHM_aGRDNZXO5RICNA02Z_s1.2.826.0.1.3680043.8.498.34830712502685011873235527481184239377": [
-                        "/images/RexGradient_pGRDN3YG8JT5ZJGHM_aGRDNZXO5RICNA02Z_s1.2.826.0.1.3680043.8.498.34830712502685011873235527481184239377_frontal.png",
+                        "/images/_ReXGradient_pGRDN3YG8JT5ZJGHM_aGRDNZXO5RICNA02Z_s1.2.826.0.1.3680043.8.498.34830712502685011873235527481184239377_frontal.png",
                         "/images/ReXGradient_pGRDN3YG8JT5ZJGHM_aGRDNZXO5RICNA02Z_s1.2.826.0.1.3680043.8.498.34830712502685011873235527481184239377_lateral.png"
                     ],
                     "pGRDNPCYQRY4AD833_aGRDNHK1IBKD03K1U_s1.2.826.0.1.3680043.8.498.90689342720622406467256668950049667391": [
-                        "/images/RexGradient_pGRDNPCYQRY4AD833_aGRDNHK1IBKD03K1U_s1.2.826.0.1.3680043.8.498.90689342720622406467256668950049667391_frontal.png",
+                        "/images/_ReXGradient_pGRDNPCYQRY4AD833_aGRDNHK1IBKD03K1U_s1.2.826.0.1.3680043.8.498.90689342720622406467256668950049667391_frontal.png",
                         "/images/ReXGradient_pGRDNPCYQRY4AD833_aGRDNHK1IBKD03K1U_s1.2.826.0.1.3680043.8.498.90689342720622406467256668950049667391_lateral.png"
                     ],
                     "pGRDN5IS954KP8FUP_aGRDNSWNE89QJYV2J_s1.2.826.0.1.3680043.8.498.78158556185420452526891587645371968638": [
-                        "/images/RexGradient_pGRDN5IS954KP8FUP_aGRDNSWNE89QJYV2J_s1.2.826.0.1.3680043.8.498.78158556185420452526891587645371968638_frontal.png",
+                        "/images/_ReXGradient_pGRDN5IS954KP8FUP_aGRDNSWNE89QJYV2J_s1.2.826.0.1.3680043.8.498.78158556185420452526891587645371968638_frontal.png",
                         "/images/ReXGradient_pGRDN5IS954KP8FUP_aGRDNSWNE89QJYV2J_s1.2.826.0.1.3680043.8.498.78158556185420452526891587645371968638_lateral.png"
                     ],
                     "pGRDNG53XZL11SJ2R_aGRDNLUJCSOLUHIA1_s1.2.826.0.1.3680043.8.498.33152631314853030640133838484384748490": [
-                        "/images/RexGradient_pGRDNG53XZL11SJ2R_aGRDNLUJCSOLUHIA1_s1.2.826.0.1.3680043.8.498.33152631314853030640133838484384748490_frontal.png",
+                        "/images/_ReXGradient_pGRDNG53XZL11SJ2R_aGRDNLUJCSOLUHIA1_s1.2.826.0.1.3680043.8.498.33152631314853030640133838484384748490_frontal.png",
                         "/images/ReXGradient_pGRDNG53XZL11SJ2R_aGRDNLUJCSOLUHIA1_s1.2.826.0.1.3680043.8.498.33152631314853030640133838484384748490_lateral.png"
                     ],
                     "pGRDNMO1QEIDD0EMV_aGRDN41IK0E5FKXNQ_s1.2.826.0.1.3680043.8.498.12965353155657709435383068091631592317": [
-                        "/images/RexGradient_pGRDNMO1QEIDD0EMV_aGRDN41IK0E5FKXNQ_s1.2.826.0.1.3680043.8.498.12965353155657709435383068091631592317_frontal.png",
+                        "/images/_ReXGradient_pGRDNMO1QEIDD0EMV_aGRDN41IK0E5FKXNQ_s1.2.826.0.1.3680043.8.498.12965353155657709435383068091631592317_frontal.png",
                         "/images/ReXGradient_pGRDNMO1QEIDD0EMV_aGRDN41IK0E5FKXNQ_s1.2.826.0.1.3680043.8.498.12965353155657709435383068091631592317_lateral.png"
                     ],
                     "pGRDNJR54LOBF45XB_aGRDNF6LLPQNVN1HF_s1.2.826.0.1.3680043.8.498.30159362242780398436292017270837101134": [
-                        "/images/RexGradient_pGRDNJR54LOBF45XB_aGRDNF6LLPQNVN1HF_s1.2.826.0.1.3680043.8.498.30159362242780398436292017270837101134_frontal.png",
+                        "/images/_ReXGradient_pGRDNJR54LOBF45XB_aGRDNF6LLPQNVN1HF_s1.2.826.0.1.3680043.8.498.30159362242780398436292017270837101134_frontal.png",
                         "/images/ReXGradient_pGRDNJR54LOBF45XB_aGRDNF6LLPQNVN1HF_s1.2.826.0.1.3680043.8.498.30159362242780398436292017270837101134_lateral.png"
                     ],
                     "pGRDN2Z3RMNA11CBX_aGRDN4D2L50IV75O2_s1.2.826.0.1.3680043.8.498.55144427814927245957423206564003136736": [
-                        "/images/RexGradient_pGRDN2Z3RMNA11CBX_aGRDN4D2L50IV75O2_s1.2.826.0.1.3680043.8.498.55144427814927245957423206564003136736_frontal.png",
+                        "/images/_ReXGradient_pGRDN2Z3RMNA11CBX_aGRDN4D2L50IV75O2_s1.2.826.0.1.3680043.8.498.55144427814927245957423206564003136736_frontal.png",
                         "/images/ReXGradient_pGRDN2Z3RMNA11CBX_aGRDN4D2L50IV75O2_s1.2.826.0.1.3680043.8.498.55144427814927245957423206564003136736_lateral.png"
                     ],
                     "pGRDN238KA7CN1TO8_aGRDNDAHQ8CC8NIM2_s1.2.826.0.1.3680043.8.498.50114793278523735119811876293317412728": [
-                        "/images/RexGradient_pGRDN238KA7CN1TO8_aGRDNDAHQ8CC8NIM2_s1.2.826.0.1.3680043.8.498.50114793278523735119811876293317412728_frontal.png",
+                        "/images/_ReXGradient_pGRDN238KA7CN1TO8_aGRDNDAHQ8CC8NIM2_s1.2.826.0.1.3680043.8.498.50114793278523735119811876293317412728_frontal.png",
                         "/images/ReXGradient_pGRDN238KA7CN1TO8_aGRDNDAHQ8CC8NIM2_s1.2.826.0.1.3680043.8.498.50114793278523735119811876293317412728_lateral.png"
                     ],
                     "pGRDNJX0G7WQ6DGWE_aGRDNHEUOS6QA1U4U_s1.2.826.0.1.3680043.8.498.91793857092189929405216427726021664410": [
-                        "/images/RexGradient_pGRDNJX0G7WQ6DGWE_aGRDNHEUOS6QA1U4U_s1.2.826.0.1.3680043.8.498.91793857092189929405216427726021664410_frontal.png",
+                        "/images/_ReXGradient_pGRDNJX0G7WQ6DGWE_aGRDNHEUOS6QA1U4U_s1.2.826.0.1.3680043.8.498.91793857092189929405216427726021664410_frontal.png",
                         "/images/ReXGradient_pGRDNJX0G7WQ6DGWE_aGRDNHEUOS6QA1U4U_s1.2.826.0.1.3680043.8.498.91793857092189929405216427726021664410_lateral.png"
                     ]
                 },
@@ -2452,7 +2629,7 @@
                         0.706793233274766
                     ]
                 },
-                "rouge": {
+                "rouge-1": {
                     "mean": 0.1451412712196331,
                     "document_level": [
                         0.25925925925925924,
@@ -2482,6 +2659,41 @@
                         0.08695652173913043,
                         0.11666666666666667,
                         0.11842105263157894,
+                        0.05084745762711865,
+                        0.14545454545454545,
+                        0.14893617021276595
+                    ]
+                },
+                "rouge-L": {
+                    "mean": 0.14122154937227965,
+                    "document_level": [
+                        0.25925925925925924,
+                        0.25,
+                        0.06779661016949153,
+                        0.18181818181818182,
+                        0.2903225806451613,
+                        0.0,
+                        0.08333333333333333,
+                        0.15625,
+                        0.11538461538461539,
+                        0.07017543859649122,
+                        0.25,
+                        0.19230769230769232,
+                        0.14285714285714285,
+                        0.16216216216216217,
+                        0.14102564102564102,
+                        0.14,
+                        0.04081632653061224,
+                        0.2857142857142857,
+                        0.09210526315789473,
+                        0.06557377049180328,
+                        0.10256410256410256,
+                        0.25,
+                        0.10416666666666667,
+                        0.1388888888888889,
+                        0.08695652173913043,
+                        0.11666666666666667,
+                        0.10526315789473684,
                         0.05084745762711865,
                         0.14545454545454545,
                         0.14893617021276595
