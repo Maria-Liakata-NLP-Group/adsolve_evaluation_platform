@@ -7,10 +7,21 @@ const createInputContent = (inp, index) => {
 	// check if inp starts with "/images/"
 	if (inp.startsWith("/images/")) {
 		return (
-			<img
-				src={inp}
+			<div
 				key={index}
-			></img>
+				className="mt-1 mb-1"
+				style={{
+					flex: "1 1 0px",
+					backgroundImage: `url(${inp})`,
+					backgroundSize: "contain", // scale image to fit box
+					backgroundRepeat: "no-repeat", // prevent tiling
+					backgroundPosition: "center", // center it
+					backgroundColor: "black", // optional background
+					width: "100%", // take full width of container
+					maxWidth: "580px", // cap width so it doesn't stretch too far
+					borderRadius: "8px",
+				}}
+			/>
 		);
 	} else {
 		return <p key={index}>{inp}</p>;
@@ -33,7 +44,10 @@ const InputDisplay = ({ input, active, onClose }) => {
 					transition: "box-shadow 0.3s ease",
 				}}
 			>
-				<div className="is-flex is-flex-direction-column">
+				<div
+					className="box is-flex is-flex-direction-column"
+					style={{ height: "90vh" }}
+				>
 					{input.map((inp, index) => createInputContent(inp, index))}
 				</div>
 			</div>
