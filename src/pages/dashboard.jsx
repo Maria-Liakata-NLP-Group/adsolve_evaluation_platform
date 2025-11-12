@@ -96,11 +96,14 @@ const Dashboard = () => {
 					const sortedLlmSummaries = sortedIndices.map(
 						(index) => llmSummaries[index]
 					);
+					const sortedGoldSummaries = sortedIndices.map(
+						(index) => goldSummaries[index]
+					);
 					const sortedInputs = sortedIndices.map((index) => inputs[index]);
 
 					leaderBoards[aspect] = {
 						documentIds: sortedDocumentIds,
-						goldSummaries: goldSummaries,
+						goldSummaries: sortedGoldSummaries,
 						llmSummaries: sortedLlmSummaries,
 						inputs: sortedInputs,
 						dataPoints: sortedMetricDataPoints,
@@ -159,11 +162,14 @@ const Dashboard = () => {
 					const sortedLlmSummaries = sortedIndices.map(
 						(index) => llmSummaries[index]
 					);
+					const sortedGoldSummaries = sortedIndices.map(
+						(index) => goldSummaries[index]
+					);
 					const sortedInputs = sortedIndices.map((index) => inputs[index]);
 
 					leaderBoards[aspect] = {
 						documentIds: sortedDocumentIds,
-						goldSummaries: goldSummaries,
+						goldSummaries: sortedGoldSummaries,
 						llmSummaries: sortedLlmSummaries,
 						inputs: sortedInputs,
 						dataPoints: sortedMetricDataPoints,
