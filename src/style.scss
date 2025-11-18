@@ -21,6 +21,21 @@ body {
     overflow-x: hidden;
 }
 
+// include AdSoLve logo in top right corner 
+body::after {
+    content: "";
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    width: 250px;
+    height: 80px;
+    background-image: url('/adsolve_logo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    pointer-events: none; // Allow clicks to pass through
+}
+
 .container {
     padding: 2rem;
 }
