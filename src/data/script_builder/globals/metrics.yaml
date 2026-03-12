@@ -1,0 +1,32 @@
+# @format
+
+metrics:
+  fc_expert:
+    label: FC_expert
+    description: Expert-judged factual consistency metric evaluating whether claims in the summary are supported by the source.
+    tags:
+      - reference_based
+      - nli_based
+      - no_gpu
+    supported_infrastructure:
+      compute_environment:
+        - cpu_only
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_based
+
+  fc_document:
+    label: FC_document
+    description: Document-level factual consistency metric for checking whether a generated summary remains faithful to the source content.
+    tags:
+      - reference_free
+      - nli_based
+      - no_gpu
+    supported_infrastructure:
+      compute_environment:
+        - cpu_only
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_free

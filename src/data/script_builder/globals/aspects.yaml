@@ -1,0 +1,9 @@
+aspects:
+  factual_consistency:
+    label: Factual Consistency
+  coherence:
+    label: Coherence
+  meaning_preservation:
+    label: Meaning Preservation
+  privacy:
+    label: Privacy

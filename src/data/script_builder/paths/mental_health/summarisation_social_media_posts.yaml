@@ -1,0 +1,88 @@
+# @format
+
+id: mental_health_summarisation_social_media_posts
+use_case: mental_health
+task: summarisation
+data_source:
+  id: social_media_posts
+  label: Social Media Posts
+  description: Short-form user-generated text posts used as input for summarisation.
+
+aspects:
+  factual_consistency:
+    definition: The summary should contain only claims supported by the source posts and should not hallucinate symptoms, events, causes, or progress markers.
+    examples:
+      title: Examples
+      original_posts:
+        - I slept 3 hours last night.
+        - I ignored messages all weekend.
+        - I'm scared I'm slipping again.
+      good_summary: The client reports poor sleep, social withdrawal, and concern that their mental state may be worsening.
+      why_good: Every claim is grounded in the source posts and no unsupported clinical conclusions are introduced.
+      bad_summary: The client has severe depression, suicidal ideation, and has stopped working.
+      why_bad: This summary introduces unsupported diagnoses and facts that are not present in the source posts.
+    stakeholder_requirements:
+      title: Mapped Requirements
+      items:
+        - Must accurately present information from the original posts.
+        - Must not add unsupported claims or diagnoses.
+    metrics:
+      - fc_document
+      - fc_expert
+
+  coherence:
+    definition: The summary should be internally well-structured, logically connected, and easy to follow.
+    examples:
+      title: Examples
+      original_posts:
+        - Didn't get out of bed until 2pm.
+        - Missed my therapy appointment.
+        - Feeling guilty about letting everyone down.
+      good_summary: The client describes reduced daily functioning, a missed therapy appointment, and guilt about the impact on others.
+      why_good: The information is organised in a way that is easy to follow and preserves a clear relationship between the reported events.
+      bad_summary: Guilt was mentioned. Therapy. Bed. Functioning.
+      why_bad: The summary is fragmented and not coherent enough for downstream use.
+    stakeholder_requirements:
+      title: Mapped Requirements
+      items:
+        - Must produce summaries that are interpretable by clinicians.
+        - Must avoid fragmented or contradictory summaries.
+    metrics:
+      - intra_nli
+
+  meaning_preservation:
+    definition: The summary should preserve the intended meaning of the original posts, including the client's emotional state, concerns, and salient context.
+    examples:
+      title: Examples
+      original_posts:
+        - I don't think anyone would notice if I disappeared for a while.
+        - Everything feels too heavy this week.
+      good_summary: The client expresses a sense of hopelessness, emotional burden, and concern about their mental wellbeing.
+      why_good: The summary preserves the meaning and emotional content without overstating the claims.
+      bad_summary: The client is fine but just a little tired.
+      why_bad: The summary loses the core meaning and emotional seriousness of the original posts.
+    stakeholder_requirements:
+      title: Mapped Requirements
+      items:
+        - Must preserve the intended meaning of client-authored posts.
+        - Must retain clinically relevant emotional context.
+    metrics:
+      - mhic
+
+  privacy:
+    definition: The summary should protect sensitive personal information and avoid unnecessary disclosure of details that are not relevant for the intended evaluation purpose.
+    examples:
+      title: Examples
+      original_posts:
+        - I had another panic attack at St. Mary's station after work.
+        - My sister Anna had to pick me up again.
+      good_summary: The client reports another panic attack in a public setting and requiring support from a family member.
+      why_good: The summary retains relevant information while omitting unnecessary identifying detail.
+      bad_summary: The client had a panic attack at St. Mary's station and was collected by her sister Anna.
+      why_bad: The summary repeats unnecessary potentially identifying details.
+    stakeholder_requirements:
+      title: Mapped Requirements
+      items:
+        - Must avoid unnecessary disclosure of identifying personal information.
+        - Must retain only information relevant to the care or evaluation purpose.
+    metrics:

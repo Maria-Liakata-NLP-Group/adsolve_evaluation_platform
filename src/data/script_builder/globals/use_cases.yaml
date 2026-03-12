@@ -1,0 +1,10 @@
+use_cases:
+  mental_health:
+    label: AI for Mental Health
+    description: Evaluation flows for mental health support scenarios.
+  medical_diagnostics:
+    label: Multi-modal Medical Diagnostics and Monitoring
+    description: Evaluation flows for clinical diagnostic and monitoring scenarios.
+  legal_support:
+    label: AI Legal Support
+    description: Evaluation flows for legal advice and support scenarios.
