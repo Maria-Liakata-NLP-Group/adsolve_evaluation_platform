@@ -1,3 +1,5 @@
+# @format
+
 aspects:
   factual_consistency:
     label: Factual Consistency
@@ -7,3 +9,5 @@ aspects:
     label: Meaning Preservation
   privacy:
     label: Privacy
+  temporal_appropriateness:
+    label: Temporal Appropriateness

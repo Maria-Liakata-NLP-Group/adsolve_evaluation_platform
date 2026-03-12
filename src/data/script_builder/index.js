@@ -23,6 +23,7 @@ import pathIndexRaw from "./paths/index.yaml?raw";
 ------------------------- */
 
 import mentalHealthSummarisationSocialMediaPostsRaw from "./paths/mental_health/summarisation_social_media_posts.yaml?raw";
+import mentalHealthSummarisationDialoguePlusConversationsRaw from "./paths/mental_health/summarisation_dialogue_plus_conversations.yaml?raw";
 
 /* -------------------------
    YAML PARSER
@@ -53,6 +54,8 @@ export const PATH_INDEX = parse(pathIndexRaw);
 const rawPaths = {
 	mental_health_summarisation_social_media_posts:
 		mentalHealthSummarisationSocialMediaPostsRaw,
+	mental_health_plus_summarisation_dialogue_plus_conversations:
+		mentalHealthSummarisationDialoguePlusConversationsRaw,
 };
 
 export const PATHS_BY_ID = Object.fromEntries(

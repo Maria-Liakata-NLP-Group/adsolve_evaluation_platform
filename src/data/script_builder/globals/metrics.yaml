@@ -1,13 +1,25 @@
 # @format
 
 metrics:
-  fc_expert:
-    label: FC_expert
-    description: Expert-judged factual consistency metric evaluating whether claims in the summary are supported by the source.
+  roscoe:
+    label: ROSCOE
+    description: A framework-style evaluation metric for checking reasoning and consistency properties in generated text.
     tags:
       - reference_based
-      - nli_based
-      - no_gpu
+      - factual_consistency
+    supported_infrastructure:
+      compute_environment:
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_based
+
+  evidence_appropriateness:
+    label: Evidence Appropriateness
+    description: Measures whether the evidence included in a summary is appropriate, relevant, and well-supported by the underlying conversation.
+    tags:
+      - reference_based
+      - summarisation
     supported_infrastructure:
       compute_environment:
         - cpu_only
@@ -16,12 +28,25 @@ metrics:
       reference_mode:
         - reference_based
 
-  fc_document:
-    label: FC_document
-    description: Document-level factual consistency metric for checking whether a generated summary remains faithful to the source content.
+  alignscore:
+    label: AlignScore
+    description: Evaluates alignment between generated text and source content for faithfulness and support.
     tags:
-      - reference_free
+      - reference_based
+      - factual_consistency
       - nli_based
+    supported_infrastructure:
+      compute_environment:
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_based
+
+  flesch_kincaid_grade_level:
+    label: Flesch-Kincaid Grade Level
+    description: Readability metric estimating how difficult a text is to read.
+    tags:
+      - readability
       - no_gpu
     supported_infrastructure:
       compute_environment:
@@ -30,3 +55,156 @@ metrics:
         - cloud_inference
       reference_mode:
         - reference_free
+        - reference_based
+
+  bertscore:
+    label: BERTScore
+    description: Semantic similarity metric based on contextual embeddings for comparing generated text to reference or source-aligned content.
+    tags:
+      - semantic_similarity
+      - embedding_based
+    supported_infrastructure:
+      compute_environment:
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_free
+        - reference_based
+
+  comet:
+    label: COMET
+    description: Learned evaluation metric for semantic adequacy and meaning preservation.
+    tags:
+      - learned_metric
+      - semantic_similarity
+    supported_infrastructure:
+      compute_environment:
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_based
+
+  bluert:
+    label: BLEURT
+    description: Learned text quality metric for semantic similarity and quality estimation.
+    tags:
+      - learned_metric
+      - semantic_similarity
+    supported_infrastructure:
+      compute_environment:
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_based
+
+  empathy:
+    label: Empathy
+    description: Metric or rubric for assessing whether the summary preserves emotionally salient and empathically relevant content.
+    tags:
+      - affective_quality
+      - mental_health
+    supported_infrastructure:
+      compute_environment:
+        - cpu_only
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_based
+
+  questeval:
+    label: QuestEval
+    description: Question-answering based metric for checking whether key content is preserved in a generated summary.
+    tags:
+      - qa_based
+      - meaning_preservation
+    supported_infrastructure:
+      compute_environment:
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_based
+
+  protection:
+    label: Protection
+    description: Privacy-oriented metric or rubric for evaluating whether sensitive information is appropriately protected in generated summaries.
+    tags:
+      - privacy
+      - safety
+    supported_infrastructure:
+      compute_environment:
+        - cpu_only
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_free
+        - reference_based
+
+  meld:
+    label: MELD
+    description: Privacy or disclosure-oriented assessment for detecting unnecessary exposure of sensitive information.
+    tags:
+      - privacy
+      - disclosure_risk
+    supported_infrastructure:
+      compute_environment:
+        - cpu_only
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_free
+        - reference_based
+
+  mia_attack_success_rate:
+    label: MIA Attack Success Rate
+    description: Privacy risk metric estimating vulnerability to membership inference attacks.
+    tags:
+      - privacy
+      - security
+    supported_infrastructure:
+      compute_environment:
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_free
+        - reference_based
+
+  timeline_agreement:
+    label: Timeline Agreement
+    description: Measures whether the generated summary preserves the correct temporal relationships and ordering of events.
+    tags:
+      - temporal
+      - faithfulness
+    supported_infrastructure:
+      compute_environment:
+        - cpu_only
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_based
+
+  bbq:
+    label: BBQ
+    description: Evaluation signal for whether temporal and contextual distinctions are preserved without conflation.
+    tags:
+      - temporal
+      - reasoning
+    supported_infrastructure:
+      compute_environment:
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_based
+
+  temporal_ordering_substack_performance:
+    label: Temporal Ordering Performance
+    description: Measures whether events are represented in the correct sequence in generated summaries.
+    tags:
+      - temporal
+      - ordering
+    supported_infrastructure:
+      compute_environment:
+        - cpu_only
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_based

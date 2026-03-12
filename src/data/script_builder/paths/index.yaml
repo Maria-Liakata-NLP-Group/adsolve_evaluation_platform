@@ -2,8 +2,15 @@
 
 paths:
   - id: mental_health_summarisation_social_media_posts
-    file: mental_health/summarisation_social_media_posts.yaml
     use_case: mental_health
     task: summarisation
     data_source: social_media_posts
     data_source_label: Social Media Posts
+    file: summarisation_social_media_posts.yaml
+
+  - id: mental_health_summarisation_dialogue_plus_conversations
+    use_case: mental_health
+    task: summarisation
+    data_source: dialogue_plus_conversations
+    data_source_label: Dialogue+ Conversations
+    file: summarisation_dialogue_plus_conversations.yaml
