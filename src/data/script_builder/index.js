@@ -54,7 +54,7 @@ export const PATH_INDEX = parse(pathIndexRaw);
 const rawPaths = {
 	mental_health_summarisation_social_media_posts:
 		mentalHealthSummarisationSocialMediaPostsRaw,
-	mental_health_plus_summarisation_dialogue_plus_conversations:
+	mental_health_summarisation_dialogue_plus_conversations:
 		mentalHealthSummarisationDialoguePlusConversationsRaw,
 };
 
