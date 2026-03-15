@@ -40,7 +40,7 @@ const App = () => (
 					element={<Dashboard />}
 				/>
 				<Route
-					path="/create-new-task"
+					path="/evaluation-script-builder"
 					element={<CreateNew />}
 				/>
 			</Routes>

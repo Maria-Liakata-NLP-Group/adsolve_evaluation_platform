@@ -64,9 +64,9 @@ const LandingPage = () => {
 					<div className="column is-narrow">
 						<button
 							className="button is-large px-6 py-5"
-							onClick={() => onClick("/create-new-task")}
+							onClick={() => onClick("/evaluation-script-builder")}
 						>
-							Evaluation Pipeline
+							Evaluation Builder
 						</button>
 					</div>
 				</div>

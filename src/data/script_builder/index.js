@@ -24,6 +24,8 @@ import pathIndexRaw from "./paths/index.yaml?raw";
 
 import mentalHealthSummarisationSocialMediaPostsRaw from "./paths/mental_health/summarisation_social_media_posts.yaml?raw";
 import mentalHealthSummarisationDialoguePlusConversationsRaw from "./paths/mental_health/summarisation_dialogue_plus_conversations.yaml?raw";
+import legalSupportPressSummariesUseCaseRaw from "./paths/legal_support/legal_support_press_summaries_use_case.yaml?raw";
+import medicalDiagnosticsChestXrayReportGenerationRaw from "./paths/multimodal_diagnostics/multimodal_diagnostics_chest_xray_report_generation.yaml?raw";
 
 /* -------------------------
    YAML PARSER
@@ -56,6 +58,10 @@ const rawPaths = {
 		mentalHealthSummarisationSocialMediaPostsRaw,
 	mental_health_summarisation_dialogue_plus_conversations:
 		mentalHealthSummarisationDialoguePlusConversationsRaw,
+	legal_support_summarisation_supreme_court_judgements:
+		legalSupportPressSummariesUseCaseRaw,
+	medical_diagnostics_report_generation_chest_xrays:
+		medicalDiagnosticsChestXrayReportGenerationRaw,
 };
 
 export const PATHS_BY_ID = Object.fromEntries(

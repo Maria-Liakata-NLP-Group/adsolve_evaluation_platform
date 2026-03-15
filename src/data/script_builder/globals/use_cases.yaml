@@ -1,3 +1,5 @@
+# @format
+
 use_cases:
   mental_health:
     label: AI for Mental Health

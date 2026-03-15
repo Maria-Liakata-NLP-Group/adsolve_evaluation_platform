@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import AspectPopup from "../components/aspectPopup";
+import Breadcrumbs from "../components/breadcrumbs";
 import {
 	USE_CASES,
 	TASKS,
@@ -390,6 +391,7 @@ const CreateNew = () => {
 
 	return (
 		<div className="container is-max-desktop">
+			<Breadcrumbs />
 			<section className="section pb-4">
 				<h1 className="title is-4">Evaluation Script Builder</h1>
 				<p className="subtitle is-6">
