@@ -14,9 +14,9 @@ aspects:
     examples:
       title: Examples
       original_posts:
-        - Client: I have been sleeping badly this week and missed one class.
-        - Clinician: You said things felt a little more manageable after speaking to your sister.
-        - Client: Yes, but I still feel anxious most mornings.
+        - "Client: I have been sleeping badly this week and missed one class."
+        - "Clinician: You said things felt a little more manageable after speaking to your sister."
+        - "Client: Yes, but I still feel anxious most mornings."
       good_summary: The client reports poor sleep, ongoing morning anxiety, and one missed class, while also noting that support from her sister made things feel somewhat more manageable.
       why_good: Every claim is supported by the dialogue, and the summary does not introduce unsupported diagnoses, causes, or treatment outcomes.
       bad_summary: The client has severe depression, is socially isolated, and is rapidly deteriorating despite medication.
@@ -38,10 +38,10 @@ aspects:
     examples:
       title: Examples
       original_posts:
-        - Client: I missed my appointment last week.
-        - Client: I was overwhelmed and stayed in bed most of the day.
-        - Clinician: What helped at all?
-        - Client: Talking to my friend helped a little.
+        - "Client: I missed my appointment last week."
+        - "Client: I was overwhelmed and stayed in bed most of the day."
+        - "Clinician: What helped at all?"
+        - "Client: Talking to my friend helped a little."
       good_summary: The client describes a difficult week marked by overwhelm, reduced daily functioning, and a missed appointment, while noting that support from a friend provided some limited relief.
       why_good: The summary is well-structured, readable, and preserves a clear relationship between events and responses.
       bad_summary: Missed appointment. Bed. Overwhelmed. A friend. Some relief maybe.
@@ -63,10 +63,10 @@ aspects:
     examples:
       title: Examples
       original_posts:
-        - Client: I feel numb sometimes, but I still want to keep trying.
-        - Client: I don't think things are worse, just heavy.
-        - Clinician: So it feels difficult, but not hopeless?
-        - Client: Yes, exactly.
+        - "Client: I feel numb sometimes, but I still want to keep trying."
+        - "Client: I don't think things are worse, just heavy."
+        - "Clinician: So it feels difficult, but not hopeless?"
+        - "Client: Yes, exactly."
       good_summary: The client describes feeling emotionally burdened and at times numb, while still expressing some motivation to keep trying and not framing the situation as worsening or hopeless.
       why_good: The summary preserves the nuance of the client's emotional state and avoids exaggerating the severity of the situation.
       bad_summary: The client is hopeless, deteriorating quickly, and no longer motivated to engage.
@@ -91,8 +91,8 @@ aspects:
     examples:
       title: Examples
       original_posts:
-        - Client: My neighbour Sarah drove me back from St. Mary's clinic after I panicked.
-        - Client: My son Jacob was there and saw everything.
+        - "Client: My neighbour Sarah drove me back from St. Mary's clinic after I panicked."
+        - "Client: My son Jacob was there and saw everything."
       good_summary: The client describes a panic episode after an appointment and support from other people, without including unnecessary identifying details.
       why_good: The summary retains clinically relevant information while omitting names and specific identifying details.
       bad_summary: After panicking at St. Mary's clinic, the client was driven home by her neighbour Sarah while her son Jacob witnessed the incident.
@@ -113,10 +113,10 @@ aspects:
     examples:
       title: Examples
       original_posts:
-        - Client: Last month I stopped going to classes for a while.
-        - Client: This week I actually went in twice.
-        - Clinician: So there has been some recent improvement?
-        - Client: A little, yes.
+        - "Client: Last month I stopped going to classes for a while."
+        - "Client: This week I actually went in twice."
+        - "Clinician: So there has been some recent improvement?"
+        - "Client: A little, yes."
       good_summary: The client reports a previous period of disengagement from classes, with some more recent improvement this week in attending twice.
       why_good: The summary accurately distinguishes past difficulties from recent change and preserves the temporal order of events.
       bad_summary: The client is currently not attending classes at all and has shown no improvement.
