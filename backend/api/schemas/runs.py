@@ -32,6 +32,7 @@ class RunSummary(BaseModel):
 class RunDetail(BaseModel):
     id: int
     path_id: Optional[str] = None
+    use_case_label: Optional[str] = None
     title: str
     description: Optional[str] = None
     datasets: list[DatasetRef] = []

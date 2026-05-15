@@ -1,7 +1,9 @@
 /** @format */
 import { Link, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 
-const Breadcrumbs = () => {
+// labels: optional map of URL segment → display text, e.g. { "mental_health": "AI for Mental Health" }
+const Breadcrumbs = ({ labels = {} }) => {
 	const location = useLocation();
 	const parts = location.pathname.split("/").filter(Boolean);
 
@@ -17,6 +19,10 @@ const Breadcrumbs = () => {
 				{parts.map((part, idx) => {
 					const path = "/" + parts.slice(0, idx + 1).join("/");
 					const isLast = idx === parts.length - 1;
+					// either use label from props, or prettify the URL segment by removing dashes and underscores and capitalizing words
+					const display =
+						labels[part] ??
+						part.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 					return (
 						<li
@@ -28,7 +34,7 @@ const Breadcrumbs = () => {
 								to={path}
 								className={isLast ? "has-text-dark" : undefined}
 							>
-								{part.replace(/-/g, " ")}
+								{display}
 							</Link>
 						</li>
 					);
@@ -39,3 +45,12 @@ const Breadcrumbs = () => {
 };
 
 export default Breadcrumbs;
+
+// props validation
+Breadcrumbs.propTypes = {
+	labels: PropTypes.objectOf(PropTypes.string),
+};
+
+Breadcrumbs.defaultProps = {
+	labels: {},
+};

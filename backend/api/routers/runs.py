@@ -85,9 +85,13 @@ def get_run_by_path(path_id: str, db: Session = Depends(get_db)) -> RunDetail:
     """Return the most recent run detail for a given path_id, or 404 if not found."""
     row = db.execute(
         text("""
-            SELECT id, path_id, title, description FROM evaluation_runs
-            WHERE path_id = :path_id
-            ORDER BY created_at DESC LIMIT 1
+            SELECT er.id, er.path_id, er.title, er.description,
+                   uc.label AS use_case_label
+            FROM   evaluation_runs er
+            LEFT JOIN paths p       ON p.id  = er.path_id
+            LEFT JOIN use_cases uc  ON uc.id = p.use_case_id
+            WHERE  er.path_id = :path_id
+            ORDER  BY er.created_at DESC LIMIT 1
         """),
         {"path_id": path_id},
     ).mappings().one_or_none()
@@ -99,6 +103,7 @@ def get_run_by_path(path_id: str, db: Session = Depends(get_db)) -> RunDetail:
     return RunDetail(
         id=run_id,
         path_id=row["path_id"],
+        use_case_label=row["use_case_label"],
         title=row["title"],
         description=row["description"],
         datasets=_run_datasets(run_id, db),

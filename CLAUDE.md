@@ -17,4 +17,5 @@ For Python code:
 
 For JavaScript code:
 - use arrow function syntax for defining functions
+- use array methods like map, filter, and reduce instead of for loops when working with arrays
 - use const and let instead of var for variable declarations

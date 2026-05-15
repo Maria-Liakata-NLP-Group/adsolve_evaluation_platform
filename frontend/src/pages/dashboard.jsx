@@ -34,7 +34,7 @@ const buildChartData = (dashData, byDataset, currentId, datasets, models) => {
 };
 
 const Dashboard = () => {
-  const { pathId } = useParams();
+  const { useCaseId, pathId } = useParams();
   const [run, setRun] = useState(null);
   const [currentDatasetId, setCurrentDatasetId] = useState(null);
   const [currentModelId, setCurrentModelId] = useState(null);
@@ -118,7 +118,7 @@ const Dashboard = () => {
   return (
     <>
       <div>
-        <Breadcrumbs />
+        <Breadcrumbs labels={{ [useCaseId]: run.use_case_label, [pathId]: run.title }} />
         <h1 className="title">{run.title}</h1>
 
         <section className="block">
