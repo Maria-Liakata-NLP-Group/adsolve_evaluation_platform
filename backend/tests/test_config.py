@@ -26,6 +26,7 @@ def test_get_paths_filtered_by_use_case(client):
     response = client.get("/api/paths?use_case_id=mental_health")
     assert response.status_code == 200
     data = response.json()
+    assert len(data) >= 1
     assert all(p["use_case_id"] == "mental_health" for p in data)
 
 
@@ -39,6 +40,7 @@ def test_get_path_detail(client):
     aspect = data["aspects"][0]
     for key in ("id", "label", "definition", "sort_order", "metrics"):
         assert key in aspect, f"missing key: {key}"
+    assert len(aspect["metrics"]) > 0
     metric = aspect["metrics"][0]
     for key in ("id", "label", "supported_compute_environments", "supported_reference_modes"):
         assert key in metric, f"missing metric key: {key}"
@@ -47,6 +49,12 @@ def test_get_path_detail(client):
 def test_get_path_detail_not_found(client):
     response = client.get("/api/paths/nonexistent_path")
     assert response.status_code == 404
+
+
+def test_get_paths_unknown_use_case_returns_empty(client):
+    response = client.get("/api/paths?use_case_id=nonexistent_use_case")
+    assert response.status_code == 200
+    assert response.json() == []
 
 
 def test_get_infrastructure(client):
