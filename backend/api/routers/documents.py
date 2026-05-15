@@ -64,13 +64,17 @@ def get_document(
     """Return full detail for a single document, including per-model outputs and scores."""
     doc_row = db.execute(
         text("""
-            SELECT doc.id, doc.external_id, doc.gold_summary, doc.input,
+            SELECT DISTINCT doc.id, doc.external_id, doc.gold_summary, doc.input,
                    d.name AS dataset_name
-            FROM   documents doc
-            JOIN   datasets  d ON d.id = doc.dataset_id
-            WHERE  doc.id = :doc_id
+            FROM   document_metric_scores dms
+            JOIN   metric_scores ms  ON ms.id  = dms.metric_score_id
+            JOIN   documents     doc ON doc.id = dms.document_id
+            JOIN   datasets      d   ON d.id   = doc.dataset_id
+            WHERE  dms.document_id = :doc_id
+            AND    ms.run_id = :run_id
+            LIMIT  1
         """),
-        {"doc_id": doc_id},
+        {"doc_id": doc_id, "run_id": run_id},
     ).mappings().one_or_none()
 
     if doc_row is None:
