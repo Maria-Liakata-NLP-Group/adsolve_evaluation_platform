@@ -18,6 +18,7 @@ def test_get_run_by_path(client):
     assert data["path_id"] == "mental_health_summarisation_social_media_posts"
     assert "id" in data
     assert "title" in data
+    assert "metrics" in data
 
 
 def test_get_run_by_path_not_found(client):

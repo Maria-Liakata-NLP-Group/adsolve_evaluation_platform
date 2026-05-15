@@ -115,6 +115,13 @@ def get_dashboard(
     db: Session = Depends(get_db),
 ) -> DashboardResponse:
     """Return aggregated dashboard data for a run, optionally filtered by dataset or model."""
+    # Guard against unknown run_id before running the main query.
+    run_exists = db.execute(
+        text("SELECT 1 FROM evaluation_runs WHERE id = :run_id"), {"run_id": run_id}
+    ).scalar_one_or_none()
+    if run_exists is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+
     rows = db.execute(
         text("""
             SELECT ms.dataset_id, ms.model_id, ms.metric_id, ms.mean_score,
@@ -132,8 +139,8 @@ def get_dashboard(
     ).mappings().all()
 
     # Group flat JOIN rows into per-(dataset, model, metric) score entries.
+    # Dict insertion order is guaranteed in Python 3.7+, so no separate order list is needed.
     grouped: dict[tuple, dict] = {}
-    order: list[tuple] = []
     for row in rows:
         key = (row["dataset_id"], row["model_id"], row["metric_id"])
         if key not in grouped:
@@ -144,7 +151,6 @@ def get_dashboard(
                 "mean_score": row["mean_score"],
                 "document_scores": [],
             }
-            order.append(key)
         grouped[key]["document_scores"].append(
             DocumentScore(doc_id=row["doc_id"], score=row["doc_score"])
         )
@@ -157,7 +163,7 @@ def get_dashboard(
             mean_score=g["mean_score"],
             document_scores=g["document_scores"],
         )
-        for g in (grouped[k] for k in order)
+        for g in grouped.values()
     ]
 
     return DashboardResponse(
