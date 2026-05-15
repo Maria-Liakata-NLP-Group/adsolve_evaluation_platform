@@ -1,70 +1,66 @@
 /** @format */
 
-import { useParams, useNavigate } from "react-router-dom";
-import { loadAllJsonInFolder } from "../utils/loadJsonFolder";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Breadcrumbs from "../components/breadcrumbs";
 import ContentSquare from "../components/contentSquare";
+import { getPaths } from "../api/config";
+import { getRunByPath } from "../api/runs";
 
-const createCardContent = (title, goal, description, aspects) => {
-	return (
-		<div>
-			<h3 className="subtitle is-capitalized has-text-weight-semibold">
-				{title}
-			</h3>
-			<p>
-				<strong>Goals:</strong> {goal}
-			</p>
-			<p className="mt-2">
-				<i>{description}</i>
-			</p>
-			<p className="mt-2">
-				<strong>Aspects:</strong>{" "}
-				{aspects.map((aspect, index) => (
-					<span
-						className="tag is-info is-light"
-						key={index}
-					>
-						{aspect}
-					</span>
-				))}
-			</p>
-		</div>
-	);
-};
+const createCardContent = (title, description, taskLabel) => (
+  <div>
+    <h3 className="subtitle is-capitalized has-text-weight-semibold">{title}</h3>
+    <p className="tag is-info is-light mb-2">{taskLabel}</p>
+    {description && (
+      <p className="mt-2">
+        <i>{description}</i>
+      </p>
+    )}
+  </div>
+);
 
 const UseCaseExamples = () => {
-	const { useCase } = useParams();
+  const { useCaseId } = useParams();
+  const navigate = useNavigate();
+  const [tasks, setTasks] = useState([]);
+  const [error, setError] = useState(null);
 
-	const navigate = useNavigate();
+  useEffect(() => {
+    if (!useCaseId) return;
+    getPaths(useCaseId)
+      .then((paths) =>
+        Promise.all(
+          paths.map((path) =>
+            getRunByPath(path.id)
+              .then((run) => ({ path, run }))
+              .catch(() => null)
+          )
+        )
+      )
+      .then((results) => setTasks(results.filter(Boolean)))
+      .catch((err) => setError(err.message));
+  }, [useCaseId]);
 
-	const onClick = (title) => navigate(`/use-cases/${useCase}/${title}`);
+  if (error) return <div>Error: {error}</div>;
 
-	const tasks = loadAllJsonInFolder(useCase);
-	return (
-		<div>
-			<Breadcrumbs />
-			<h1 className="title is-capitalized">Select a task!</h1>
-			<div className="m-5"></div>
-			<div className="fixed-grid has-4-cols has-2-cols-mobile">
-				<div className="grid">
-					{tasks.map((task) => {
-						return (
-							<ContentSquare
-								content={createCardContent(
-									task.data.metadata.title,
-									task.data.metadata.goals,
-									task.data.metadata.description,
-									task.data.metadata.aspects
-								)}
-								onClick={() => onClick(task.slug)}
-								key={task.path}
-							/>
-						);
-					})}
-				</div>
-			</div>
-		</div>
-	);
+  return (
+    <div>
+      <Breadcrumbs />
+      <h1 className="title is-capitalized">Select a task!</h1>
+      <div className="m-5"></div>
+      <div className="fixed-grid has-4-cols has-2-cols-mobile">
+        <div className="grid">
+          {tasks.map(({ path, run }) => (
+            <ContentSquare
+              key={path.id}
+              content={createCardContent(run.title, run.description, path.task_label)}
+              onClick={() => navigate(`/use-cases/tasks/${path.id}`)}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default UseCaseExamples;
