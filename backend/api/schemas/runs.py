@@ -58,3 +58,34 @@ class DashboardResponse(BaseModel):
     models: list[ModelRef]
     metrics: list[MetricRef]
     scores: list[ScoreEntry]
+
+
+class DocumentListItem(BaseModel):
+    doc_id: int
+    external_id: str
+    gold_summary: Optional[str] = None
+
+
+class SentenceDetail(BaseModel):
+    scores: list[float] = []
+    sents: list[str] = []
+
+
+class MetricScore(BaseModel):
+    score: float
+    sentence_detail: Optional[SentenceDetail] = None
+
+
+class ModelOutput(BaseModel):
+    model: str
+    llm_summary: Optional[str] = None
+    scores: dict[str, MetricScore] = {}
+
+
+class DocumentDetail(BaseModel):
+    doc_id: int
+    external_id: str
+    dataset: str
+    gold_summary: Optional[str] = None
+    input: Optional[object] = None
+    outputs: list[ModelOutput] = []
