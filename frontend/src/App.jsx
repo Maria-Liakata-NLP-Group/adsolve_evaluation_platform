@@ -3,7 +3,6 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
 import Dashboard from "./pages/dashboard";
-import DiagramNavigation from "./pages/diagramNavigation";
 import UseCases from "./pages/useCases";
 import UseCaseExamples from "./pages/useCaseExamples";
 import IntrinsicMetrics from "./pages/intrinsicMetrics";
@@ -19,7 +18,6 @@ const App = () => (
         <Route path="/use-cases" element={<UseCases />} />
         <Route path="/use-cases/:useCaseId" element={<UseCaseExamples />} />
         <Route path="/use-cases/tasks/:pathId" element={<Dashboard />} />
-        <Route path="/diagram" element={<DiagramNavigation />} />
         <Route path="/evaluation-script-builder" element={<CreateNew />} />
       </Routes>
     </div>
