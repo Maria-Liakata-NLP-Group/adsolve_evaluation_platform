@@ -44,7 +44,7 @@ backend/api/
 | Method | Path | Returns |
 |--------|------|---------|
 | `GET` | `/api/use-cases` | List of `{id, label, description}` |
-| `GET` | `/api/paths` | List of `{id, use_case_id, task_id, data_source_label}` |
+| `GET` | `/api/paths` | List of `{id, use_case_id, task_id, data_source_label, use_case_label, task_label}` |
 | `GET` | `/api/paths/{path_id}` | Full path: use case, task, data source, aspects with definitions/examples/stakeholder requirements/metrics |
 | `GET` | `/api/infrastructure` | Compute environment and reference mode options with labels |
 
@@ -140,11 +140,16 @@ Production deployments set `VITE_API_BASE_URL` in the environment.
 
 ## Page-level changes
 
+### URL routing change
+
+The current route `/use-cases/:useCase/:task` uses human-readable slugs (e.g., `ai-for-mental-health` / `summarise-social-media-threads`) that have no direct mapping to `path_id`. The route is changed to `/use-cases/:pathId` so `dashboard.jsx` can call the API directly. Navigation links in `useCaseExamples.jsx` are updated to use `path.id` (fetched from `/api/paths`). The human-readable title is taken from the run's `title` field returned by the API.
+
 ### `dashboard.jsx`
 
-**Before:** one `useEffect` does `import('../data/${useCase}/${task}.json')` and sets 6 pieces of state from the raw JSON. A second 80-line `useEffect` assembles the leaderboard data inline by sorting and re-indexing arrays.
+**Before:** one `useEffect` does `import('../data/${useCase}/${task}.json')` and sets 6 pieces of state from the raw JSON. A second 80-line `useEffect` assembles the dashboard data inline by sorting and re-indexing arrays.
 
 **After:**
+- Reads `pathId` from `useParams()`.
 - `getRunByPath(pathId)` on mount to get `runId` + metadata (datasets, models, metrics).
 - `getDashboard(runId, { datasetId })` (or `{ modelId }`) when the user toggles the comparison axis — API returns pre-sorted scores, eliminating the inline assembly `useEffect`.
 - `getDocument(runId, docId)` on demand when a data point is clicked, replacing the full document bundle in the initial load.
