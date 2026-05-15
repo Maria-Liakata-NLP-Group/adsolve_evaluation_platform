@@ -1,5 +1,6 @@
 import getpass
 import os
+from typing import Generator
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
@@ -17,7 +18,7 @@ engine = create_engine(_database_url())
 _SessionLocal = sessionmaker(bind=engine)
 
 
-def get_db() -> Session:
+def get_db() -> Generator[Session, None, None]:
     """Yield a database session and ensure it is closed after use."""
     db = _SessionLocal()
     try:
