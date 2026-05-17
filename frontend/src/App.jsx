@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
 import Dashboard from "./pages/dashboard";
 import UseCases from "./pages/useCases";
-import UseCaseExamples from "./pages/useCaseExamples";
+import Tasks from "./pages/tasks";
 import IntrinsicMetrics from "./pages/intrinsicMetrics";
 import CreateNew from "./pages/createNew";
 import "./style.scss";
@@ -27,7 +27,7 @@ const App = () => (
 				/>
 				<Route
 					path="/use-cases/:useCaseId"
-					element={<UseCaseExamples />}
+					element={<Tasks />}
 				/>
 				<Route
 					path="/use-cases/:useCaseId/:pathId"

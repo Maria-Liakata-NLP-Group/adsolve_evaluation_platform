@@ -21,7 +21,7 @@ const createCardContent = (title, description, taskLabel) => (
 	</div>
 );
 
-const UseCaseExamples = () => {
+const Tasks = () => {
 	const { useCaseId } = useParams();
 	const navigate = useNavigate();
 	const [tasks, setTasks] = useState([]);
@@ -69,4 +69,4 @@ const UseCaseExamples = () => {
 	);
 };
 
-export default UseCaseExamples;
+export default Tasks;
