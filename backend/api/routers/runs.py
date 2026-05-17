@@ -60,24 +60,38 @@ def _run_metrics(run_id: int, db: Session) -> list[MetricRef]:
 
 
 @router.get("/runs", response_model=list[RunSummary])
-def get_runs(db: Session = Depends(get_db)) -> list[RunSummary]:
-    """Return a summary list of all evaluation runs."""
+def get_runs(
+    use_case_id: Optional[str] = None,
+    db: Session = Depends(get_db),
+) -> list[RunSummary]:
+    """Return a summary list of evaluation runs, optionally filtered by use_case_id."""
     rows = db.execute(
-        text("SELECT id, path_id, title, description FROM evaluation_runs ORDER BY id")
+        text("""
+            SELECT er.id, er.path_id, er.title, er.description,
+                   t.label AS task_label, uc.label AS use_case_label
+            FROM   evaluation_runs er
+            LEFT JOIN paths p      ON p.id  = er.path_id
+            LEFT JOIN use_cases uc ON uc.id = p.use_case_id
+            LEFT JOIN tasks t      ON t.id  = p.task_id
+            WHERE  (CAST(:use_case_id AS TEXT) IS NULL
+                    OR p.use_case_id = CAST(:use_case_id AS TEXT))
+            ORDER  BY er.id
+        """),
+        {"use_case_id": use_case_id},
     ).mappings().all()
-    runs = []
-    for r in rows:
-        runs.append(
-            RunSummary(
-                id=r["id"],
-                path_id=r["path_id"],
-                title=r["title"],
-                description=r["description"],
-                datasets=_run_datasets(r["id"], db),
-                models=_run_models(r["id"], db),
-            )
+    return [
+        RunSummary(
+            id=r["id"],
+            path_id=r["path_id"],
+            task_label=r["task_label"],
+            use_case_label=r["use_case_label"],
+            title=r["title"],
+            description=r["description"],
+            datasets=_run_datasets(r["id"], db),
+            models=_run_models(r["id"], db),
         )
-    return runs
+        for r in rows
+    ]
 
 
 @router.get("/runs/by-path/{path_id}", response_model=RunDetail)

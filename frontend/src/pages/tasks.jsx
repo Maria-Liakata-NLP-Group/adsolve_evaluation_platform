@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Breadcrumbs from "../components/breadcrumbs";
 import ContentSquare from "../components/contentSquare";
-import { getPaths } from "../api/config";
-import { getRunByPath } from "../api/runs";
+import { getRuns } from "../api/runs";
 
 const createCardContent = (title, description, taskLabel) => (
 	<div>
@@ -24,22 +23,13 @@ const createCardContent = (title, description, taskLabel) => (
 const Tasks = () => {
 	const { useCaseId } = useParams();
 	const navigate = useNavigate();
-	const [tasks, setTasks] = useState([]);
+	const [runs, setRuns] = useState([]);
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
 		if (!useCaseId) return;
-		getPaths(useCaseId)
-			.then((paths) =>
-				Promise.all(
-					paths.map((path) =>
-						getRunByPath(path.id)
-							.then((run) => ({ path, run }))
-							.catch(() => null),
-					),
-				),
-			)
-			.then((results) => setTasks(results.filter(Boolean)))
+		getRuns(useCaseId)
+			.then(setRuns)
 			.catch((err) => setError(err.message));
 	}, [useCaseId]);
 
@@ -47,20 +37,20 @@ const Tasks = () => {
 
 	return (
 		<div>
-			<Breadcrumbs labels={{ [useCaseId]: tasks[0]?.path.use_case_label }} />
+			<Breadcrumbs labels={{ [useCaseId]: runs[0]?.use_case_label }} />
 			<h1 className="title is-capitalized">Select a task!</h1>
 			<div className="m-5"></div>
 			<div className="fixed-grid has-4-cols has-2-cols-mobile">
 				<div className="grid">
-					{tasks.map(({ path, run }) => (
+					{runs.map((run) => (
 						<ContentSquare
-							key={path.id}
+							key={run.path_id}
 							content={createCardContent(
 								run.title,
 								run.description,
-								path.task_label,
+								run.task_label,
 							)}
-							onClick={() => navigate(`/use-cases/${useCaseId}/${path.id}`)}
+							onClick={() => navigate(`/use-cases/${useCaseId}/${run.path_id}`)}
 						/>
 					))}
 				</div>

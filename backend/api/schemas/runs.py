@@ -23,6 +23,8 @@ class MetricRef(BaseModel):
 class RunSummary(BaseModel):
     id: int
     path_id: Optional[str] = None
+    task_label: Optional[str] = None
+    use_case_label: Optional[str] = None
     title: str
     description: Optional[str] = None
     datasets: list[DatasetRef] = []

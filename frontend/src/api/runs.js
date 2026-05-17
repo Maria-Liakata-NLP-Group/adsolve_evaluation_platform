@@ -2,7 +2,10 @@
 
 import { get } from './client';
 
-export const getRuns = () => get('/api/runs');
+export const getRuns = (useCaseId) => {
+  const qs = useCaseId != null ? `?use_case_id=${useCaseId}` : '';
+  return get(`/api/runs${qs}`);
+};
 
 export const getRunByPath = (pathId) => get(`/api/runs/by-path/${pathId}`);
 
