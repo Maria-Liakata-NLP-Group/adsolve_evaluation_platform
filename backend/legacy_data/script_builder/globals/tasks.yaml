@@ -1,0 +1,13 @@
+# @format
+
+tasks:
+  conversational_ai:
+    label: Conversational AI
+  summarisation:
+    label: Summarisation
+  generation:
+    label: Generation
+  agentic_ai:
+    label: Agentic AI
+  report_generation:
+    label: Report Generation
