@@ -49,6 +49,16 @@ html, body {
   aspect-ratio: 1 / 1;
 }
 
+.has-border {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #e8e8e8;
+}
+
+.is-rounded {
+  border-radius: 0.5rem;
+}
+
 .block {
   width: 100%;
   margin-bottom: 2rem;
