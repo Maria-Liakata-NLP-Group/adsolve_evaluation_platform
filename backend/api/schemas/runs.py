@@ -70,7 +70,7 @@ class DocumentListItem(BaseModel):
 
 
 class SentenceDetail(BaseModel):
-    scores: list[float] = []
+    scores: list[Optional[float]] = []
     sents: list[str] = []
 
 

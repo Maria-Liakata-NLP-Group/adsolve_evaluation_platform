@@ -90,10 +90,11 @@ const Dashboard = () => {
           llm_sents: sentDetail ? sentDetail.sents : [output?.llm_summary ?? ""],
           llm_sent_scores: sentDetail ? sentDetail.scores : [],
           documentId: doc.external_id,
+          highlightDocId: docId,
           tag,
           aspect: metricId,
           value,
-          input: [],
+          input: doc.input ?? [],
         });
       } catch {
         // keep previous modal if fetch fails
@@ -170,7 +171,7 @@ const Dashboard = () => {
                     key={index}
                     dataPoints={dataPoints}
                     documentIds={documentIds}
-                    highlightedId={modalDetails?.documentId}
+                    highlightedId={modalDetails?.highlightDocId}
                     highlightedTag={modalDetails?.tag}
                     showDetails={handleShowDetails}
                     aspect={metricId}
