@@ -35,7 +35,7 @@ const UseCases = () => {
                     {useCase.label}
                   </h1>
                 }
-                onClick={() => navigate(`/use-cases/${useCase.id}`)}
+                onClick={() => navigate(`/use-cases/${useCase.id}`, { state: { useCaseLabel: useCase.label } })}
               />
             ))}
           </div>

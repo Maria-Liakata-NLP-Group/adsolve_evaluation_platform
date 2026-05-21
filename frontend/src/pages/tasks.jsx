@@ -1,7 +1,7 @@
 /** @format */
 
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Breadcrumbs from "../components/breadcrumbs";
 import ContentSquare from "../components/contentSquare";
 import { getRuns } from "../api/runs";
@@ -23,13 +23,21 @@ const createCardContent = (title, description, taskLabel) => (
 const Tasks = () => {
 	const { useCaseId } = useParams();
 	const navigate = useNavigate();
+	const location = useLocation();
 	const [runs, setRuns] = useState([]);
 	const [error, setError] = useState(null);
+
+	// Seed from navigation state so the label is available immediately, then
+	// update once the API confirms the real value.
+	const [useCaseLabel, setUseCaseLabel] = useState(location.state?.useCaseLabel ?? null);
 
 	useEffect(() => {
 		if (!useCaseId) return;
 		getRuns(useCaseId)
-			.then(setRuns)
+			.then((data) => {
+				setRuns(data);
+				if (data[0]?.use_case_label) setUseCaseLabel(data[0].use_case_label);
+			})
 			.catch((err) => setError(err.message));
 	}, [useCaseId]);
 
@@ -37,7 +45,7 @@ const Tasks = () => {
 
 	return (
 		<div>
-			<Breadcrumbs labels={{ [useCaseId]: runs[0]?.use_case_label }} />
+			<Breadcrumbs labels={useCaseLabel ? { [useCaseId]: useCaseLabel } : {}} />
 			<h1 className="title is-capitalized">Select a task!</h1>
 			<div className="m-5"></div>
 			<div className="fixed-grid has-4-cols has-2-cols-mobile">
