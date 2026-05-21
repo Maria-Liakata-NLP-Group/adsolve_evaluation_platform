@@ -64,7 +64,7 @@ def get_document(
     """Return full detail for a single document, including per-model outputs and scores."""
     doc_row = db.execute(
         text("""
-            SELECT DISTINCT doc.id, doc.external_id, doc.gold_summary, doc.input,
+            SELECT DISTINCT doc.id, doc.external_id, doc.gold_summary,
                    d.name AS dataset_name
             FROM   document_metric_scores dms
             JOIN   metric_scores ms  ON ms.id  = dms.metric_score_id
@@ -84,7 +84,7 @@ def get_document(
         text("""
             SELECT m.name AS model_name, ms.metric_id,
                    dms.score, dms.sentence_detail,
-                   mo.llm_summary
+                   mo.llm_summary, mo.input AS model_input
             FROM   document_metric_scores dms
             JOIN   metric_scores ms  ON ms.id  = dms.metric_score_id
             JOIN   models        m   ON m.id   = ms.model_id
@@ -107,6 +107,7 @@ def get_document(
             outputs_by_model[model_name] = {
                 "model": model_name,
                 "llm_summary": row["llm_summary"],
+                "input": row["model_input"],
                 "scores": {},
             }
         # JSONB may arrive as a dict (psycopg2 auto-parses) or as a JSON string
@@ -130,6 +131,7 @@ def get_document(
         ModelOutput(
             model=v["model"],
             llm_summary=v["llm_summary"],
+            input=v["input"],
             scores=v["scores"],
         )
         for v in outputs_by_model.values()
@@ -140,6 +142,5 @@ def get_document(
         external_id=doc_row["external_id"],
         dataset=doc_row["dataset_name"],
         gold_summary=doc_row["gold_summary"],
-        input=doc_row["input"],
         outputs=outputs,
     )

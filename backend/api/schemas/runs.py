@@ -82,6 +82,7 @@ class MetricScore(BaseModel):
 class ModelOutput(BaseModel):
     model: str
     llm_summary: Optional[str] = None
+    input: Optional[list] = None
     scores: dict[str, MetricScore] = {}
 
 
@@ -90,5 +91,4 @@ class DocumentDetail(BaseModel):
     external_id: str
     dataset: str
     gold_summary: Optional[str] = None
-    input: Optional[object] = None
     outputs: list[ModelOutput] = []

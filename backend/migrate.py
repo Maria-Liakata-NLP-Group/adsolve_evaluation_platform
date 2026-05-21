@@ -21,8 +21,8 @@ from sqlalchemy.exc import OperationalError
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 
-ROOT = Path(__file__).resolve().parent.parent
-DATA_DIR = ROOT / "frontend" / "src" / "data"
+ROOT = Path(__file__).resolve().parent
+DATA_DIR = ROOT / "legacy_data"
 GLOBALS_DIR = DATA_DIR / "script_builder" / "globals"
 PATHS_DIR = DATA_DIR / "script_builder" / "paths"
 
@@ -171,7 +171,6 @@ SCHEMA_STATEMENTS = [
         dataset_id   INTEGER NOT NULL REFERENCES datasets(id),
         external_id  TEXT    NOT NULL,
         gold_summary TEXT,
-        input        JSONB,
         UNIQUE (dataset_id, external_id)
     )
     """,
@@ -182,6 +181,7 @@ SCHEMA_STATEMENTS = [
         document_id INTEGER NOT NULL REFERENCES documents(id),
         model_id    INTEGER NOT NULL REFERENCES models(id),
         llm_summary TEXT,
+        input       JSONB,
         UNIQUE (run_id, document_id, model_id)
     )
     """,
@@ -506,23 +506,21 @@ def _seed_result_file(conn, json_file: Path, path_id: str) -> None:
                 conn.execute(
                     text("""
                         INSERT INTO model_outputs
-                            (run_id, document_id, model_id, llm_summary)
-                        VALUES (:run_id, :doc_id, :model_id, :summary)
+                            (run_id, document_id, model_id, llm_summary, input)
+                        VALUES (:run_id, :doc_id, :model_id, :summary, CAST(:input AS jsonb))
                         ON CONFLICT (run_id, document_id, model_id)
-                            DO UPDATE SET llm_summary = EXCLUDED.llm_summary
+                            DO UPDATE SET
+                                llm_summary = EXCLUDED.llm_summary,
+                                input       = EXCLUDED.input
                     """),
                     {
                         "run_id": run_id,
                         "doc_id": doc_id,
                         "model_id": model_id,
                         "summary": summary,
+                        "input": json.dumps(inputs[ext_id]) if ext_id in inputs else None,
                     },
                 )
-                if ext_id in inputs:
-                    conn.execute(
-                        text("UPDATE documents SET input = CAST(:inp AS jsonb) WHERE id = :id"),
-                        {"inp": json.dumps(inputs[ext_id]), "id": doc_id},
-                    )
 
             # metric scores
             for metric_id in meta.get("metrics", []):

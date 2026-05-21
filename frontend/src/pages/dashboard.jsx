@@ -94,7 +94,7 @@ const Dashboard = () => {
           tag,
           aspect: metricId,
           value,
-          input: doc.input ?? [],
+          input: output?.input ?? [],
         });
       } catch {
         // keep previous modal if fetch fails
