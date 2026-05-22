@@ -53,11 +53,13 @@ def _run_metrics(run_id: int, db: Session) -> list[MetricRef]:
         text("""
             SELECT rm.metric_id, rm.display_label, a.id AS aspect_id, a.label AS aspect_label
             FROM run_metrics rm
-            LEFT JOIN evaluation_runs er ON er.id = :run_id
-            LEFT JOIN path_aspect_metrics pam ON pam.metric_id = rm.metric_id
-            LEFT JOIN path_aspects pa ON pa.id = pam.path_aspect_id
-                                      AND pa.path_id = er.path_id
-            LEFT JOIN aspects a ON a.id = pa.aspect_id
+            LEFT JOIN (
+                SELECT pam.metric_id, pa.aspect_id
+                FROM path_aspect_metrics pam
+                JOIN path_aspects pa ON pa.id = pam.path_aspect_id
+                WHERE pa.path_id = (SELECT path_id FROM evaluation_runs WHERE id = :run_id)
+            ) metric_aspects ON metric_aspects.metric_id = rm.metric_id
+            LEFT JOIN aspects a ON a.id = metric_aspects.aspect_id
             WHERE rm.run_id = :run_id
             ORDER BY a.label NULLS LAST, rm.metric_id
         """),
