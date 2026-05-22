@@ -31,6 +31,7 @@ aspects:
         - Must support quick identification of severe cases.
     metrics:
       - green_score
+      - bertscore
       - radcliq
       - radnli
       - radgraph
