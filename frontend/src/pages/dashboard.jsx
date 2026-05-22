@@ -10,7 +10,7 @@ import { getDashboard, getDocument, getRunByPath } from "../api/runs";
 const buildChartData = (dashData, byDataset, currentId, datasets, models) => {
   const result = {};
 
-  for (const { metric_id, display_label } of dashData.metrics) {
+  for (const { metric_id, display_label, aspect_id, aspect_label } of dashData.metrics) {
     const relevantScores = dashData.scores.filter(
       (s) =>
         s.metric_id === metric_id &&
@@ -19,6 +19,8 @@ const buildChartData = (dashData, byDataset, currentId, datasets, models) => {
 
     result[metric_id] = {
       metric: display_label,
+      aspect_id: aspect_id ?? null,
+      aspect_label: aspect_label ?? null,
       means: relevantScores.map((s) => s.mean_score),
       tags: relevantScores.map((s) =>
         byDataset
@@ -165,22 +167,43 @@ const Dashboard = () => {
         <section className="block">
           <div className="is-flex">
             <div>
-              {Object.entries(chartData).map(
-                ([metricId, { metric, means, tags, dataPoints, documentIds }], index) => (
-                  <MetricsScatterPlot
-                    key={index}
-                    dataPoints={dataPoints}
-                    documentIds={documentIds}
-                    highlightedId={modalDetails?.highlightDocId}
-                    highlightedTag={modalDetails?.tag}
-                    showDetails={handleShowDetails}
-                    aspect={metricId}
-                    metric={metric}
-                    means={means}
-                    tags={tags}
-                  />
-                )
-              )}
+              {(() => {
+                // Group metrics by aspect, preserving insertion order from the API.
+                const groups = [];
+                const seenAspects = new Map();
+                for (const [metricId, entry] of Object.entries(chartData)) {
+                  const key = entry.aspect_id ?? "__none__";
+                  if (!seenAspects.has(key)) {
+                    seenAspects.set(key, groups.length);
+                    groups.push({ aspect_id: entry.aspect_id, aspect_label: entry.aspect_label, metrics: [] });
+                  }
+                  groups[seenAspects.get(key)].metrics.push([metricId, entry]);
+                }
+
+                return groups.map(({ aspect_id, aspect_label, metrics }) => (
+                  <div key={aspect_id ?? "__none__"} style={{ marginBottom: "2rem" }}>
+                    {aspect_label && (
+                      <div className="section-label" style={{ marginBottom: "0.75rem" }}>
+                        {aspect_label}
+                      </div>
+                    )}
+                    {metrics.map(([metricId, { metric, means, tags, dataPoints, documentIds }]) => (
+                      <MetricsScatterPlot
+                        key={metricId}
+                        dataPoints={dataPoints}
+                        documentIds={documentIds}
+                        highlightedId={modalDetails?.highlightDocId}
+                        highlightedTag={modalDetails?.tag}
+                        showDetails={handleShowDetails}
+                        aspect={metricId}
+                        metric={metric}
+                        means={means}
+                        tags={tags}
+                      />
+                    ))}
+                  </div>
+                ));
+              })()}
             </div>
             <div>
               <DocumentDisplay

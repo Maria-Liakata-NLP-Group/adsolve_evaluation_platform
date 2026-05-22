@@ -18,6 +18,8 @@ class ModelRef(BaseModel):
 class MetricRef(BaseModel):
     metric_id: str
     display_label: str
+    aspect_id: Optional[str] = None
+    aspect_label: Optional[str] = None
 
 
 class RunSummary(BaseModel):

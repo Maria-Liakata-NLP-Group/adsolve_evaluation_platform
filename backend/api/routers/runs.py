@@ -48,15 +48,30 @@ def _run_models(run_id: int, db: Session) -> list[ModelRef]:
 
 
 def _run_metrics(run_id: int, db: Session) -> list[MetricRef]:
-    """Fetch all metrics associated with a run."""
+    """Fetch all metrics associated with a run, joined to their aspect via path_aspect_metrics."""
     rows = db.execute(
         text("""
-            SELECT metric_id, display_label FROM run_metrics
-            WHERE run_id = :run_id ORDER BY metric_id
+            SELECT rm.metric_id, rm.display_label, a.id AS aspect_id, a.label AS aspect_label
+            FROM run_metrics rm
+            LEFT JOIN evaluation_runs er ON er.id = :run_id
+            LEFT JOIN path_aspect_metrics pam ON pam.metric_id = rm.metric_id
+            LEFT JOIN path_aspects pa ON pa.id = pam.path_aspect_id
+                                      AND pa.path_id = er.path_id
+            LEFT JOIN aspects a ON a.id = pa.aspect_id
+            WHERE rm.run_id = :run_id
+            ORDER BY a.label NULLS LAST, rm.metric_id
         """),
         {"run_id": run_id},
     ).mappings().all()
-    return [MetricRef(metric_id=r["metric_id"], display_label=r["display_label"]) for r in rows]
+    return [
+        MetricRef(
+            metric_id=r["metric_id"],
+            display_label=r["display_label"],
+            aspect_id=r["aspect_id"],
+            aspect_label=r["aspect_label"],
+        )
+        for r in rows
+    ]
 
 
 @router.get("/runs", response_model=list[RunSummary])
