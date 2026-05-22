@@ -51,8 +51,9 @@ def _run_metrics(run_id: int, db: Session) -> list[MetricRef]:
     """Fetch all metrics associated with a run, joined to their aspect via path_aspect_metrics."""
     rows = db.execute(
         text("""
-            SELECT rm.metric_id, rm.display_label, a.id AS aspect_id, a.label AS aspect_label
+            SELECT rm.metric_id, m.label AS display_label, a.id AS aspect_id, a.label AS aspect_label
             FROM run_metrics rm
+            LEFT JOIN metrics m ON m.id = rm.metric_id
             LEFT JOIN (
                 SELECT pam.metric_id, pa.aspect_id
                 FROM path_aspect_metrics pam

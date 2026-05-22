@@ -452,15 +452,11 @@ def _seed_result_file(conn, json_file: Path, path_id: str) -> None:
             text("INSERT INTO run_models VALUES (:r,:m) ON CONFLICT DO NOTHING"),
             {"r": run_id, "m": m_id},
         )
-    metric_details = meta.get("metric_details", {})
     for metric_id in meta.get("metrics", []):
         _ensure_metric(conn, metric_id)
         conn.execute(
-            text("""
-                INSERT INTO run_metrics (run_id, metric_id, display_label)
-                VALUES (:r, :m, :d) ON CONFLICT DO NOTHING
-            """),
-            {"r": run_id, "m": metric_id, "d": metric_details.get(metric_id)},
+            text("INSERT INTO run_metrics (run_id, metric_id) VALUES (:r, :m) ON CONFLICT DO NOTHING"),
+            {"r": run_id, "m": metric_id},
         )
 
     # ── per-dataset results ───────────────────────────────────────────────────
