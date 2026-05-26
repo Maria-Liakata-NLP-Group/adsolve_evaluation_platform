@@ -86,3 +86,8 @@ aspects:
         - Must avoid unnecessary disclosure of identifying personal information.
         - Must retain only information relevant to the care or evaluation purpose.
     metrics:
+
+  style_similarity:
+    definition: The summary should match the writing style of the source material.
+    metrics:
+      - style_similarity

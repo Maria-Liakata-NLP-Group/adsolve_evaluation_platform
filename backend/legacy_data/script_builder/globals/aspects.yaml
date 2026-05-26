@@ -24,3 +24,7 @@ aspects:
 
   conciseness:
     label: Conciseness
+
+  style_similarity:
+    label: Style Similarity
+
