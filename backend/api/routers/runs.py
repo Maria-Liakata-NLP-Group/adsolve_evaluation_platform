@@ -90,7 +90,7 @@ def get_runs(
     rows = db.execute(
         text("""
             SELECT er.id, er.path_id, er.title, er.notes,
-                   t.label AS task_label, uc.label AS use_case_label,
+                   t.label AS task_label, uc.id AS use_case_id, uc.label AS use_case_label,
                    p.task_description, p.data_source_label, p.data_source_description
             FROM   evaluation_runs er
             LEFT JOIN paths p      ON p.id  = er.path_id
@@ -106,6 +106,7 @@ def get_runs(
         RunSummary(
             id=r["id"],
             path_id=r["path_id"],
+            use_case_id=r["use_case_id"],
             use_case_label=r["use_case_label"],
             task_label=r["task_label"],
             task_description=r["task_description"],
@@ -143,6 +144,37 @@ def get_run_by_path(path_id: str, db: Session = Depends(get_db)) -> RunDetail:
     run_id = row["id"]
     return RunDetail(
         id=run_id,
+        path_id=row["path_id"],
+        use_case_label=row["use_case_label"],
+        task_description=row["task_description"],
+        title=row["title"],
+        notes=row["notes"],
+        datasets=_run_datasets(run_id, db),
+        models=_run_models(run_id, db),
+        metrics=_run_metrics(run_id, db),
+    )
+
+
+@router.get("/runs/{run_id}", response_model=RunDetail)
+def get_run(run_id: int, db: Session = Depends(get_db)) -> RunDetail:
+    """Return detail for a specific run by ID."""
+    row = db.execute(
+        text("""
+            SELECT er.id, er.path_id, er.title, er.notes,
+                   uc.label AS use_case_label, p.task_description
+            FROM   evaluation_runs er
+            LEFT JOIN paths p       ON p.id  = er.path_id
+            LEFT JOIN use_cases uc  ON uc.id = p.use_case_id
+            WHERE  er.id = :run_id
+        """),
+        {"run_id": run_id},
+    ).mappings().one_or_none()
+
+    if row is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+
+    return RunDetail(
+        id=row["id"],
         path_id=row["path_id"],
         use_case_label=row["use_case_label"],
         task_description=row["task_description"],

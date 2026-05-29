@@ -4,10 +4,8 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import AppHeader from "./components/AppHeader";
 import Home from "./pages/home";
 import Dashboard from "./pages/dashboard";
-import UseCases from "./pages/useCases";
-import Tasks from "./pages/tasks";
+import RunExplorer from "./pages/runExplorer";
 import IntrinsicMetrics from "./pages/intrinsicMetrics";
-import CreateNew from "./pages/createNew";
 import Library from "./pages/library";
 import "./style.scss";
 
@@ -22,10 +20,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/intrinsic-metrics" element={<IntrinsicMetrics />} />
-          <Route path="/use-cases" element={<UseCases />} />
-          <Route path="/use-cases/:useCaseId" element={<Tasks />} />
-          <Route path="/use-cases/:useCaseId/:pathId" element={<Dashboard />} />
-          <Route path="/evaluation-script-builder" element={<CreateNew />} />
+          <Route path="/runs" element={<RunExplorer />} />
+          <Route path="/use-cases/:useCaseId/:pathId/:runId" element={<Dashboard />} />
           <Route path="/library" element={<Library />} />
         </Routes>
       </div>

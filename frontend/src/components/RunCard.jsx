@@ -1,5 +1,6 @@
 /** @format */
 
+import { useState } from "react";
 import PropTypes from "prop-types";
 
 // Group metrics by their aspect, preserving aspect order of first appearance.
@@ -40,7 +41,13 @@ const TagList = ({ items }) => (
 );
 
 const RunCard = ({ run, onNavigate }) => {
+	const [showDetails, setShowDetails] = useState(false);
 	const aspectGroups = groupByAspect(run.metrics ?? []);
+
+	const toggleDetails = (e) => {
+		e.stopPropagation();
+		setShowDetails((prev) => !prev);
+	};
 
 	return (
 		<div
@@ -51,7 +58,7 @@ const RunCard = ({ run, onNavigate }) => {
 			<div className="card-content">
 
 				{/* Header */}
-				<div style={{ marginBottom: "1.25rem" }}>
+				<div style={{ marginBottom: "1rem" }}>
 					<h3 className="title is-5" style={{ marginBottom: "0.2rem" }}>
 						{run.title}
 					</h3>
@@ -59,12 +66,13 @@ const RunCard = ({ run, onNavigate }) => {
 						{[run.use_case_label, run.task_label, run.data_source_label]
 							.filter(Boolean)
 							.join(" · ")}
+						{run.id != null && ` (Run ID: ${run.id})`}
 					</p>
 				</div>
 
 				{/* Descriptions — only rendered when values are present */}
 				{run.task_description && (
-					<div style={{ marginBottom: "1rem" }}>
+					<div style={{ marginBottom: "0.75rem" }}>
 						<p className="is-size-7">
 							<SectionLabel>Task Description</SectionLabel>
 							{run.task_description}
@@ -72,7 +80,7 @@ const RunCard = ({ run, onNavigate }) => {
 					</div>
 				)}
 				{run.data_source_description && (
-					<div style={{ marginBottom: "1rem" }}>
+					<div style={{ marginBottom: "0.75rem" }}>
 						<p className="is-size-7">
 							<SectionLabel>Data Source Description</SectionLabel>
 							{run.data_source_description}
@@ -80,7 +88,7 @@ const RunCard = ({ run, onNavigate }) => {
 					</div>
 				)}
 				{run.notes && (
-					<div style={{ marginBottom: "1rem" }}>
+					<div style={{ marginBottom: "0.75rem" }}>
 						<p className="is-size-7">
 							<SectionLabel>Notes</SectionLabel>
 							{run.notes}
@@ -88,50 +96,68 @@ const RunCard = ({ run, onNavigate }) => {
 					</div>
 				)}
 
-				<hr style={{ margin: "1rem 0" }} />
+				{/* Collapsible details */}
+				{showDetails && (
+					<>
+						<hr style={{ margin: "0.75rem 0" }} />
 
-				{/* Datasets, Models (left) and Aspects & Metrics (right) */}
-				<div className="columns is-mobile">
-					<div className="column">
-						<p className="is-flex" style={{ marginBottom: "0.5rem" }}>
-							<SectionLabel>Datasets</SectionLabel>
-							<TagList items={(run.datasets ?? []).map((d) => d.name)} />
-						</p>
-						<p className="is-flex">
-							<SectionLabel>Models</SectionLabel>
-							<TagList items={(run.models ?? []).map((m) => m.name)} />
-						</p>
-					</div>
-					<div className="column">
-						<SectionLabel>Aspects &amp; Metrics</SectionLabel>
-						{aspectGroups.length === 0 ? (
-							<p className="is-size-7 has-text-grey is-italic">No aspects or metrics linked.</p>
-						) : (
-							<div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "0.5rem" }}>
-								{aspectGroups.map((group) => (
-									<div key={group.label} className="is-flex">
-										<span
-											className="has-text-weight-semibold is-size-7"
-											style={{ marginRight: "0.5rem" }}
-										>
-											{group.label}
-										</span>
-										<div className="tags" style={{ marginBottom: 0 }}>
-											{group.metrics.map((m) => (
-												<span key={m.metric_id} className="tag is-primary">
-													{m.display_label}
-												</span>
-											))}
+						<div style={{ marginBottom: "0.75rem" }}>
+							<p className="is-flex">
+								<SectionLabel>Datasets</SectionLabel>
+								<TagList items={(run.datasets ?? []).map((d) => d.name)} />
+							</p>
+						</div>
+
+						<div style={{ marginBottom: "0.75rem" }}>
+							<p className="is-flex">
+								<SectionLabel>Models</SectionLabel>
+								<TagList items={(run.models ?? []).map((m) => m.name)} />
+							</p>
+						</div>
+
+						<div>
+							<p style={{ marginBottom: "0.4rem" }}>
+								<SectionLabel>Aspects &amp; Metrics</SectionLabel>
+							</p>
+							{aspectGroups.length === 0 ? (
+								<p className="is-size-7 has-text-grey is-italic">No aspects or metrics linked.</p>
+							) : (
+								<div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+									{aspectGroups.map((group) => (
+										<div key={group.label} className="is-flex">
+											<span
+												className="has-text-weight-semibold is-size-7"
+												style={{ marginRight: "0.5rem", whiteSpace: "nowrap" }}
+											>
+												{group.label}
+											</span>
+											<div className="tags" style={{ marginBottom: 0 }}>
+												{group.metrics.map((m) => (
+													<span key={m.metric_id} className="tag is-primary">
+														{m.display_label}
+													</span>
+												))}
+											</div>
 										</div>
-									</div>
-								))}
-							</div>
-						)}
-					</div>
-				</div>
+									))}
+								</div>
+							)}
+						</div>
+					</>
+				)}
 
 			</div>
 
+			<div className="card-footer">
+				<button
+					type="button"
+					className="card-footer-item button is-ghost is-size-7"
+					style={{ border: "none", color: "var(--bulma-link)" }}
+					onClick={toggleDetails}
+				>
+					{showDetails ? "Hide details" : "Show details"}
+				</button>
+			</div>
 		</div>
 	);
 };

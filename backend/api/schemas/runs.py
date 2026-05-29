@@ -27,6 +27,7 @@ class MetricRef(BaseModel):
 class RunSummary(BaseModel):
     id: int
     path_id: Optional[str] = None
+    use_case_id: Optional[str] = None
     use_case_label: Optional[str] = None
     task_label: Optional[str] = None
     task_description: Optional[str] = None

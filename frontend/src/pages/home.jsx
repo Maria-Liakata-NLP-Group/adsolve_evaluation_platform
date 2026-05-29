@@ -135,7 +135,7 @@ const Home = () => {
 					}}
 				>
 					<button
-						onClick={() => navigate("/use-cases")}
+						onClick={() => navigate("/runs")}
 						style={{
 							background: "#ffc451",
 							color: "#151515",
@@ -149,10 +149,10 @@ const Home = () => {
 							letterSpacing: "0.03em",
 						}}
 					>
-						Explore Use Cases
+						Explore Runs
 					</button>
 					<button
-						onClick={() => navigate("/evaluation-script-builder")}
+						onClick={() => navigate("/library")}
 						style={{
 							background: "transparent",
 							color: "#fff",

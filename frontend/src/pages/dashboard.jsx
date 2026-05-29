@@ -6,7 +6,7 @@ import Breadcrumbs from "../components/breadcrumbs";
 import DocumentDisplay from "../components/documentDisplay";
 import InfoTooltip from "../components/InfoTooltip";
 import MetricsScatterPlot from "../components/metricsScatterPlot";
-import { getDashboard, getDocument, getRunByPath } from "../api/runs";
+import { getDashboard, getDocument, getRunById } from "../api/runs";
 
 const buildChartData = (dashData, byDataset, currentId, datasets, models) => {
 	const result = {};
@@ -52,7 +52,7 @@ const buildChartData = (dashData, byDataset, currentId, datasets, models) => {
 };
 
 const Dashboard = () => {
-	const { useCaseId, pathId } = useParams();
+	const { useCaseId, pathId, runId } = useParams();
 	const [run, setRun] = useState(null);
 	const [currentDatasetId, setCurrentDatasetId] = useState(null);
 	const [currentModelId, setCurrentModelId] = useState(null);
@@ -61,16 +61,16 @@ const Dashboard = () => {
 	const [modalDetails, setModalDetails] = useState(null);
 	const [error, setError] = useState(null);
 
-	// Fetch run metadata once when pathId changes
+	// Fetch run metadata once when runId changes
 	useEffect(() => {
-		if (!pathId) return;
-		getRunByPath(pathId)
+		if (!runId) return;
+		getRunById(runId)
 			.then((r) => {
 				setRun(r);
 				if (r.datasets.length > 0) setCurrentDatasetId(r.datasets[0].id);
 			})
 			.catch((err) => setError(err.message));
-	}, [pathId]);
+	}, [runId]);
 
 	// Fetch dashboard data when run or active filter changes
 	useEffect(() => {
@@ -144,7 +144,8 @@ const Dashboard = () => {
 				<Breadcrumbs
 					labels={{ [useCaseId]: run.use_case_label, [pathId]: run.title }}
 				/>
-				<h1 className="title">{run.title}</h1>
+				<h1 className="title" style={{ marginBottom: "0.25rem" }}>{run.title}</h1>
+				<p className="is-size-7 has-text-grey" style={{ marginBottom: "1rem" }}>Run ID: {run.id}</p>
 
 				<section className="block">
 					<div className="is-flex">

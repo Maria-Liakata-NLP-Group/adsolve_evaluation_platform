@@ -11,6 +11,8 @@ export const getRunsByPath = (pathId) => get(`/api/runs?path_id=${pathId}`);
 
 export const getRunByPath = (pathId) => get(`/api/runs/by-path/${pathId}`);
 
+export const getRunById = (runId) => get(`/api/runs/${runId}`);
+
 export const getDashboard = (runId, { datasetId, modelId } = {}) => {
   const params = new URLSearchParams();
   if (datasetId != null) params.set('dataset_id', datasetId);

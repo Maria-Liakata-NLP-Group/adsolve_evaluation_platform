@@ -54,13 +54,20 @@ const PathsMenu = ({ paths, selectedId, onSelectPath }) => {
 	const [expandedUseCases, setExpandedUseCases] = useState(new Set());
 	const [expandedTasks, setExpandedTasks] = useState(new Set());
 
-	// Expand all use cases by default once paths load
+	// When a path is selected (including on direct URL load), expand its ancestors
 	useEffect(() => {
-		if (paths.length > 0) {
-			const tree = buildTree(paths);
-			setExpandedUseCases(new Set(Object.keys(tree)));
-		}
-	}, [paths]);
+		if (!selectedId || !paths.length) return;
+		const match = paths.find((p) => p.id === selectedId);
+		if (!match) return;
+		setExpandedUseCases((prev) => {
+			if (prev.has(match.use_case_id)) return prev;
+			return new Set([...prev, match.use_case_id]);
+		});
+		setExpandedTasks((prev) => {
+			if (prev.has(match.task_id)) return prev;
+			return new Set([...prev, match.task_id]);
+		});
+	}, [selectedId, paths]);
 
 	const toggleUseCase = (id) =>
 		setExpandedUseCases((prev) => {

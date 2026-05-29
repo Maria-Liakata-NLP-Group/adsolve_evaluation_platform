@@ -7,6 +7,7 @@ import AspectDetail from "../components/AspectDetail";
 import MetricDetail from "../components/MetricDetail";
 import PathsMenu from "../components/PathsMenu";
 import PathDetailPanel from "../components/PathDetailPanel";
+import CreateNewRun from "../components/CreateNewRun";
 
 const MODES = ["aspects", "metrics", "paths"];
 
@@ -46,9 +47,12 @@ const Library = () => {
 
 	const items = mode === "aspects" ? aspects : metrics;
 
+	const view = searchParams.get("view") ?? null;
+
 	const onSelectMode = (newMode) => setSearchParams({ mode: newMode });
 	const onSelectItem = (id) => setSearchParams({ mode, id });
 	const onSelectPath = (pathId) => setSearchParams({ mode: "paths", id: pathId });
+	const onCreateRun = (pathId) => setSearchParams({ mode: "paths", id: pathId, view: "new-run" });
 	const onNavigateToMetric = (metric) => setSearchParams({ mode: "metrics", id: metric.id });
 	const onNavigateToAspect = (aspect) => setSearchParams({ mode: "aspects", id: aspect.id });
 
@@ -134,8 +138,14 @@ const Library = () => {
 				{selectedId && mode === "metrics" && (
 					<MetricDetail metricId={selectedId} onNavigateToAspect={onNavigateToAspect} />
 				)}
-				{selectedId && mode === "paths" && (
-					<PathDetailPanel pathId={selectedId} />
+				{selectedId && mode === "paths" && view !== "new-run" && (
+					<PathDetailPanel pathId={selectedId} onCreateRun={onCreateRun} />
+				)}
+				{selectedId && mode === "paths" && view === "new-run" && (
+					<CreateNewRun
+						pathId={selectedId}
+						onCancel={() => setSearchParams({ mode: "paths", id: selectedId })}
+					/>
 				)}
 			</div>
 		</div>
