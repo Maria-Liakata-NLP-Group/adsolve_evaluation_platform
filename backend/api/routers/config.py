@@ -8,10 +8,15 @@ from sqlalchemy.orm import Session
 
 from ..db import get_db
 from ..schemas.config import (
+    AspectDetail,
+    AspectPathRecord,
+    AspectSummary,
     InfraGroup,
     InfraOption,
     InfrastructureSchema,
+    MetricDetail,
     MetricSchema,
+    MetricSummary,
     PathAspect,
     PathDetail,
     PathSummary,
@@ -76,8 +81,11 @@ def get_path(path_id: str, db: Session = Depends(get_db)) -> PathDetail:
     path_row = db.execute(
         text("""
             SELECT p.id, p.use_case_id, p.task_id, p.data_source_id,
-                   p.data_source_label, p.data_source_description
+                   p.data_source_label, p.data_source_description, p.task_description,
+                   uc.label AS use_case_label, t.label AS task_label
             FROM   paths p
+            JOIN   use_cases uc ON uc.id = p.use_case_id
+            JOIN   tasks t      ON t.id  = p.task_id
             WHERE  p.id = :path_id
         """),
         {"path_id": path_id},
@@ -143,12 +151,164 @@ def get_path(path_id: str, db: Session = Depends(get_db)) -> PathDetail:
     return PathDetail(
         id=path_row["id"],
         use_case_id=path_row["use_case_id"],
+        use_case_label=path_row["use_case_label"],
         task_id=path_row["task_id"],
+        task_label=path_row["task_label"],
+        task_description=path_row["task_description"],
         data_source_id=path_row["data_source_id"],
         data_source_label=path_row["data_source_label"],
         data_source_description=path_row["data_source_description"],
         aspects=aspects,
     )
+
+
+@router.get("/aspects", response_model=list[AspectSummary])
+def get_aspects(db: Session = Depends(get_db)) -> list[AspectSummary]:
+    """Return all aspects ordered by label."""
+    rows = db.execute(
+        text("SELECT id, label FROM aspects ORDER BY label")
+    ).mappings().all()
+    return [dict(r) for r in rows]
+
+
+@router.get("/aspects/{aspect_id}", response_model=AspectDetail)
+def get_aspect(aspect_id: str, db: Session = Depends(get_db)) -> AspectDetail:
+    """Return an aspect with its distinct associated metrics across all paths."""
+    aspect_row = db.execute(
+        text("SELECT id, label, description FROM aspects WHERE id = :id"),
+        {"id": aspect_id},
+    ).mappings().one_or_none()
+
+    if aspect_row is None:
+        raise HTTPException(status_code=404, detail="Aspect not found")
+
+    metric_rows = db.execute(
+        text("""
+            SELECT DISTINCT m.id, m.label
+            FROM metrics m
+            JOIN path_aspect_metrics pam ON pam.metric_id = m.id
+            JOIN path_aspects pa ON pa.id = pam.path_aspect_id
+            WHERE pa.aspect_id = :aspect_id
+            ORDER BY m.label
+        """),
+        {"aspect_id": aspect_id},
+    ).mappings().all()
+
+    return AspectDetail(
+        id=aspect_row["id"],
+        label=aspect_row["label"],
+        description=aspect_row["description"],
+        metrics=[MetricSummary(id=r["id"], label=r["label"]) for r in metric_rows],
+    )
+
+
+@router.get("/aspects/{aspect_id}/paths", response_model=list[AspectPathRecord])
+def get_aspect_paths(aspect_id: str, db: Session = Depends(get_db)) -> list[AspectPathRecord]:
+    """Return all paths that include the given aspect, with per-path definition and metrics."""
+    path_rows = db.execute(
+        text("""
+            SELECT pa.id AS path_aspect_id, p.id AS path_id,
+                   uc.label AS use_case_label, t.label AS task_label,
+                   p.data_source_label, pa.definition, pa.examples, pa.stakeholder_requirements
+            FROM   path_aspects pa
+            JOIN   paths p      ON p.id  = pa.path_id
+            JOIN   use_cases uc ON uc.id = p.use_case_id
+            JOIN   tasks t      ON t.id  = p.task_id
+            WHERE  pa.aspect_id = :aspect_id
+            ORDER  BY p.id
+        """),
+        {"aspect_id": aspect_id},
+    ).mappings().all()
+
+    if not path_rows:
+        return []
+
+    path_aspect_ids = [r["path_aspect_id"] for r in path_rows]
+    metric_rows = db.execute(
+        text("""
+            SELECT pam.path_aspect_id, m.id, m.label, m.description, m.tags,
+                   m.supported_compute_environments, m.supported_reference_modes
+            FROM   path_aspect_metrics pam
+            JOIN   metrics m ON m.id = pam.metric_id
+            WHERE  pam.path_aspect_id = ANY(:ids)
+            ORDER  BY pam.path_aspect_id, m.id
+        """),
+        {"ids": path_aspect_ids},
+    ).mappings().all()
+
+    metrics_by_pa: dict[int, list[MetricSchema]] = {}
+    for mr in metric_rows:
+        metrics_by_pa.setdefault(mr["path_aspect_id"], []).append(
+            MetricSchema(
+                id=mr["id"],
+                label=mr["label"],
+                description=mr["description"],
+                tags=list(mr["tags"] or []),
+                supported_compute_environments=list(mr["supported_compute_environments"] or []),
+                supported_reference_modes=list(mr["supported_reference_modes"] or []),
+            )
+        )
+
+    return [
+        AspectPathRecord(
+            path_id=r["path_id"],
+            use_case_label=r["use_case_label"],
+            task_label=r["task_label"],
+            data_source_label=r["data_source_label"],
+            definition=r["definition"],
+            examples=r["examples"],
+            stakeholder_requirements=r["stakeholder_requirements"],
+            metrics=metrics_by_pa.get(r["path_aspect_id"], []),
+        )
+        for r in path_rows
+    ]
+
+
+@router.get("/metrics/{metric_id}", response_model=MetricDetail)
+def get_metric(metric_id: str, db: Session = Depends(get_db)) -> MetricDetail:
+    """Return a metric with its distinct associated aspects across all paths."""
+    metric_row = db.execute(
+        text("""
+            SELECT id, label, description, tags,
+                   supported_compute_environments, supported_reference_modes
+            FROM metrics WHERE id = :id
+        """),
+        {"id": metric_id},
+    ).mappings().one_or_none()
+
+    if metric_row is None:
+        raise HTTPException(status_code=404, detail="Metric not found")
+
+    aspect_rows = db.execute(
+        text("""
+            SELECT DISTINCT a.id, a.label
+            FROM aspects a
+            JOIN path_aspects pa ON pa.aspect_id = a.id
+            JOIN path_aspect_metrics pam ON pam.path_aspect_id = pa.id
+            WHERE pam.metric_id = :metric_id
+            ORDER BY a.label
+        """),
+        {"metric_id": metric_id},
+    ).mappings().all()
+
+    return MetricDetail(
+        id=metric_row["id"],
+        label=metric_row["label"],
+        description=metric_row["description"],
+        tags=list(metric_row["tags"] or []),
+        supported_compute_environments=list(metric_row["supported_compute_environments"] or []),
+        supported_reference_modes=list(metric_row["supported_reference_modes"] or []),
+        aspects=[AspectSummary(id=r["id"], label=r["label"]) for r in aspect_rows],
+    )
+
+
+@router.get("/metrics", response_model=list[MetricSummary])
+def get_metrics(db: Session = Depends(get_db)) -> list[MetricSummary]:
+    """Return all metrics ordered by label."""
+    rows = db.execute(
+        text("SELECT id, label FROM metrics ORDER BY label")
+    ).mappings().all()
+    return [dict(r) for r in rows]
 
 
 @router.get("/infrastructure", response_model=InfrastructureSchema)

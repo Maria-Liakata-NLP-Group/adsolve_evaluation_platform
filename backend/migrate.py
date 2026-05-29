@@ -75,8 +75,9 @@ SCHEMA_STATEMENTS = [
     """,
     """
     CREATE TABLE IF NOT EXISTS aspects (
-        id    TEXT PRIMARY KEY,
-        label TEXT NOT NULL
+        id          TEXT PRIMARY KEY,
+        label       TEXT NOT NULL,
+        description TEXT
     )
     """,
     """
@@ -96,7 +97,8 @@ SCHEMA_STATEMENTS = [
         task_id                 TEXT NOT NULL REFERENCES tasks(id),
         data_source_id          TEXT NOT NULL,
         data_source_label       TEXT NOT NULL,
-        data_source_description TEXT
+        data_source_description TEXT,
+        task_description        TEXT
     )
     """,
     # Rich per-path aspect content (definition, examples, requirements) lives in
@@ -123,11 +125,11 @@ SCHEMA_STATEMENTS = [
     # ── Evaluation results ────────────────────────────────────────────────────
     """
     CREATE TABLE IF NOT EXISTS evaluation_runs (
-        id          SERIAL      PRIMARY KEY,
-        path_id     TEXT        REFERENCES paths(id),
-        title       TEXT        NOT NULL,
-        description TEXT,
-        created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        id         SERIAL      PRIMARY KEY,
+        path_id    TEXT        REFERENCES paths(id),
+        title      TEXT        NOT NULL,
+        notes      TEXT,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         UNIQUE (path_id, title)
     )
     """,
@@ -426,17 +428,21 @@ def _seed_result_file(conn, json_file: Path, path_id: str) -> None:
     # ── evaluation_run ────────────────────────────────────────────────────────
     run_id = conn.execute(
         text("""
-            INSERT INTO evaluation_runs (path_id, title, description)
-            VALUES (:path_id, :title, :description)
-            ON CONFLICT (path_id, title) DO UPDATE SET description = EXCLUDED.description
+            INSERT INTO evaluation_runs (path_id, title)
+            VALUES (:path_id, :title)
+            ON CONFLICT (path_id, title) DO NOTHING
             RETURNING id
         """),
         {
             "path_id": path_id,
             "title": meta.get("title", json_file.stem),
-            "description": meta.get("description"),
         },
-    ).scalar_one()
+    ).scalar_one_or_none()
+    if run_id is None:
+        run_id = conn.execute(
+            text("SELECT id FROM evaluation_runs WHERE path_id = :p AND title = :t"),
+            {"p": path_id, "t": meta.get("title", json_file.stem)},
+        ).scalar_one()
 
     # ── datasets / models / metrics ───────────────────────────────────────────
     dataset_ids = _upsert_names(conn, "datasets", meta["datasets"])

@@ -7,6 +7,8 @@ export const getRuns = (useCaseId) => {
   return get(`/api/runs${qs}`);
 };
 
+export const getRunsByPath = (pathId) => get(`/api/runs?path_id=${pathId}`);
+
 export const getRunByPath = (pathId) => get(`/api/runs/by-path/${pathId}`);
 
 export const getDashboard = (runId, { datasetId, modelId } = {}) => {

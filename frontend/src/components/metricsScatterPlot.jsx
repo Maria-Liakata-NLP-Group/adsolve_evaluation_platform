@@ -112,8 +112,16 @@ const MetricsScatterPlot = ({
 
 	return (
 		<div className="p-4">
-			<div style={{ display: "flex", alignItems: "center", marginBottom: "0.25rem", paddingLeft: "70px" }}>
-				<span style={{ fontSize: "0.85rem", fontWeight: 600, color: "#333" }}>{metric}</span>
+			<div
+				style={{
+					display: "flex",
+					alignItems: "center",
+					marginBottom: "0.25rem",
+				}}
+			>
+				<span style={{ fontSize: "0.85rem", fontWeight: 600, color: "#333" }}>
+					{metric}
+				</span>
 				<InfoTooltip text={metricDescription} />
 			</div>
 			<Plot

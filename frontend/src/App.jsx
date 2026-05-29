@@ -8,6 +8,7 @@ import UseCases from "./pages/useCases";
 import Tasks from "./pages/tasks";
 import IntrinsicMetrics from "./pages/intrinsicMetrics";
 import CreateNew from "./pages/createNew";
+import Library from "./pages/library";
 import "./style.scss";
 
 const App = () => {
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/use-cases/:useCaseId" element={<Tasks />} />
           <Route path="/use-cases/:useCaseId/:pathId" element={<Dashboard />} />
           <Route path="/evaluation-script-builder" element={<CreateNew />} />
+          <Route path="/library" element={<Library />} />
         </Routes>
       </div>
     </>

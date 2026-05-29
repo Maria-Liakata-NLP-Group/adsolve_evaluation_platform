@@ -2,6 +2,21 @@
 @use "bulma/sass/utilities/initial-variables" as iv;
 @import "bulma/bulma";
 
+/* ── Brand: override Bulma link + primary to brand gold ────────────
+   --bulma-link-invert-l must be forced dark because Bulma's auto
+   value (98% ≈ white) produces invisible text on a light gold bg. */
+:root {
+  --bulma-link-h: 40deg;
+  --bulma-link-s: 100%;
+  --bulma-link-l: 66%;
+  --bulma-link-invert-l: 8%;
+
+  --bulma-primary-h: 40deg;
+  --bulma-primary-s: 100%;
+  --bulma-primary-l: 66%;
+  --bulma-primary-invert-l: 8%;
+}
+
 html, body {
   max-width: 100vw;
   overflow-x: hidden;
@@ -69,16 +84,13 @@ html, body {
   margin-top: 2rem;
 }
 
-.tag {
-  white-space: wrap;
-  height: auto;
-  padding: 0.5rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+.tags {
+  gap: 0.4rem;
+}
 
-  &:hover {
-    cursor: pointer;
-  }
+.tag {
+  white-space: normal;
+  height: auto;
 
   &.is-loading {
     position: relative;

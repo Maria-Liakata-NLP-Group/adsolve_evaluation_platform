@@ -1,7 +1,7 @@
 /** @format */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import AspectPopup from "../components/aspectPopup";
+import PathAspectCard from "../components/PathAspectCard";
 import Breadcrumbs from "../components/breadcrumbs";
 import { getPath } from "../api/config";
 import { usePathConfig } from "../hooks/usePathConfig";
@@ -36,102 +36,17 @@ const getDefaultInfraSelection = (infrastructure) => ({
     infrastructure?.reference_mode?.options?.map((o) => o.id) ?? [],
 });
 
-const getMetricIdsForAspect = ({ pathConfig, aspectId, selectedCompute, selectedReference }) => {
-  const aspect = pathConfig?.aspects?.find((a) => a.id === aspectId);
-  if (!aspect) return [];
-  return aspect.metrics
-    .filter((metric) => {
-      const computeOk =
-        metric.supported_compute_environments.length === 0 ||
-        selectedCompute.some((c) => metric.supported_compute_environments.includes(c));
-      const refOk =
-        metric.supported_reference_modes.length === 0 ||
-        selectedReference.some((r) => metric.supported_reference_modes.includes(r));
-      return computeOk && refOk;
-    })
-    .map((m) => m.id);
-};
-
-const renderExamplesContent = (data) => {
-  if (!data) return <p>No examples available yet.</p>;
-  return (
-    <div className="content">
-      {data.original_posts?.length > 0 && (
-        <>
-          <h4>Original posts</h4>
-          <ul>
-            {data.original_posts.map((post, index) => (
-              <li key={`${post}-${index}`}>{post}</li>
-            ))}
-          </ul>
-        </>
-      )}
-      {data.good_summary && (
-        <>
-          <h4>Good summary</h4>
-          <p>{data.good_summary}</p>
-        </>
-      )}
-      {data.why_good && (
-        <>
-          <h4>Why this is good</h4>
-          <p>{data.why_good}</p>
-        </>
-      )}
-      {data.bad_summary && (
-        <>
-          <h4>Bad summary</h4>
-          <p>{data.bad_summary}</p>
-        </>
-      )}
-      {data.why_bad && (
-        <>
-          <h4>Why this is bad</h4>
-          <p>{data.why_bad}</p>
-        </>
-      )}
-    </div>
-  );
-};
-
-const renderStakeholderRequirementsContent = (data) => {
-  if (!data?.items?.length) return <p>No stakeholder requirements available yet.</p>;
-  return (
-    <div className="content">
-      <ul>
-        {data.items.map((item, index) => (
-          <li key={`${item}-${index}`}>{item}</li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
-const renderMetricsContent = (metricIds, pathConfig, aspectId) => {
-  if (!metricIds.length) return <p>No metrics available for this configuration yet.</p>;
-  const aspect = pathConfig?.aspects?.find((a) => a.id === aspectId);
-  const metricsInAspect = aspect?.metrics ?? [];
-  return (
-    <div>
-      {metricIds.map((metricId) => {
-        const metric = metricsInAspect.find((m) => m.id === metricId);
-        return (
-          <div key={metricId} className="box">
-            <h4 className="title is-6 mb-2">{metric?.label ?? metricId}</h4>
-            {metric?.tags?.length > 0 && (
-              <div className="tags mb-3">
-                {metric.tags.map((tag) => (
-                  <span key={tag} className="tag">{tag}</span>
-                ))}
-              </div>
-            )}
-            <p>{metric?.description ?? "No description available."}</p>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
+// Filter an aspect's metrics by the current infra selection
+const getFilteredMetrics = (aspect, selectedCompute, selectedReference) =>
+  (aspect.metrics ?? []).filter((metric) => {
+    const computeOk =
+      metric.supported_compute_environments.length === 0 ||
+      selectedCompute.some((c) => metric.supported_compute_environments.includes(c));
+    const refOk =
+      metric.supported_reference_modes.length === 0 ||
+      selectedReference.some((r) => metric.supported_reference_modes.includes(r));
+    return computeOk && refOk;
+  });
 
 const CreateNew = () => {
   const { useCases, paths, infrastructure, loading, error: configError } = usePathConfig();
@@ -144,9 +59,6 @@ const CreateNew = () => {
 
   const [pathConfig, setPathConfig] = useState(null);
   const [pathConfigLoading, setPathConfigLoading] = useState(false);
-
-  const [activePopup, setActivePopup] = useState(null);
-  const [activeAspectId, setActiveAspectId] = useState("");
 
   // Initialise infra selection once infrastructure config is loaded
   useEffect(() => {
@@ -187,52 +99,12 @@ const CreateNew = () => {
     isInfraComplete &&
     selectedAspects.length > 0;
 
-  const activeAspectData = useMemo(() => {
-    if (!pathConfig || !activeAspectId) return null;
-    return pathConfig?.aspects?.find((a) => a.id === activeAspectId) ?? null;
-  }, [pathConfig, activeAspectId]);
-
-  const activeMetricIds = useMemo(() => {
-    if (!activeAspectId || !isInfraComplete || !pathConfig) return [];
-    return getMetricIdsForAspect({
-      pathConfig,
-      aspectId: activeAspectId,
-      selectedCompute: selectedInfra.compute_environment,
-      selectedReference: selectedInfra.reference_mode,
-    });
-  }, [activeAspectId, isInfraComplete, pathConfig, selectedInfra]);
-
-  const popupTitle = useMemo(() => {
-    if (!activePopup || !activeAspectId) return "";
-    const aspectLabel = activeAspectData?.label ?? activeAspectId;
-    if (activePopup === "examples") return `${aspectLabel} — Examples`;
-    if (activePopup === "stakeholder_requirements") return `${aspectLabel} — Stakeholder Requirements`;
-    if (activePopup === "metrics") return `${aspectLabel} — Metrics`;
-    return aspectLabel;
-  }, [activePopup, activeAspectId, activeAspectData]);
-
-  const popupContent = useMemo(() => {
-    if (!activePopup || !activeAspectId || !activeAspectData) return null;
-    if (activePopup === "examples") return renderExamplesContent(activeAspectData.examples);
-    if (activePopup === "stakeholder_requirements")
-      return renderStakeholderRequirementsContent(activeAspectData.stakeholder_requirements);
-    if (activePopup === "metrics")
-      return renderMetricsContent(activeMetricIds, pathConfig, activeAspectId);
-    return null;
-  }, [activePopup, activeAspectId, activeAspectData, activeMetricIds, pathConfig]);
-
-  const closePopup = useCallback(() => {
-    setActivePopup(null);
-    setActiveAspectId("");
-  }, []);
-
   const resetDownstreamState = useCallback(() => {
     setSelectedDataSourceId("");
     setSelectedAspects([]);
     setSelectedInfra(getDefaultInfraSelection(infrastructure));
     setPathConfig(null);
-    closePopup();
-  }, [closePopup, infrastructure]);
+  }, [infrastructure]);
 
   const onSelectUseCase = (useCaseId) => {
     setSelectedUseCaseId(useCaseId);
@@ -251,7 +123,6 @@ const CreateNew = () => {
       setSelectedDataSourceId(dataSourceId);
       setSelectedAspects([]);
       setSelectedInfra(getDefaultInfraSelection(infrastructure));
-      closePopup();
       setPathConfigLoading(true);
       try {
         const config = await getPath(pathId);
@@ -262,7 +133,7 @@ const CreateNew = () => {
         setPathConfigLoading(false);
       }
     },
-    [closePopup, infrastructure]
+    [infrastructure]
   );
 
   const onToggleInfraOption = (groupId, optionId) => {
@@ -280,11 +151,6 @@ const CreateNew = () => {
     setSelectedAspects((prev) =>
       prev.includes(aspectId) ? prev.filter((id) => id !== aspectId) : [...prev, aspectId]
     );
-  };
-
-  const openPopup = (aspectId, popupType) => {
-    setActiveAspectId(aspectId);
-    setActivePopup(popupType);
   };
 
   const onGenerate = () => {
@@ -465,45 +331,30 @@ const CreateNew = () => {
             <div className="columns is-multiline is-centered">
               {aspectCards.map((aspect) => {
                 const isSelected = selectedAspects.includes(aspect.id);
+                const filteredMetrics = getFilteredMetrics(
+                  aspect,
+                  selectedInfra.compute_environment,
+                  selectedInfra.reference_mode
+                );
                 return (
                   <div key={aspect.id} className="column is-6">
-                    <div className="card">
-                      <div className="card-content">
-                        <label className="checkbox is-flex is-align-items-center mb-3">
-                          <input
-                            type="checkbox"
-                            className="mr-2"
-                            checked={isSelected}
-                            onChange={() => toggleAspect(aspect.id)}
-                          />
-                          <strong>{aspect.label}</strong>
-                        </label>
-                        <p>{aspect.definition}</p>
-                        <div className="buttons mt-3">
-                          <button
-                            type="button"
-                            className="button is-small is-info is-light"
-                            onClick={() => openPopup(aspect.id, "examples")}
-                          >
-                            Examples
-                          </button>
-                          <button
-                            type="button"
-                            className="button is-small is-warning is-light"
-                            onClick={() => openPopup(aspect.id, "stakeholder_requirements")}
-                          >
-                            Stakeholder Requirements
-                          </button>
-                          <button
-                            type="button"
-                            className="button is-small is-success is-light"
-                            onClick={() => openPopup(aspect.id, "metrics")}
-                          >
-                            Metrics
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                    <PathAspectCard
+                      label={aspect.label}
+                      examples={aspect.examples}
+                      stakeholderRequirements={aspect.stakeholder_requirements}
+                      metrics={filteredMetrics}
+                    >
+                      <label className="checkbox is-flex is-align-items-center mb-3">
+                        <input
+                          type="checkbox"
+                          className="mr-2"
+                          checked={isSelected}
+                          onChange={() => toggleAspect(aspect.id)}
+                        />
+                        <strong>{aspect.label}</strong>
+                      </label>
+                      <p>{aspect.definition}</p>
+                    </PathAspectCard>
                   </div>
                 );
               })}
@@ -526,14 +377,6 @@ const CreateNew = () => {
           Generate evaluation script
         </button>
       </section>
-
-      <AspectPopup
-        isOpen={!!activePopup && !!activeAspectId}
-        title={popupTitle}
-        onClose={closePopup}
-      >
-        {popupContent}
-      </AspectPopup>
     </div>
   );
 };

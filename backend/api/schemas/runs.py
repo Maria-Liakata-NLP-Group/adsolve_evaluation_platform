@@ -27,20 +27,25 @@ class MetricRef(BaseModel):
 class RunSummary(BaseModel):
     id: int
     path_id: Optional[str] = None
-    task_label: Optional[str] = None
     use_case_label: Optional[str] = None
+    task_label: Optional[str] = None
+    task_description: Optional[str] = None
+    data_source_label: Optional[str] = None
+    data_source_description: Optional[str] = None
     title: str
-    description: Optional[str] = None
+    notes: Optional[str] = None
     datasets: list[DatasetRef] = []
     models: list[ModelRef] = []
+    metrics: list[MetricRef] = []
 
 
 class RunDetail(BaseModel):
     id: int
     path_id: Optional[str] = None
     use_case_label: Optional[str] = None
+    task_description: Optional[str] = None
     title: str
-    description: Optional[str] = None
+    notes: Optional[str] = None
     datasets: list[DatasetRef] = []
     models: list[ModelRef] = []
     metrics: list[MetricRef] = []

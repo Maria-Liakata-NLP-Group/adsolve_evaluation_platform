@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mockup — Section Structure Options</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+
+    :root {
+      --bg-primary: #f5f5f7;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #e5e5e7;
+      --border: #d1d1d6;
+      --text-primary: #1d1d1f;
+      --text-secondary: #86868b;
+      --text-tertiary: #aeaeb2;
+      --accent: #0071e3;
+      --success: #34c759;
+      --error: #ff3b30;
+      --selected-bg: #e8f4fd;
+      --selected-border: #0071e3;
+      --surface: #f0f0f2;
+      --surface-2: #e5e5e7;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1d1d1f;
+        --bg-secondary: #2d2d2f;
+        --bg-tertiary: #3d3d3f;
+        --border: #424245;
+        --text-primary: #f5f5f7;
+        --text-secondary: #86868b;
+        --text-tertiary: #636366;
+        --accent: #0a84ff;
+        --selected-bg: rgba(10, 132, 255, 0.15);
+        --selected-border: #0a84ff;
+        --surface: #2d2d2f;
+        --surface-2: #3d3d3f;
+      }
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 2rem;
+    }
+
+    h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
+    h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; }
+    h4 { font-size: 0.85rem; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--text-secondary); margin-bottom: 1.5rem; }
+
+    .options { display: flex; flex-direction: column; gap: 0.75rem; }
+    .option {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .option .letter {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      width: 1.75rem; height: 1.75rem;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 0.85rem; flex-shrink: 0;
+    }
+    .option .content { flex: 1; }
+    .option .content h3 { font-size: 0.95rem; margin-bottom: 0.15rem; }
+    .option .content p { color: var(--text-secondary); font-size: 0.85rem; margin: 0; }
+
+    .mockup {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    .mockup-header {
+      background: var(--bg-tertiary);
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    .mockup-body { padding: 1.5rem; }
+
+    .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    .pros, .cons { background: var(--bg-secondary); border-radius: 8px; padding: 1rem; border: 1px solid var(--border); }
+    .pros h4 { color: var(--success); }
+    .cons h4 { color: var(--error); }
+    .pros ul, .cons ul { margin-left: 1.25rem; font-size: 0.85rem; color: var(--text-secondary); }
+    .pros li, .cons li { margin-bottom: 0.25rem; }
+  </style>
+</head>
+<body>
+
+<h2>How should the reframed section be structured?</h2>
+<p class="subtitle">The current "Evaluation Script Builder" becomes a broader section. How do Library and Builder relate?</p>
+
+<div class="options">
+
+  <div class="option" data-choice="a">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Sub-navigation tabs</h3>
+      <p>The section gets two tabs: <strong>Library</strong> (browse aspects & metrics) and <strong>Build</strong> (the existing wizard). Users land on Library by default.</p>
+      <div class="mockup" style="margin-top: 1rem">
+        <div class="mockup-header">Evaluation — top-level nav item</div>
+        <div class="mockup-body" style="padding: 0.75rem">
+          <div style="display:flex; gap: 0.5rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.75rem">
+            <span style="padding: 0.25rem 0.75rem; background: var(--accent); color: white; border-radius: 4px; font-size: 0.8rem">Library</span>
+            <span style="padding: 0.25rem 0.75rem; background: var(--surface); border-radius: 4px; font-size: 0.8rem; opacity: 0.6">Build</span>
+          </div>
+          <div style="display:flex; gap: 0.75rem">
+            <div style="width: 140px; background: var(--surface); border-radius: 4px; padding: 0.5rem; font-size: 0.75rem">
+              <div style="font-weight: 600; margin-bottom: 0.5rem">ASPECTS ● METRICS</div>
+              <div style="padding: 0.25rem 0.5rem; background: var(--accent); color: white; border-radius: 3px; margin-bottom: 0.25rem; font-size: 0.7rem">Factual Consistency</div>
+              <div style="padding: 0.25rem 0.5rem; background: var(--surface-2); border-radius: 3px; margin-bottom: 0.25rem; font-size: 0.7rem">Coherence</div>
+              <div style="padding: 0.25rem 0.5rem; background: var(--surface-2); border-radius: 3px; font-size: 0.7rem">Style Similarity</div>
+            </div>
+            <div style="flex: 1; background: var(--surface); border-radius: 4px; padding: 0.5rem; font-size: 0.75rem">
+              <div style="font-weight: 600; margin-bottom: 0.25rem">Factual Consistency</div>
+              <div style="font-size: 0.7rem; opacity: 0.7; margin-bottom: 0.5rem">Associated metrics: FC_expert, FC_document, INTRA_NLI</div>
+              <div style="font-size: 0.7rem; opacity: 0.7">3 paths use this aspect</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top: 0.75rem">
+        <div class="pros"><h4>Pros</h4><ul><li>Clear separation</li><li>Easy to navigate</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Two distinct "modes" to discover</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Library + Use Case Paths as two sibling views</h3>
+      <p>Rename the section to <strong>"Aspects & Metrics"</strong> with two sub-pages at the same level: <strong>Library</strong> and <strong>Use Case Paths</strong> (replacing the wizard). No tabs — just two navigation entries.</p>
+      <div class="mockup" style="margin-top: 1rem">
+        <div class="mockup-header">App header nav</div>
+        <div class="mockup-body" style="padding: 0.75rem; font-size: 0.8rem">
+          <div style="display:flex; gap: 1rem; align-items: center">
+            <span style="opacity: 0.6">Use Cases</span>
+            <span style="opacity: 0.6">Intrinsic Metrics</span>
+            <span style="font-weight: 600; border-bottom: 2px solid var(--accent); padding-bottom: 2px">Aspects & Metrics ▾</span>
+          </div>
+          <div style="margin-top: 0.75rem; padding: 0.5rem; background: var(--surface); border-radius: 4px; display: flex; gap: 0.5rem; font-size: 0.75rem">
+            <span style="padding: 0.25rem 0.5rem; background: var(--accent); color: white; border-radius: 3px">Library</span>
+            <span style="padding: 0.25rem 0.5rem; background: var(--surface-2); border-radius: 3px; opacity: 0.7">Use Case Paths</span>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top: 0.75rem">
+        <div class="pros"><h4>Pros</h4><ul><li>Rename signals new purpose</li><li>Paths feel like one output of the library</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Header nav gets a dropdown</li><li>More restructuring of existing routes</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Library-first, builder as a panel within it</h3>
+      <p>The Library is the primary view. When an admin wants to create a new path, a <strong>side panel or modal wizard</strong> opens within the library — building a path means picking aspects/metrics from the library you're already browsing.</p>
+      <div class="mockup" style="margin-top: 1rem">
+        <div class="mockup-header">Library page — admin building a new path</div>
+        <div class="mockup-body" style="padding: 0.75rem; font-size: 0.75rem; display: flex; gap: 0.75rem">
+          <div style="width: 120px; background: var(--surface); border-radius: 4px; padding: 0.5rem; opacity: 0.5">
+            <div style="font-weight: 600; margin-bottom: 0.5rem; font-size: 0.7rem">ASPECTS ● METRICS</div>
+            <div style="padding: 0.2rem 0.4rem; background: var(--surface-2); border-radius: 3px; margin-bottom: 0.2rem; font-size: 0.65rem">Factual Consistency</div>
+            <div style="padding: 0.2rem 0.4rem; background: var(--surface-2); border-radius: 3px; margin-bottom: 0.2rem; font-size: 0.65rem">Coherence</div>
+          </div>
+          <div style="flex: 1; background: var(--surface); border-radius: 4px; padding: 0.5rem; opacity: 0.5; font-size: 0.7rem">
+            <div style="font-weight: 600; margin-bottom: 0.25rem">Factual Consistency</div>
+            <div style="opacity: 0.7">Associated metrics…</div>
+          </div>
+          <div style="width: 160px; background: var(--surface); border-radius: 4px; padding: 0.5rem; border: 2px solid var(--accent); font-size: 0.65rem">
+            <div style="font-weight: 600; color: var(--accent); margin-bottom: 0.5rem">New Use Case Path</div>
+            <div style="margin-bottom: 0.25rem; opacity: 0.7">Use case: ___</div>
+            <div style="margin-bottom: 0.25rem; opacity: 0.7">Task: ___</div>
+            <div style="margin-bottom: 0.25rem; opacity: 0.7">Aspects: + add</div>
+            <div style="margin-top: 0.5rem; padding: 0.2rem 0.4rem; background: var(--accent); color: white; border-radius: 3px; text-align: center">Create path</div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top: 0.75rem">
+        <div class="pros"><h4>Pros</h4><ul><li>Most integrated UX</li><li>Context when building</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>More complex to build</li><li>Crowded screen for non-admins</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

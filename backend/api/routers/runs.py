@@ -83,33 +83,39 @@ def _run_metrics(run_id: int, db: Session) -> list[MetricRef]:
 @router.get("/runs", response_model=list[RunSummary])
 def get_runs(
     use_case_id: Optional[str] = None,
+    path_id: Optional[str] = None,
     db: Session = Depends(get_db),
 ) -> list[RunSummary]:
-    """Return a summary list of evaluation runs, optionally filtered by use_case_id."""
+    """Return a summary list of evaluation runs, optionally filtered by use_case_id or path_id."""
     rows = db.execute(
         text("""
-            SELECT er.id, er.path_id, er.title, er.description,
-                   t.label AS task_label, uc.label AS use_case_label
+            SELECT er.id, er.path_id, er.title, er.notes,
+                   t.label AS task_label, uc.label AS use_case_label,
+                   p.task_description, p.data_source_label, p.data_source_description
             FROM   evaluation_runs er
             LEFT JOIN paths p      ON p.id  = er.path_id
             LEFT JOIN use_cases uc ON uc.id = p.use_case_id
             LEFT JOIN tasks t      ON t.id  = p.task_id
-            WHERE  (CAST(:use_case_id AS TEXT) IS NULL
-                    OR p.use_case_id = CAST(:use_case_id AS TEXT))
+            WHERE  (CAST(:use_case_id AS TEXT) IS NULL OR p.use_case_id = CAST(:use_case_id AS TEXT))
+              AND  (CAST(:path_id AS TEXT) IS NULL OR er.path_id = CAST(:path_id AS TEXT))
             ORDER  BY er.id
         """),
-        {"use_case_id": use_case_id},
+        {"use_case_id": use_case_id, "path_id": path_id},
     ).mappings().all()
     return [
         RunSummary(
             id=r["id"],
             path_id=r["path_id"],
-            task_label=r["task_label"],
             use_case_label=r["use_case_label"],
+            task_label=r["task_label"],
+            task_description=r["task_description"],
+            data_source_label=r["data_source_label"],
+            data_source_description=r["data_source_description"],
             title=r["title"],
-            description=r["description"],
+            notes=r["notes"],
             datasets=_run_datasets(r["id"], db),
             models=_run_models(r["id"], db),
+            metrics=_run_metrics(r["id"], db),
         )
         for r in rows
     ]
@@ -120,8 +126,8 @@ def get_run_by_path(path_id: str, db: Session = Depends(get_db)) -> RunDetail:
     """Return the most recent run detail for a given path_id, or 404 if not found."""
     row = db.execute(
         text("""
-            SELECT er.id, er.path_id, er.title, er.description,
-                   uc.label AS use_case_label
+            SELECT er.id, er.path_id, er.title, er.notes,
+                   uc.label AS use_case_label, p.task_description
             FROM   evaluation_runs er
             LEFT JOIN paths p       ON p.id  = er.path_id
             LEFT JOIN use_cases uc  ON uc.id = p.use_case_id
@@ -139,8 +145,9 @@ def get_run_by_path(path_id: str, db: Session = Depends(get_db)) -> RunDetail:
         id=run_id,
         path_id=row["path_id"],
         use_case_label=row["use_case_label"],
+        task_description=row["task_description"],
         title=row["title"],
-        description=row["description"],
+        notes=row["notes"],
         datasets=_run_datasets(run_id, db),
         models=_run_models(run_id, db),
         metrics=_run_metrics(run_id, db),
