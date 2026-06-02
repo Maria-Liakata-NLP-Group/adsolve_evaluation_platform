@@ -3,10 +3,9 @@
 :root {
   --brand-dark: #151515;
   --brand-gold: #ffc451;
-  --brand-gold-text: #9a6f00;
-  --brand-body: #444444;
-  --brand-muted: #888888;
-
+  --brand-gold-text: #ffc451;
+  --brand-body: #c8c8c8;
+  --brand-muted: #909090;
 }
 
 *,
@@ -18,7 +17,7 @@
 body {
   margin: 0;
   padding: 0;
-  background: #ffffff;
+  background: #111111;
   color: var(--brand-body);
   font-family: "Open Sans", sans-serif;
   -webkit-font-smoothing: antialiased;

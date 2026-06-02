@@ -9,8 +9,6 @@ const Home = () => {
 		<div
 			style={{
 				fontFamily: '"Open Sans", sans-serif',
-				color: "#444",
-				background: "#fff",
 			}}
 		>
 			{/* Hero */}
@@ -296,14 +294,14 @@ const Home = () => {
 									fontWeight: 700,
 									letterSpacing: "0.1em",
 									textTransform: "uppercase",
-									color: "#151515",
+									color: "var(--brand-gold-text)",
 									marginBottom: "0.35rem",
 								}}
 							>
 								{title}
 							</h4>
 							<p
-								style={{ fontSize: "0.88rem", color: "#666", lineHeight: 1.65 }}
+								style={{ fontSize: "0.88rem", color: "var(--brand-muted)", lineHeight: 1.65 }}
 							>
 								{desc}
 							</p>

@@ -4,17 +4,21 @@
 
 /* ── Brand: override Bulma link + primary to brand gold ────────────
    --bulma-link-invert-l must be forced dark because Bulma's auto
-   value (98% ≈ white) produces invisible text on a light gold bg. */
+   value (98% ≈ white) produces invisible text on a light gold bg.
+   --bulma-link-on-scheme-l matches the base lightness so links
+   render as our gold on the dark background. */
 :root {
   --bulma-link-h: 40deg;
   --bulma-link-s: 100%;
   --bulma-link-l: 66%;
   --bulma-link-invert-l: 8%;
+  --bulma-link-on-scheme-l: 66%;
 
   --bulma-primary-h: 40deg;
   --bulma-primary-s: 100%;
   --bulma-primary-l: 66%;
   --bulma-primary-invert-l: 8%;
+  --bulma-primary-on-scheme-l: 66%;
 }
 
 html, body {

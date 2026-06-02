@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Breadcrumbs from "../components/breadcrumbs";
+import { useBreadcrumbs } from "../components/BreadcrumbContext";
 import DocumentDisplay from "../components/documentDisplay";
 import InfoTooltip from "../components/InfoTooltip";
 import MetricsScatterPlot from "../components/metricsScatterPlot";
@@ -53,6 +53,7 @@ const buildChartData = (dashData, byDataset, currentId, datasets, models) => {
 
 const Dashboard = () => {
 	const { useCaseId, pathId, runId } = useParams();
+	const { setBreadcrumbs } = useBreadcrumbs();
 	const [run, setRun] = useState(null);
 	const [currentDatasetId, setCurrentDatasetId] = useState(null);
 	const [currentModelId, setCurrentModelId] = useState(null);
@@ -70,7 +71,17 @@ const Dashboard = () => {
 				if (r.datasets.length > 0) setCurrentDatasetId(r.datasets[0].id);
 			})
 			.catch((err) => setError(err.message));
+		return () => setBreadcrumbs([]);
 	}, [runId]);
+
+	// Update breadcrumbs once run title is known
+	useEffect(() => {
+		if (!run) return;
+		setBreadcrumbs([
+			{ label: "Runs", path: "/runs" },
+			{ label: run.title },
+		]);
+	}, [run, setBreadcrumbs]);
 
 	// Fetch dashboard data when run or active filter changes
 	useEffect(() => {
@@ -141,9 +152,6 @@ const Dashboard = () => {
 	return (
 		<>
 			<div>
-				<Breadcrumbs
-					labels={{ [useCaseId]: run.use_case_label, [pathId]: run.title }}
-				/>
 				<h1 className="title" style={{ marginBottom: "0.25rem" }}>{run.title}</h1>
 				<p className="is-size-7 has-text-grey" style={{ marginBottom: "1rem" }}>Run ID: {run.id}</p>
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useBreadcrumbs } from "../components/BreadcrumbContext";
 import { getAspects, getMetrics, getPaths } from "../api/config";
 import AspectDetail from "../components/AspectDetail";
 import MetricDetail from "../components/MetricDetail";
@@ -13,6 +14,12 @@ const MODES = ["aspects", "metrics", "paths"];
 
 const Library = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
+	const { setBreadcrumbs } = useBreadcrumbs();
+
+	useEffect(() => {
+		setBreadcrumbs([{ label: "Library" }]);
+		return () => setBreadcrumbs([]);
+	}, [setBreadcrumbs]);
 	const mode = searchParams.get("mode") ?? "aspects";
 	const selectedId = searchParams.get("id") ?? null;
 

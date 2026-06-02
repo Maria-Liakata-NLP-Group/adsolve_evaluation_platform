@@ -2,22 +2,25 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Breadcrumbs from "../components/breadcrumbs";
+import { useBreadcrumbs } from "../components/BreadcrumbContext";
 import RunCard from "../components/RunCard";
 import { getRuns } from "../api/runs";
 
 const RunExplorer = () => {
 	const navigate = useNavigate();
+	const { setBreadcrumbs } = useBreadcrumbs();
 	const [runs, setRuns] = useState([]);
 	const [error, setError] = useState(null);
 	const [selectedUseCaseId, setSelectedUseCaseId] = useState("");
 	const [selectedTaskLabel, setSelectedTaskLabel] = useState("");
 
 	useEffect(() => {
+		setBreadcrumbs([{ label: "Runs" }]);
 		getRuns()
 			.then(setRuns)
 			.catch((err) => setError(err.message));
-	}, []);
+		return () => setBreadcrumbs([]);
+	}, [setBreadcrumbs]);
 
 	// Derive unique use cases from run data, preserving first-seen order.
 	const useCases = useMemo(() => {
@@ -54,7 +57,6 @@ const RunExplorer = () => {
 
 	return (
 		<div>
-			<Breadcrumbs />
 			<h1
 				style={{
 					fontFamily: '"Poppins", sans-serif',
