@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 *.pyo
+*.egg-info/
+build/
+dist/
 
 # Virtual environment — never copy into the container
 .venv/
@@ -20,6 +23,17 @@ legacy_data/
 tests/
 .pytest_cache/
 
+# Test coverage
+.coverage
+htmlcov/
+coverage.xml
+
 # Git and IDE
 .git/
 .DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
