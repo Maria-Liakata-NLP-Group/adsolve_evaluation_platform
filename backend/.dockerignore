@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment — never copy into the container
+.venv/
+venv/
+env/
+
+# Secrets — must never be baked into the image
+.env
+.env.*
+
+# Data files not needed at runtime
+evaluation_bundles/
+legacy_data/
+
+# Test and dev artifacts
+tests/
+.pytest_cache/
+
+# Git and IDE
+.git/
+.DS_Store
