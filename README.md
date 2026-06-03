@@ -62,13 +62,25 @@ Run a local PostgreSQL instance. The database is named `adsolve`.
 
 ### 2. Backend
 
+Two options — both serve the API on `http://localhost:8005`:
+
+**Option A — Docker (recommended):**
+
+```bash
+docker compose up
+```
+
+Copy `backend/.env.example` to `backend/.env` and set `DATABASE_URL` before running.
+
+**Option B — directly with uvicorn (hot reload):**
+
 ```bash
 cd backend
 source .venv/bin/activate
-uvicorn api.main:app --reload
+uvicorn api.main:app --reload --port 8005
 ```
 
-The API runs on `http://localhost:8000`. Interactive docs are available at `http://localhost:8000/docs`.
+Interactive docs are available at `http://localhost:8005/docs`.
 
 ### 3. Frontend
 
@@ -77,4 +89,4 @@ cd frontend
 npm run dev
 ```
 
-The app runs on `http://localhost:5173`. The Vite dev server proxies `/api/*` requests to the backend at `http://127.0.0.1:8000`, so no CORS configuration is needed during development.
+The app runs on `http://localhost:5173`. The Vite dev server proxies `/api/*` requests to the backend at `http://127.0.0.1:8005`, so no CORS configuration is needed during development.
