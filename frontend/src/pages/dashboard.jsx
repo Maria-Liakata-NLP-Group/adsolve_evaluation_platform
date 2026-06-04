@@ -1,7 +1,7 @@
 /** @format */
 
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useBreadcrumbs } from "../components/BreadcrumbContext";
 import DocumentDisplay from "../components/documentDisplay";
 import InfoTooltip from "../components/InfoTooltip";
@@ -53,6 +53,7 @@ const buildChartData = (dashData, byDataset, currentId, datasets, models) => {
 
 const Dashboard = () => {
 	const { useCaseId, pathId, runId } = useParams();
+	const navigate = useNavigate();
 	const { setBreadcrumbs } = useBreadcrumbs();
 	const [run, setRun] = useState(null);
 	const [currentDatasetId, setCurrentDatasetId] = useState(null);
@@ -233,7 +234,10 @@ const Dashboard = () => {
 												style={{ marginBottom: "0.75rem" }}
 											>
 												{aspect_label}
-												<InfoTooltip text={aspect_definition} />
+												<InfoTooltip
+													text={aspect_definition}
+													onClick={aspect_id ? () => navigate(`/library?mode=aspects&id=${aspect_id}`) : undefined}
+												/>
 											</div>
 										)}
 										{metrics.map(

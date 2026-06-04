@@ -8,7 +8,7 @@ import DescriptionSection from "./DescriptionSection";
 import PathAspectCard from "./PathAspectCard";
 import RunCard from "./RunCard";
 
-const PathDetailPanel = ({ pathId, onCreateRun }) => {
+const PathDetailPanel = ({ pathId, onCreateRun, onNavigateToAspect }) => {
 	const navigate = useNavigate();
 	const [detail, setDetail] = useState(null);
 	const [runs, setRuns] = useState([]);
@@ -114,6 +114,7 @@ const PathDetailPanel = ({ pathId, onCreateRun }) => {
 								examples={aspect.examples}
 								stakeholderRequirements={aspect.stakeholder_requirements}
 								metrics={aspect.metrics}
+								onClick={onNavigateToAspect ? () => onNavigateToAspect({ id: aspect.id }) : undefined}
 							>
 								<p className="has-text-weight-semibold mb-2">{aspect.label}</p>
 								{aspect.definition && (

@@ -91,13 +91,14 @@ const renderMetricsContent = (metrics) => {
 };
 
 // Card with a fixed footer (popup buttons) and a flexible head via children.
-// Each card manages its own popup state.
+// Each card manages its own popup state. onClick navigates to the related path.
 const PathAspectCard = ({
 	children,
 	label,
 	examples,
 	stakeholderRequirements,
 	metrics,
+	onClick,
 }) => {
 	const [activePopup, setActivePopup] = useState(null);
 
@@ -121,28 +122,32 @@ const PathAspectCard = ({
 
 	return (
 		<>
-			<div className="card">
+			<div
+				className="card"
+				onClick={onClick}
+				style={onClick ? { cursor: "pointer" } : undefined}
+			>
 				<div className="card-content">
 					{children}
 					<div className="buttons mt-3">
 						<button
 							type="button"
 							className="button is-small is-info is-light"
-							onClick={() => setActivePopup("examples")}
+							onClick={(e) => { e.stopPropagation(); setActivePopup("examples"); }}
 						>
 							Examples
 						</button>
 						<button
 							type="button"
 							className="button is-small is-warning is-light"
-							onClick={() => setActivePopup("stakeholder_requirements")}
+							onClick={(e) => { e.stopPropagation(); setActivePopup("stakeholder_requirements"); }}
 						>
 							Stakeholder Requirements
 						</button>
 						<button
 							type="button"
 							className="button is-small is-success is-light"
-							onClick={() => setActivePopup("metrics")}
+							onClick={(e) => { e.stopPropagation(); setActivePopup("metrics"); }}
 						>
 							Metrics
 						</button>

@@ -1,5 +1,6 @@
 /** @format */
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Plot from "react-plotly.js";
 import InfoTooltip from "./InfoTooltip";
@@ -16,6 +17,7 @@ const MetricsScatterPlot = ({
 	highlightedTag,
 	means,
 }) => {
+	const navigate = useNavigate();
 	const [x, setX] = useState([]);
 	const [y, setY] = useState([]);
 	const [pointColours, setPointColours] = useState([]);
@@ -122,7 +124,10 @@ const MetricsScatterPlot = ({
 				<span style={{ fontSize: "0.85rem", fontWeight: 600, color: "#333" }}>
 					{metric}
 				</span>
-				<InfoTooltip text={metricDescription} />
+				<InfoTooltip
+					text={metricDescription}
+					onClick={aspect ? () => navigate(`/library?mode=metrics&id=${aspect}`) : undefined}
+				/>
 			</div>
 			<Plot
 				data={plotData}

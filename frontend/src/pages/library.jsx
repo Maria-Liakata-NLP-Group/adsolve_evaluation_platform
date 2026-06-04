@@ -140,13 +140,13 @@ const Library = () => {
 					<p className="has-text-grey">Select a data source from the tree.</p>
 				)}
 				{selectedId && mode === "aspects" && (
-					<AspectDetail aspectId={selectedId} onNavigateToMetric={onNavigateToMetric} />
+					<AspectDetail aspectId={selectedId} onNavigateToMetric={onNavigateToMetric} onNavigateToPath={onSelectPath} />
 				)}
 				{selectedId && mode === "metrics" && (
 					<MetricDetail metricId={selectedId} onNavigateToAspect={onNavigateToAspect} />
 				)}
 				{selectedId && mode === "paths" && view !== "new-run" && (
-					<PathDetailPanel pathId={selectedId} onCreateRun={onCreateRun} />
+					<PathDetailPanel pathId={selectedId} onCreateRun={onCreateRun} onNavigateToAspect={onNavigateToAspect} />
 				)}
 				{selectedId && mode === "paths" && view === "new-run" && (
 					<CreateNewRun

@@ -6,7 +6,7 @@ import AssociatedItems from "./AssociatedItems";
 import DescriptionSection from "./DescriptionSection";
 import PathAspectCard from "./PathAspectCard";
 
-const AspectDetail = ({ aspectId, onNavigateToMetric }) => {
+const AspectDetail = ({ aspectId, onNavigateToMetric, onNavigateToPath }) => {
 	const [detail, setDetail] = useState(null);
 	const [paths, setPaths] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -74,6 +74,7 @@ const AspectDetail = ({ aspectId, onNavigateToMetric }) => {
 									examples={path.examples}
 									stakeholderRequirements={path.stakeholder_requirements}
 									metrics={path.metrics}
+									onClick={onNavigateToPath ? () => onNavigateToPath(path.path_id) : undefined}
 								>
 									<p className="is-size-7 has-text-grey mb-1">
 										{path.use_case_label} · {path.task_label}
