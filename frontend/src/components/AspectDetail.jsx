@@ -24,6 +24,8 @@ const AspectDetail = ({ aspectId, onNavigateToMetric, onNavigateToPath, onDelete
   useEffect(() => {
     if (!aspectId) return;
     setEditing(false);
+    setDetail(null);
+    setPaths([]);
     setSaveError(null);
     setDeleteError(null);
     const fetchAll = async () => {

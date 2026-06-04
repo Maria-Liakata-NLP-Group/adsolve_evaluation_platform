@@ -6,6 +6,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlalchemy import text
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from ..db import get_db
@@ -466,16 +467,20 @@ def create_aspect(body: AspectWrite, db: Session = Depends(get_db)) -> AspectDet
         text("INSERT INTO aspects (id, label, description) VALUES (:id, :label, :description)"),
         {"id": body.id, "label": body.label, "description": body.description},
     )
-    for metric_id in body.metric_ids:
-        db.execute(
-            text("""
-                INSERT INTO aspect_metrics (aspect_id, metric_id)
-                VALUES (:aspect_id, :metric_id)
-                ON CONFLICT DO NOTHING
-            """),
-            {"aspect_id": body.id, "metric_id": metric_id},
-        )
-    db.commit()
+    try:
+        for metric_id in body.metric_ids:
+            db.execute(
+                text("""
+                    INSERT INTO aspect_metrics (aspect_id, metric_id)
+                    VALUES (:aspect_id, :metric_id)
+                    ON CONFLICT DO NOTHING
+                """),
+                {"aspect_id": body.id, "metric_id": metric_id},
+            )
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=422, detail="One or more metric_ids do not exist.")
     return get_aspect(body.id, db)
 
 
@@ -495,21 +500,57 @@ def update_aspect(
         text("UPDATE aspects SET label = :label, description = :description WHERE id = :id"),
         {"id": aspect_id, "label": body.label, "description": body.description},
     )
+
+    # Check that metrics being removed are not still in use in paths for this aspect
+    current_metric_ids_rows = db.execute(
+        text("SELECT metric_id FROM aspect_metrics WHERE aspect_id = :aspect_id"),
+        {"aspect_id": aspect_id},
+    ).mappings().all()
+    current_ids = {r["metric_id"] for r in current_metric_ids_rows}
+    new_ids = set(body.metric_ids)
+    removing_ids = current_ids - new_ids
+
+    if removing_ids:
+        path_linked = db.execute(
+            text("""
+                SELECT DISTINCT pam.metric_id
+                FROM path_aspect_metrics pam
+                JOIN path_aspects pa ON pa.id = pam.path_aspect_id
+                WHERE pa.aspect_id = :aspect_id
+                  AND pam.metric_id = ANY(:removing_ids)
+            """),
+            {"aspect_id": aspect_id, "removing_ids": list(removing_ids)},
+        ).mappings().all()
+
+        if path_linked:
+            blocked = [r["metric_id"] for r in path_linked]
+            raise HTTPException(
+                status_code=409,
+                detail={
+                    "message": f"Cannot remove {len(blocked)} metric(s) that are still used in paths.",
+                    "blocked_metric_ids": blocked,
+                },
+            )
+
     # Replace metric pool: delete existing rows, insert new set
     db.execute(
         text("DELETE FROM aspect_metrics WHERE aspect_id = :aspect_id"),
         {"aspect_id": aspect_id},
     )
-    for metric_id in body.metric_ids:
-        db.execute(
-            text("""
-                INSERT INTO aspect_metrics (aspect_id, metric_id)
-                VALUES (:aspect_id, :metric_id)
-                ON CONFLICT DO NOTHING
-            """),
-            {"aspect_id": aspect_id, "metric_id": metric_id},
-        )
-    db.commit()
+    try:
+        for metric_id in body.metric_ids:
+            db.execute(
+                text("""
+                    INSERT INTO aspect_metrics (aspect_id, metric_id)
+                    VALUES (:aspect_id, :metric_id)
+                    ON CONFLICT DO NOTHING
+                """),
+                {"aspect_id": aspect_id, "metric_id": metric_id},
+            )
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=422, detail="One or more metric_ids do not exist.")
     return get_aspect(aspect_id, db)
 
 

@@ -234,6 +234,7 @@ def seed_config(conn) -> None:
     _seed_aspects(conn)
     _seed_metrics(conn)
     _seed_paths(conn)
+    _seed_aspect_metrics(conn)  # backfill global metric pool from path assignments
 
 
 def _seed_use_cases(conn) -> None:
@@ -413,6 +414,19 @@ def _seed_paths(conn) -> None:
                     """),
                     {"pa_id": pa_id, "metric_id": metric_id},
                 )
+
+
+def _seed_aspect_metrics(conn) -> None:
+    """Backfill aspect_metrics from existing path_aspect_metrics assignments."""
+    conn.execute(
+        text("""
+            INSERT INTO aspect_metrics (aspect_id, metric_id)
+            SELECT DISTINCT pa.aspect_id, pam.metric_id
+            FROM path_aspect_metrics pam
+            JOIN path_aspects pa ON pa.id = pam.path_aspect_id
+            ON CONFLICT DO NOTHING
+        """)
+    )
 
 
 # ── Results seed ──────────────────────────────────────────────────────────────
