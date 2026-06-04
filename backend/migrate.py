@@ -122,6 +122,13 @@ SCHEMA_STATEMENTS = [
         PRIMARY KEY (path_aspect_id, metric_id)
     )
     """,
+    """
+    CREATE TABLE IF NOT EXISTS aspect_metrics (
+        aspect_id  TEXT NOT NULL REFERENCES aspects(id) ON DELETE CASCADE,
+        metric_id  TEXT NOT NULL REFERENCES metrics(id),
+        PRIMARY KEY (aspect_id, metric_id)
+    )
+    """,
     # ── Evaluation results ────────────────────────────────────────────────────
     """
     CREATE TABLE IF NOT EXISTS evaluation_runs (

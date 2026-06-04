@@ -115,3 +115,11 @@ class MetricWrite(BaseModel):
     tags: list[str] = []
     supported_compute_environments: list[str] = []
     supported_reference_modes: list[str] = []
+
+
+class AspectWrite(BaseModel):
+    # On POST: frontend sends slug derived from label; on PUT: ignored (path param used)
+    id: str
+    label: str
+    description: Optional[str] = None
+    metric_ids: list[str] = []

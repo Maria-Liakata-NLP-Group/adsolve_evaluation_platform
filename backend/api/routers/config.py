@@ -13,6 +13,7 @@ from ..schemas.config import (
     AspectDetail,
     AspectPathRecord,
     AspectSummary,
+    AspectWrite,
     InfraGroup,
     InfraOption,
     InfrastructureSchema,
@@ -203,11 +204,10 @@ def get_aspect(aspect_id: str, db: Session = Depends(get_db)) -> AspectDetail:
 
     metric_rows = db.execute(
         text("""
-            SELECT DISTINCT m.id, m.label
+            SELECT m.id, m.label
             FROM metrics m
-            JOIN path_aspect_metrics pam ON pam.metric_id = m.id
-            JOIN path_aspects pa ON pa.id = pam.path_aspect_id
-            WHERE pa.aspect_id = :aspect_id
+            JOIN aspect_metrics am ON am.metric_id = m.id
+            WHERE am.aspect_id = :aspect_id
             ORDER BY m.label
         """),
         {"aspect_id": aspect_id},
