@@ -469,3 +469,36 @@ def create_aspect(body: AspectWrite, db: Session = Depends(get_db)) -> AspectDet
         )
     db.commit()
     return get_aspect(body.id, db)
+
+
+@router.put("/aspects/{aspect_id}", response_model=AspectDetail,
+            dependencies=[Depends(require_admin)])
+def update_aspect(
+    aspect_id: str, body: AspectWrite, db: Session = Depends(get_db)
+) -> AspectDetail:
+    """Update an aspect's label, description, and metric pool."""
+    existing = db.execute(
+        text("SELECT id FROM aspects WHERE id = :id"), {"id": aspect_id}
+    ).one_or_none()
+    if existing is None:
+        raise HTTPException(status_code=404, detail="Aspect not found")
+
+    db.execute(
+        text("UPDATE aspects SET label = :label, description = :description WHERE id = :id"),
+        {"id": aspect_id, "label": body.label, "description": body.description},
+    )
+    # Replace metric pool: delete existing rows, insert new set
+    db.execute(
+        text("DELETE FROM aspect_metrics WHERE aspect_id = :aspect_id"),
+        {"aspect_id": aspect_id},
+    )
+    for metric_id in body.metric_ids:
+        db.execute(
+            text("""
+                INSERT INTO aspect_metrics (aspect_id, metric_id)
+                VALUES (:aspect_id, :metric_id)
+            """),
+            {"aspect_id": aspect_id, "metric_id": metric_id},
+        )
+    db.commit()
+    return get_aspect(aspect_id, db)

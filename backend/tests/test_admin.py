@@ -205,3 +205,24 @@ def test_create_aspect_duplicate_id_returns_409(client, created_aspect):
         "id": TEST_ASPECT_ID, "label": "Duplicate",
     }, headers=headers)
     assert response.status_code == 409
+
+
+def test_update_aspect(client, created_aspect):
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    response = client.put(f"/api/aspects/{TEST_ASPECT_ID}", json={
+        "id": TEST_ASPECT_ID,
+        "label": "Updated Aspect Label",
+        "description": "Updated description",
+        "metric_ids": [],
+    }, headers=headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["label"] == "Updated Aspect Label"
+    assert data["description"] == "Updated description"
+
+
+def test_update_aspect_not_found(client):
+    response = client.put("/api/aspects/nonexistent_aspect_xyz", json={
+        "id": "nonexistent_aspect_xyz", "label": "Ghost",
+    }, headers={"X-Admin-Token": TEST_TOKEN})
+    assert response.status_code == 404
