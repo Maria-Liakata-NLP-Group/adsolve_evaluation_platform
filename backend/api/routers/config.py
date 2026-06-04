@@ -408,7 +408,8 @@ def delete_metric(metric_id: str, db: Session = Depends(get_db)) -> None:
     if existing is None:
         raise HTTPException(status_code=404, detail="Metric not found")
 
-    blocking = db.execute(
+    # Check path links
+    path_blocking = db.execute(
         text("""
             SELECT p.id AS path_id
               FROM path_aspect_metrics pam
@@ -419,13 +420,21 @@ def delete_metric(metric_id: str, db: Session = Depends(get_db)) -> None:
         {"metric_id": metric_id},
     ).mappings().all()
 
-    if blocking:
-        path_ids = [r["path_id"] for r in blocking]
+    # Check evaluation run links
+    run_blocking = db.execute(
+        text("SELECT run_id FROM run_metrics WHERE metric_id = :metric_id"),
+        {"metric_id": metric_id},
+    ).mappings().all()
+
+    if path_blocking or run_blocking:
+        path_ids = [r["path_id"] for r in path_blocking]
+        run_ids = [r["run_id"] for r in run_blocking]
         raise HTTPException(
             status_code=409,
             detail={
-                "message": f"Metric is used in {len(path_ids)} path(s).",
+                "message": f"Metric is linked to {len(path_ids)} path(s) and {len(run_ids)} run(s).",
                 "blocking_paths": path_ids,
+                "blocking_runs": run_ids,
             },
         )
 

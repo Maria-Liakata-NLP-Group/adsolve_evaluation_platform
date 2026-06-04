@@ -30,7 +30,7 @@ def created_metric(client):
     """Create a test metric before the test and delete it after."""
     os.environ["ADMIN_TOKEN"] = TEST_TOKEN
     headers = {"X-Admin-Token": TEST_TOKEN}
-    client.post("/api/metrics", json={
+    setup_response = client.post("/api/metrics", json={
         "id": TEST_METRIC_ID,
         "label": "Test Metric PoC",
         "description": "Created by the test suite",
@@ -38,6 +38,7 @@ def created_metric(client):
         "supported_compute_environments": ["cpu_only"],
         "supported_reference_modes": ["reference_free"],
     }, headers=headers)
+    assert setup_response.status_code == 201, f"Fixture setup failed: {setup_response.json()}"
     yield TEST_METRIC_ID
     client.delete(f"/api/metrics/{TEST_METRIC_ID}", headers=headers)
 
@@ -128,13 +129,7 @@ def test_delete_metric_success(client):
 def test_delete_metric_blocked_when_linked(client):
     """A metric used in path_aspect_metrics cannot be deleted."""
     os.environ["ADMIN_TOKEN"] = TEST_TOKEN
-    # Find a seeded metric that is linked to a path
-    # First, check what metrics exist and are linked
-    response = client.get("/api/metrics")
-    assert response.status_code == 200
-    all_metrics = response.json()
-
-    # Try to find a linked metric by checking path details
+    # Find a seeded metric that is linked to a path by checking path details
     # Use the first metric from any path
     paths_response = client.get("/api/paths")
     assert paths_response.status_code == 200
