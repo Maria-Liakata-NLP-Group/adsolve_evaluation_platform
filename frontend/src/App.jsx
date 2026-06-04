@@ -1,6 +1,7 @@
 /** @format */
 
 import { Routes, Route, useLocation } from "react-router-dom";
+import { AdminProvider } from "./hooks/useAdmin";
 import AppHeader from "./components/AppHeader";
 import Home from "./pages/home";
 import Dashboard from "./pages/dashboard";
@@ -14,7 +15,7 @@ const App = () => {
   const isHome = location.pathname === "/";
 
   return (
-    <>
+    <AdminProvider>
       {!isHome && <AppHeader />}
       <div style={!isHome ? { maxWidth: "1400px", margin: "0 auto", width: "100%", padding: "0 2rem" } : {}}>
         <Routes>
@@ -25,7 +26,7 @@ const App = () => {
           <Route path="/library" element={<Library />} />
         </Routes>
       </div>
-    </>
+    </AdminProvider>
   );
 };
 
