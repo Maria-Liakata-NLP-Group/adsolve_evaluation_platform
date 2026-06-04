@@ -39,3 +39,13 @@ export const updateMetric = (id, data, token) =>
 // Resolves to null on 204 success; throws ApiError(409) if metric is in use
 export const deleteMetric = (id, token) =>
   del(`/api/metrics/${id}`, adminHeaders(token));
+
+export const createAspect = (data, token) =>
+  post("/api/aspects", data, adminHeaders(token));
+
+export const updateAspect = (id, data, token) =>
+  put(`/api/aspects/${id}`, data, adminHeaders(token));
+
+// Resolves to null on 204 success; throws ApiError(409) if aspect is in use
+export const deleteAspect = (id, token) =>
+  del(`/api/aspects/${id}`, adminHeaders(token));
