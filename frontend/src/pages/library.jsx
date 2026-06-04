@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useBreadcrumbs } from "../components/BreadcrumbContext";
 import { useAdmin } from "../hooks/useAdmin";
-import { getAspects, getMetrics, getPaths, createMetric } from "../api/config";
+import { getAspects, getMetrics, getPaths, createMetric, createAspect } from "../api/config";
 import AspectDetail from "../components/AspectDetail";
 import MetricDetail from "../components/MetricDetail";
 import PathsMenu from "../components/PathsMenu";
@@ -44,6 +44,13 @@ const Library = () => {
   const [addError, setAddError] = useState(null);
   const [addSaving, setAddSaving] = useState(false);
 
+  // Add Aspect form state
+  const [addingAspect, setAddingAspect] = useState(false);
+  const [addAspectForm, setAddAspectForm] = useState({ label: "", description: "", metric_ids: [] });
+  const [addAspectError, setAddAspectError] = useState(null);
+  const [addAspectSaving, setAddAspectSaving] = useState(false);
+  const [addAspectAllMetrics, setAddAspectAllMetrics] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -67,8 +74,8 @@ const Library = () => {
   const items = mode === "aspects" ? aspects : metrics;
   const view = searchParams.get("view") ?? null;
 
-  const onSelectMode = (newMode) => { setAdding(false); setSearchParams({ mode: newMode }); };
-  const onSelectItem = (id) => { setAdding(false); setSearchParams({ mode, id }); };
+  const onSelectMode = (newMode) => { setAdding(false); setAddingAspect(false); setSearchParams({ mode: newMode }); };
+  const onSelectItem = (id) => { setAdding(false); setAddingAspect(false); setSearchParams({ mode, id }); };
   const onSelectPath = (pathId) => setSearchParams({ mode: "paths", id: pathId });
   const onCreateRun = (pathId) => setSearchParams({ mode: "paths", id: pathId, view: "new-run" });
   const onNavigateToMetric = (metric) => setSearchParams({ mode: "metrics", id: metric.id });
@@ -122,6 +129,51 @@ const Library = () => {
 
   const handleMetricUpdated = ({ id, label }) => {
     setMetrics((prev) => prev.map((m) => m.id === id ? { ...m, label } : m));
+  };
+
+  const startAddingAspect = async () => {
+    try {
+      const metrics = await getMetrics();
+      setAddAspectAllMetrics(metrics);
+    } catch {
+      setAddAspectAllMetrics([]);
+    }
+    setAddingAspect(true);
+    setAddAspectForm({ label: "", description: "", metric_ids: [] });
+    setAddAspectError(null);
+    setSearchParams({ mode: "aspects" });
+  };
+
+  const cancelAddingAspect = () => setAddingAspect(false);
+
+  const handleCreateAspect = async () => {
+    setAddAspectSaving(true);
+    setAddAspectError(null);
+    try {
+      const payload = {
+        id: toSlug(addAspectForm.label),
+        label: addAspectForm.label.trim(),
+        description: addAspectForm.description.trim() || null,
+        metric_ids: addAspectForm.metric_ids,
+      };
+      const created = await createAspect(payload, token);
+      setAspects((prev) => [...prev, { id: created.id, label: created.label }]);
+      setAddingAspect(false);
+      setSearchParams({ mode: "aspects", id: created.id });
+    } catch (err) {
+      setAddAspectError(err.message ?? "Create failed. Please try again.");
+    } finally {
+      setAddAspectSaving(false);
+    }
+  };
+
+  const handleAspectDeleted = () => {
+    setAspects((prev) => prev.filter((a) => a.id !== selectedId));
+    setSearchParams({ mode: "aspects" });
+  };
+
+  const handleAspectUpdated = ({ id, label }) => {
+    setAspects((prev) => prev.map((a) => a.id === id ? { ...a, label } : a));
   };
 
   if (loading) return <div className="section"><p>Loading…</p></div>;
@@ -189,6 +241,23 @@ const Library = () => {
               }}
             >
               + Add Metric
+            </button>
+          </div>
+        )}
+
+        {/* Add Aspect button — visible to admins in aspects mode */}
+        {isAdmin && mode === "aspects" && (
+          <div style={{ padding: "0.6rem", borderTop: "1px solid var(--bulma-border)" }}>
+            <button
+              type="button"
+              onClick={startAddingAspect}
+              style={{
+                width: "100%", padding: "0.4rem", fontSize: "0.75rem",
+                background: "rgba(255,196,81,0.1)", border: "1px dashed rgba(255,196,81,0.4)",
+                color: "#ffc451", borderRadius: "4px", cursor: "pointer",
+              }}
+            >
+              + Add Aspect
             </button>
           </div>
         )}
@@ -275,13 +344,102 @@ const Library = () => {
           </>
         )}
 
+        {/* Add Aspect form */}
+        {addingAspect && (
+          <>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+              <span style={{ fontSize: "0.72rem", color: "#ffc451", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                New Aspect
+              </span>
+              <div style={{ display: "flex", gap: "0.4rem" }}>
+                <button type="button" onClick={cancelAddingAspect} style={secondaryBtn}>Cancel</button>
+                <button
+                  type="button"
+                  onClick={handleCreateAspect}
+                  disabled={addAspectSaving || !addAspectForm.label.trim() || !toSlug(addAspectForm.label)}
+                  style={{ ...primaryBtn, opacity: addAspectSaving || !addAspectForm.label.trim() || !toSlug(addAspectForm.label) ? 0.5 : 1 }}
+                >
+                  {addAspectSaving ? "Creating…" : "Create"}
+                </button>
+              </div>
+            </div>
+
+            <label style={labelStyle}>ID <span style={{ color: "#666", fontStyle: "italic", fontSize: "0.68rem", textTransform: "none" }}>(auto-generated)</span></label>
+            <input value={toSlug(addAspectForm.label) || "—"} disabled style={{ ...inputStyle, color: toSlug(addAspectForm.label) ? "#666" : "#e07070", marginBottom: "0.75rem" }} />
+
+            <label style={labelStyle}>Label *</label>
+            <input
+              value={addAspectForm.label}
+              onChange={(e) => setAddAspectForm((p) => ({ ...p, label: e.target.value }))}
+              placeholder="e.g. Coherence"
+              style={{ ...inputStyle, marginBottom: "0.75rem" }}
+              autoFocus
+            />
+
+            <label style={labelStyle}>Description</label>
+            <textarea
+              value={addAspectForm.description}
+              onChange={(e) => setAddAspectForm((p) => ({ ...p, description: e.target.value }))}
+              rows={3}
+              placeholder="Describe this aspect…"
+              style={{ ...inputStyle, resize: "vertical", marginBottom: "0.75rem" }}
+            />
+
+            <label style={labelStyle}>Metrics</label>
+            {addAspectForm.metric_ids.length > 0 && (
+              <div style={{ marginBottom: "0.5rem" }}>
+                {addAspectAllMetrics
+                  .filter((m) => addAspectForm.metric_ids.includes(m.id))
+                  .map((m) => (
+                    <div key={m.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.3rem 0.5rem", background: "rgba(255,255,255,0.04)", borderRadius: "4px", marginBottom: "0.25rem" }}>
+                      <span style={{ fontSize: "0.82rem", color: "#ccc" }}>{m.label}</span>
+                      <button
+                        type="button"
+                        onClick={() => setAddAspectForm((p) => ({ ...p, metric_ids: p.metric_ids.filter((id) => id !== m.id) }))}
+                        style={{ background: "none", border: "none", cursor: "pointer", color: "#e07070", fontSize: "0.78rem", padding: "0 0.25rem" }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+              </div>
+            )}
+            {addAspectAllMetrics.filter((m) => !addAspectForm.metric_ids.includes(m.id)).length > 0 && (
+              <select
+                defaultValue=""
+                onChange={(e) => {
+                  const id = e.target.value;
+                  if (id) setAddAspectForm((p) => ({ ...p, metric_ids: [...p.metric_ids, id] }));
+                  e.target.value = "";
+                }}
+                style={{ ...inputStyle, marginBottom: "0.75rem" }}
+              >
+                <option value="" disabled>Select a metric to add…</option>
+                {addAspectAllMetrics
+                  .filter((m) => !addAspectForm.metric_ids.includes(m.id))
+                  .map((m) => (
+                    <option key={m.id} value={m.id}>{m.label}</option>
+                  ))}
+              </select>
+            )}
+
+            {addAspectError && <p style={{ color: "#e07070", fontSize: "0.8rem" }}>{addAspectError}</p>}
+          </>
+        )}
+
         {/* Normal right-panel views */}
-        {!adding && mode === "aspects" && !selectedId && <p className="has-text-grey">Select an aspect from the list.</p>}
+        {!adding && !addingAspect && mode === "aspects" && !selectedId && <p className="has-text-grey">Select an aspect from the list.</p>}
         {!adding && mode === "metrics" && !selectedId && <p className="has-text-grey">Select a metric from the list.</p>}
         {!adding && mode === "paths" && !selectedId && <p className="has-text-grey">Select a data source from the tree.</p>}
 
-        {!adding && selectedId && mode === "aspects" && (
-          <AspectDetail aspectId={selectedId} onNavigateToMetric={onNavigateToMetric} onNavigateToPath={onSelectPath} />
+        {!adding && !addingAspect && selectedId && mode === "aspects" && (
+          <AspectDetail
+            aspectId={selectedId}
+            onNavigateToMetric={onNavigateToMetric}
+            onNavigateToPath={onSelectPath}
+            onDeleted={handleAspectDeleted}
+            onUpdated={handleAspectUpdated}
+          />
         )}
         {!adding && selectedId && mode === "metrics" && (
           <MetricDetail
