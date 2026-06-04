@@ -79,3 +79,30 @@ def test_create_metric_duplicate_id_returns_409(client, created_metric):
         "label": "Duplicate",
     }, headers=headers)
     assert response.status_code == 409
+
+
+def test_update_metric(client, created_metric):
+    os.environ["ADMIN_TOKEN"] = TEST_TOKEN
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    response = client.put(f"/api/metrics/{TEST_METRIC_ID}", json={
+        "id": TEST_METRIC_ID,  # ignored by PUT, included for schema compatibility
+        "label": "Updated Label",
+        "description": "Updated description",
+        "tags": ["updated"],
+        "supported_compute_environments": ["gpu_available"],
+        "supported_reference_modes": ["reference_based"],
+    }, headers=headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["label"] == "Updated Label"
+    assert data["description"] == "Updated description"
+    assert "updated" in data["tags"]
+
+
+def test_update_metric_not_found(client):
+    os.environ["ADMIN_TOKEN"] = TEST_TOKEN
+    response = client.put("/api/metrics/nonexistent_metric_xyz", json={
+        "id": "nonexistent_metric_xyz",
+        "label": "Ghost",
+    }, headers={"X-Admin-Token": TEST_TOKEN})
+    assert response.status_code == 404

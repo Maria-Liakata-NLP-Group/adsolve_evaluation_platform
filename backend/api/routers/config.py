@@ -361,3 +361,38 @@ def create_metric(body: MetricWrite, db: Session = Depends(get_db)) -> MetricDet
     )
     db.commit()
     return get_metric(body.id, db)
+
+
+@router.put("/metrics/{metric_id}", response_model=MetricDetail,
+            dependencies=[Depends(require_admin)])
+def update_metric(
+    metric_id: str, body: MetricWrite, db: Session = Depends(get_db)
+) -> MetricDetail:
+    """Update an existing metric's content fields."""
+    existing = db.execute(
+        text("SELECT id FROM metrics WHERE id = :id"), {"id": metric_id}
+    ).one_or_none()
+    if existing is None:
+        raise HTTPException(status_code=404, detail="Metric not found")
+
+    db.execute(
+        text("""
+            UPDATE metrics
+               SET label       = :label,
+                   description = :description,
+                   tags        = :tags,
+                   supported_compute_environments = :compute,
+                   supported_reference_modes      = :reference
+             WHERE id = :id
+        """),
+        {
+            "id": metric_id,
+            "label": body.label,
+            "description": body.description,
+            "tags": body.tags,
+            "compute": body.supported_compute_environments,
+            "reference": body.supported_reference_modes,
+        },
+    )
+    db.commit()
+    return get_metric(metric_id, db)
