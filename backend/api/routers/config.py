@@ -442,3 +442,30 @@ def delete_metric(metric_id: str, db: Session = Depends(get_db)) -> None:
 
     db.execute(text("DELETE FROM metrics WHERE id = :id"), {"id": metric_id})
     db.commit()
+
+
+@router.post("/aspects", response_model=AspectDetail, status_code=201,
+             dependencies=[Depends(require_admin)])
+def create_aspect(body: AspectWrite, db: Session = Depends(get_db)) -> AspectDetail:
+    """Create a new aspect with optional metric assignments. Returns 409 if id exists."""
+    existing = db.execute(
+        text("SELECT id FROM aspects WHERE id = :id"), {"id": body.id}
+    ).one_or_none()
+    if existing:
+        raise HTTPException(status_code=409, detail="An aspect with this id already exists.")
+
+    db.execute(
+        text("INSERT INTO aspects (id, label, description) VALUES (:id, :label, :description)"),
+        {"id": body.id, "label": body.label, "description": body.description},
+    )
+    for metric_id in body.metric_ids:
+        db.execute(
+            text("""
+                INSERT INTO aspect_metrics (aspect_id, metric_id)
+                VALUES (:aspect_id, :metric_id)
+                ON CONFLICT DO NOTHING
+            """),
+            {"aspect_id": body.id, "metric_id": metric_id},
+        )
+    db.commit()
+    return get_aspect(body.id, db)

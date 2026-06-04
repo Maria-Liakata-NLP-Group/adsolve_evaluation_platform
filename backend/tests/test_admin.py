@@ -154,3 +154,54 @@ def test_delete_metric_not_found(client):
     response = client.delete("/api/metrics/nonexistent_xyz",
                              headers={"X-Admin-Token": TEST_TOKEN})
     assert response.status_code == 404
+
+
+TEST_ASPECT_ID = "test_aspect_plan_poc"
+
+
+@pytest.fixture
+def created_aspect(client):
+    """Create a test aspect before the test and delete it after."""
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    response = client.post("/api/aspects", json={
+        "id": TEST_ASPECT_ID,
+        "label": "Test Aspect PoC",
+        "description": "Created by the test suite",
+        "metric_ids": [],
+    }, headers=headers)
+    assert response.status_code == 201, f"Fixture setup failed: {response.json()}"
+    yield TEST_ASPECT_ID
+    client.delete(f"/api/aspects/{TEST_ASPECT_ID}", headers=headers)
+
+
+def test_create_aspect(client):
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    payload = {
+        "id": TEST_ASPECT_ID,
+        "label": "Test Aspect PoC",
+        "description": "A test aspect",
+        "metric_ids": [],
+    }
+    response = client.post("/api/aspects", json=payload, headers=headers)
+    assert response.status_code == 201
+    data = response.json()
+    assert data["id"] == TEST_ASPECT_ID
+    assert data["label"] == "Test Aspect PoC"
+    assert data["metrics"] == []
+    # Cleanup
+    client.delete(f"/api/aspects/{TEST_ASPECT_ID}", headers=headers)
+
+
+def test_create_aspect_requires_auth(client):
+    response = client.post("/api/aspects", json={
+        "id": "should_not_exist", "label": "No Auth",
+    })
+    assert response.status_code == 422
+
+
+def test_create_aspect_duplicate_id_returns_409(client, created_aspect):
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    response = client.post("/api/aspects", json={
+        "id": TEST_ASPECT_ID, "label": "Duplicate",
+    }, headers=headers)
+    assert response.status_code == 409
