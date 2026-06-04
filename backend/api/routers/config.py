@@ -19,6 +19,7 @@ from ..schemas.config import (
     MetricDetail,
     MetricSchema,
     MetricSummary,
+    MetricWrite,
     PathAspect,
     PathDetail,
     PathSummary,
@@ -331,3 +332,32 @@ def get_metrics(db: Session = Depends(get_db)) -> list[MetricSummary]:
 def get_infrastructure() -> InfrastructureSchema:
     """Return the hardcoded infrastructure options (compute environment and reference mode)."""
     return _INFRASTRUCTURE
+
+
+@router.post("/metrics", response_model=MetricDetail, status_code=201,
+             dependencies=[Depends(require_admin)])
+def create_metric(body: MetricWrite, db: Session = Depends(get_db)) -> MetricDetail:
+    """Create a new metric. Returns 409 if the id already exists."""
+    existing = db.execute(
+        text("SELECT id FROM metrics WHERE id = :id"), {"id": body.id}
+    ).one_or_none()
+    if existing:
+        raise HTTPException(status_code=409, detail="A metric with this id already exists.")
+
+    db.execute(
+        text("""
+            INSERT INTO metrics (id, label, description, tags,
+                                 supported_compute_environments, supported_reference_modes)
+            VALUES (:id, :label, :description, :tags, :compute, :reference)
+        """),
+        {
+            "id": body.id,
+            "label": body.label,
+            "description": body.description,
+            "tags": body.tags,
+            "compute": body.supported_compute_environments,
+            "reference": body.supported_reference_modes,
+        },
+    )
+    db.commit()
+    return get_metric(body.id, db)
