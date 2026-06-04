@@ -89,6 +89,7 @@ const AppHeader = () => {
 
         {/* Admin lock icon */}
         <button
+          type="button"
           onClick={() => setModalOpen(true)}
           title={isAdmin ? "Admin mode active" : "Sign in as admin"}
           style={{

@@ -209,8 +209,8 @@ const Library = () => {
                 <button
                   type="button"
                   onClick={handleCreate}
-                  disabled={addSaving || !addForm.label.trim()}
-                  style={{ ...primaryBtn, opacity: addSaving || !addForm.label.trim() ? 0.5 : 1 }}
+                  disabled={addSaving || !addForm.label.trim() || !derivedId}
+                  style={{ ...primaryBtn, opacity: addSaving || !addForm.label.trim() || !derivedId ? 0.5 : 1 }}
                 >
                   {addSaving ? "Creating…" : "Create"}
                 </button>
@@ -218,7 +218,12 @@ const Library = () => {
             </div>
 
             <label style={labelStyle}>ID <span style={{ color: "#666", fontStyle: "italic", fontSize: "0.68rem", textTransform: "none" }}>(auto-generated)</span></label>
-            <input value={derivedId || "—"} disabled style={{ ...inputStyle, color: "#666", marginBottom: "0.75rem" }} />
+            <input value={derivedId || "—"} disabled style={{ ...inputStyle, color: derivedId ? "#666" : "#e07070", marginBottom: derivedId ? "0.75rem" : "0.25rem" }} />
+            {!derivedId && addForm.label.trim() && (
+              <p style={{ color: "#e07070", fontSize: "0.72rem", marginBottom: "0.75rem" }}>
+                Label must contain at least one letter or number.
+              </p>
+            )}
 
             <label style={labelStyle}>Label *</label>
             <input

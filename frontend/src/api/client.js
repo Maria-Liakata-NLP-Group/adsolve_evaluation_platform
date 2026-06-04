@@ -9,10 +9,13 @@ export class ApiError extends Error {
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
-// Reads error detail from JSON body when available
+// Reads error detail from JSON body when available; handles dict details (e.g. 409 conflicts)
 const parseError = async (response, path) => {
   const data = await response.json().catch(() => ({}));
-  return new ApiError(response.status, data.detail ?? `API error ${response.status}: ${path}`);
+  const detail = data.detail;
+  const msg = typeof detail === "string" ? detail
+    : detail?.message ?? `API error ${response.status}: ${path}`;
+  return new ApiError(response.status, msg);
 };
 
 export const get = async (path, headers = {}) => {

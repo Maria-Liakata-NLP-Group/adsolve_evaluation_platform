@@ -32,6 +32,8 @@ router = APIRouter(prefix="/api")
 def require_admin(x_admin_token: str = Header(...)) -> None:
     """FastAPI dependency: reject requests that don't carry the admin token."""
     expected = os.environ.get("ADMIN_TOKEN", "")
+    if not expected:
+        raise HTTPException(status_code=503, detail="Admin auth not configured on server.")
     if not hmac.compare_digest(x_admin_token, expected):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
