@@ -106,3 +106,56 @@ def test_update_metric_not_found(client):
         "label": "Ghost",
     }, headers={"X-Admin-Token": TEST_TOKEN})
     assert response.status_code == 404
+
+
+def test_delete_metric_success(client):
+    """Create a fresh metric with no path links, then delete it."""
+    os.environ["ADMIN_TOKEN"] = TEST_TOKEN
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    metric_id = "test_metric_delete_target"
+
+    client.post("/api/metrics", json={
+        "id": metric_id, "label": "Delete Me",
+    }, headers=headers)
+
+    response = client.delete(f"/api/metrics/{metric_id}", headers=headers)
+    assert response.status_code == 204
+
+    # Confirm it's gone
+    assert client.get(f"/api/metrics/{metric_id}").status_code == 404
+
+
+def test_delete_metric_blocked_when_linked(client):
+    """A metric used in path_aspect_metrics cannot be deleted."""
+    os.environ["ADMIN_TOKEN"] = TEST_TOKEN
+    # Find a seeded metric that is linked to a path
+    # First, check what metrics exist and are linked
+    response = client.get("/api/metrics")
+    assert response.status_code == 200
+    all_metrics = response.json()
+
+    # Try to find a linked metric by checking path details
+    # Use the first metric from any path
+    paths_response = client.get("/api/paths")
+    assert paths_response.status_code == 200
+    paths = paths_response.json()
+    assert len(paths) > 0
+
+    # Get first path detail to find a linked metric
+    path_detail = client.get(f"/api/paths/{paths[0]['id']}").json()
+    assert len(path_detail["aspects"]) > 0
+    assert len(path_detail["aspects"][0]["metrics"]) > 0
+    linked_metric_id = path_detail["aspects"][0]["metrics"][0]["id"]
+
+    response = client.delete(f"/api/metrics/{linked_metric_id}",
+                             headers={"X-Admin-Token": TEST_TOKEN})
+    assert response.status_code == 409
+    data = response.json()
+    assert "detail" in data
+
+
+def test_delete_metric_not_found(client):
+    os.environ["ADMIN_TOKEN"] = TEST_TOKEN
+    response = client.delete("/api/metrics/nonexistent_xyz",
+                             headers={"X-Admin-Token": TEST_TOKEN})
+    assert response.status_code == 404

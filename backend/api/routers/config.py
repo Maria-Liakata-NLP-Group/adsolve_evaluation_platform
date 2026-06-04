@@ -396,3 +396,38 @@ def update_metric(
     )
     db.commit()
     return get_metric(metric_id, db)
+
+
+@router.delete("/metrics/{metric_id}", status_code=204,
+               dependencies=[Depends(require_admin)])
+def delete_metric(metric_id: str, db: Session = Depends(get_db)) -> None:
+    """Delete a metric. Returns 409 if it is linked to any path aspect."""
+    existing = db.execute(
+        text("SELECT id FROM metrics WHERE id = :id"), {"id": metric_id}
+    ).one_or_none()
+    if existing is None:
+        raise HTTPException(status_code=404, detail="Metric not found")
+
+    blocking = db.execute(
+        text("""
+            SELECT p.id AS path_id
+              FROM path_aspect_metrics pam
+              JOIN path_aspects pa ON pa.id = pam.path_aspect_id
+              JOIN paths p         ON p.id  = pa.path_id
+             WHERE pam.metric_id = :metric_id
+        """),
+        {"metric_id": metric_id},
+    ).mappings().all()
+
+    if blocking:
+        path_ids = [r["path_id"] for r in blocking]
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "message": f"Metric is used in {len(path_ids)} path(s).",
+                "blocking_paths": path_ids,
+            },
+        )
+
+    db.execute(text("DELETE FROM metrics WHERE id = :id"), {"id": metric_id})
+    db.commit()
