@@ -505,6 +505,7 @@ def update_aspect(
             text("""
                 INSERT INTO aspect_metrics (aspect_id, metric_id)
                 VALUES (:aspect_id, :metric_id)
+                ON CONFLICT DO NOTHING
             """),
             {"aspect_id": aspect_id, "metric_id": metric_id},
         )
