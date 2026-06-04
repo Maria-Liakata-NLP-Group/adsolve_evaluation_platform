@@ -13,7 +13,7 @@ const REFERENCE_OPTIONS = ["reference_free", "reference_based"];
 const toItems = (strings) => (strings ?? []).map((s) => ({ id: s, label: s }));
 
 const MetricDetail = ({ metricId, onNavigateToAspect, onDeleted, onUpdated }) => {
-  const { isAdmin, token } = useAdmin();
+  const { token } = useAdmin();
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
