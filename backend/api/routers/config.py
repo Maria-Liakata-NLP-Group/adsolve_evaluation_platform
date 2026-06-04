@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import os
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -24,6 +25,19 @@ from ..schemas.config import (
 )
 
 router = APIRouter(prefix="/api")
+
+
+def require_admin(x_admin_token: str = Header(...)) -> None:
+    """FastAPI dependency: reject requests that don't carry the admin token."""
+    if x_admin_token != os.environ.get("ADMIN_TOKEN"):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+@router.get("/admin/verify")
+def verify_admin(_: None = Depends(require_admin)) -> dict:
+    """Lightweight endpoint to validate an admin token from the frontend."""
+    return {"status": "ok"}
+
 
 # Infrastructure options are hardcoded because their labels are not stored in
 # the database — they originated from a YAML file that is no longer part of
