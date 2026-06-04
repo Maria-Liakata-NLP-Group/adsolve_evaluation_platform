@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hmac
 import os
 from typing import Optional
 
@@ -29,7 +30,8 @@ router = APIRouter(prefix="/api")
 
 def require_admin(x_admin_token: str = Header(...)) -> None:
     """FastAPI dependency: reject requests that don't carry the admin token."""
-    if x_admin_token != os.environ.get("ADMIN_TOKEN"):
+    expected = os.environ.get("ADMIN_TOKEN", "")
+    if not hmac.compare_digest(x_admin_token, expected):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
 
