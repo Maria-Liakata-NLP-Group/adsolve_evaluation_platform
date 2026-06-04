@@ -254,3 +254,19 @@ def test_delete_aspect_not_found(client):
     response = client.delete("/api/aspects/nonexistent_xyz",
                              headers={"X-Admin-Token": TEST_TOKEN})
     assert response.status_code == 404
+
+
+def test_delete_metric_blocked_when_in_aspect_pool(client):
+    """A metric in aspect_metrics cannot be deleted."""
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    aspects_response = client.get("/api/aspects")
+    aspects = aspects_response.json()
+    metric_in_pool = None
+    for aspect in aspects:
+        detail = client.get(f"/api/aspects/{aspect['id']}").json()
+        if detail.get("metrics"):
+            metric_in_pool = detail["metrics"][0]["id"]
+            break
+    assert metric_in_pool is not None, "No seeded aspect has metrics in pool"
+    response = client.delete(f"/api/metrics/{metric_in_pool}", headers=headers)
+    assert response.status_code == 409

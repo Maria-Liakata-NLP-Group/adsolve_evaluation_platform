@@ -428,15 +428,23 @@ def delete_metric(metric_id: str, db: Session = Depends(get_db)) -> None:
         {"metric_id": metric_id},
     ).mappings().all()
 
-    if path_blocking or run_blocking:
+    # Check aspect pool links
+    aspect_blocking = db.execute(
+        text("SELECT aspect_id FROM aspect_metrics WHERE metric_id = :metric_id"),
+        {"metric_id": metric_id},
+    ).mappings().all()
+
+    if path_blocking or run_blocking or aspect_blocking:
         path_ids = [r["path_id"] for r in path_blocking]
         run_ids = [r["run_id"] for r in run_blocking]
+        aspect_ids = [r["aspect_id"] for r in aspect_blocking]
         raise HTTPException(
             status_code=409,
             detail={
-                "message": f"Metric is linked to {len(path_ids)} path(s) and {len(run_ids)} run(s).",
+                "message": f"Metric is linked to {len(path_ids)} path(s), {len(run_ids)} run(s), and {len(aspect_ids)} aspect pool(s).",
                 "blocking_paths": path_ids,
                 "blocking_runs": run_ids,
+                "blocking_aspects": aspect_ids,
             },
         )
 
