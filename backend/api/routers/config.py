@@ -502,3 +502,37 @@ def update_aspect(
         )
     db.commit()
     return get_aspect(aspect_id, db)
+
+
+@router.delete("/aspects/{aspect_id}", status_code=204,
+               dependencies=[Depends(require_admin)])
+def delete_aspect(aspect_id: str, db: Session = Depends(get_db)) -> None:
+    """Delete an aspect. Returns 409 if it is used in any path."""
+    existing = db.execute(
+        text("SELECT id FROM aspects WHERE id = :id"), {"id": aspect_id}
+    ).one_or_none()
+    if existing is None:
+        raise HTTPException(status_code=404, detail="Aspect not found")
+
+    blocking = db.execute(
+        text("""
+            SELECT p.id AS path_id
+              FROM path_aspects pa
+              JOIN paths p ON p.id = pa.path_id
+             WHERE pa.aspect_id = :aspect_id
+        """),
+        {"aspect_id": aspect_id},
+    ).mappings().all()
+
+    if blocking:
+        path_ids = [r["path_id"] for r in blocking]
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "message": f"Aspect is used in {len(path_ids)} path(s).",
+                "blocking_paths": path_ids,
+            },
+        )
+
+    db.execute(text("DELETE FROM aspects WHERE id = :id"), {"id": aspect_id})
+    db.commit()

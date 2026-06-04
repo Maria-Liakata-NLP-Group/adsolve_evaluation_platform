@@ -226,3 +226,31 @@ def test_update_aspect_not_found(client):
         "id": "nonexistent_aspect_xyz", "label": "Ghost",
     }, headers={"X-Admin-Token": TEST_TOKEN})
     assert response.status_code == 404
+
+
+def test_delete_aspect_success(client):
+    """Create a fresh aspect with no path links, then delete it."""
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    aspect_id = "test_aspect_delete_target"
+    client.post("/api/aspects", json={"id": aspect_id, "label": "Delete Me"}, headers=headers)
+    response = client.delete(f"/api/aspects/{aspect_id}", headers=headers)
+    assert response.status_code == 204
+    assert client.get(f"/api/aspects/{aspect_id}").status_code == 404
+
+
+def test_delete_aspect_blocked_when_linked(client):
+    """An aspect used in path_aspects cannot be deleted."""
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    paths_response = client.get("/api/paths")
+    paths = paths_response.json()
+    path_detail = client.get(f"/api/paths/{paths[0]['id']}").json()
+    linked_aspect_id = path_detail["aspects"][0]["id"]
+    response = client.delete(f"/api/aspects/{linked_aspect_id}", headers=headers)
+    assert response.status_code == 409
+    assert "detail" in response.json()
+
+
+def test_delete_aspect_not_found(client):
+    response = client.delete("/api/aspects/nonexistent_xyz",
+                             headers={"X-Admin-Token": TEST_TOKEN})
+    assert response.status_code == 404
