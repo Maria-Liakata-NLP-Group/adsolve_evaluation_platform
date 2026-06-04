@@ -12,6 +12,7 @@ const AdminItemActions = ({ canDelete, blockingMessage, onEdit, onDelete }) => {
   return (
     <div style={{ display: "flex", gap: "0.4rem", flexShrink: 0 }}>
       <button
+        type="button"
         onClick={onEdit}
         style={{
           padding: "0.28rem 0.7rem",
@@ -26,6 +27,7 @@ const AdminItemActions = ({ canDelete, blockingMessage, onEdit, onDelete }) => {
         Edit
       </button>
       <button
+        type="button"
         onClick={canDelete ? onDelete : undefined}
         disabled={!canDelete}
         title={!canDelete ? (blockingMessage ?? "Cannot delete: item is in use") : "Delete"}

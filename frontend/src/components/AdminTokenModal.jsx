@@ -41,7 +41,7 @@ const AdminTokenModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div style={overlayStyle} onClick={onClose}>
+    <div style={overlayStyle} onClick={onClose} onKeyDown={(e) => e.key === "Escape" && onClose()} tabIndex={-1}>
       <div style={boxStyle} onClick={(e) => e.stopPropagation()}>
         <h3 style={{ color: "#fff", fontFamily: '"Raleway", sans-serif', marginBottom: "1rem" }}>
           Admin Access
@@ -53,8 +53,8 @@ const AdminTokenModal = ({ isOpen, onClose }) => {
               You are signed in as admin.
             </p>
             <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-              <button onClick={onClose} style={secondaryBtn}>Cancel</button>
-              <button onClick={handleLogout} style={dangerBtn}>Sign out</button>
+              <button type="button" onClick={onClose} style={secondaryBtn}>Cancel</button>
+              <button type="button" onClick={handleLogout} style={dangerBtn}>Sign out</button>
             </div>
           </>
         ) : (
@@ -81,8 +81,9 @@ const AdminTokenModal = ({ isOpen, onClose }) => {
               </p>
             )}
             <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-              <button onClick={onClose} style={secondaryBtn}>Cancel</button>
+              <button type="button" onClick={onClose} style={secondaryBtn}>Cancel</button>
               <button
+                type="button"
                 onClick={handleLogin}
                 disabled={loading || !tokenInput}
                 style={{ ...primaryBtn, opacity: loading || !tokenInput ? 0.5 : 1 }}
