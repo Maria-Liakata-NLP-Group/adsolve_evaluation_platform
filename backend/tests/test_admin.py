@@ -447,3 +447,99 @@ def test_delete_path_not_found(client):
     response = client.delete("/api/paths/nonexistent_path_xyz",
                              headers={"X-Admin-Token": TEST_TOKEN})
     assert response.status_code == 404
+
+
+# --- Task 5: POST /api/paths/{path_id}/aspects ---
+
+def test_add_aspect_to_path(client, created_path, seeded_ids):
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    aspects = client.get("/api/aspects").json()
+    aspect_id = aspects[0]["id"]
+    response = client.post(f"/api/paths/{created_path}/aspects", json={
+        "aspect_id": aspect_id,
+        "definition": "Test definition",
+        "metric_ids": [],
+    }, headers=headers)
+    assert response.status_code == 201
+    data = response.json()
+    aspect_ids = [a["id"] for a in data["aspects"]]
+    assert aspect_id in aspect_ids
+
+
+def test_add_aspect_to_path_not_found(client):
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    response = client.post("/api/paths/nonexistent_path_xyz/aspects", json={
+        "aspect_id": "coherence",
+    }, headers=headers)
+    assert response.status_code == 404
+
+
+def test_add_aspect_to_path_duplicate_returns_409(client, created_path):
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    aspects = client.get("/api/aspects").json()
+    aspect_id = aspects[0]["id"]
+    client.post(f"/api/paths/{created_path}/aspects",
+                json={"aspect_id": aspect_id}, headers=headers)
+    response = client.post(f"/api/paths/{created_path}/aspects",
+                           json={"aspect_id": aspect_id}, headers=headers)
+    assert response.status_code == 409
+
+
+# --- Task 6: PUT /api/paths/{path_id}/aspects/{aspect_id} ---
+
+@pytest.fixture
+def path_with_aspect(client, created_path):
+    """Add an aspect to the test path and return (path_id, aspect_id)."""
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    aspects = client.get("/api/aspects").json()
+    aspect_id = aspects[0]["id"]
+    client.post(f"/api/paths/{created_path}/aspects",
+                json={"aspect_id": aspect_id, "definition": "Initial definition"},
+                headers=headers)
+    return created_path, aspect_id
+
+
+def test_update_path_aspect(client, path_with_aspect):
+    path_id, aspect_id = path_with_aspect
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    response = client.put(f"/api/paths/{path_id}/aspects/{aspect_id}", json={
+        "definition": "Updated definition",
+        "examples": {
+            "original_posts": ["Post one", "Post two"],
+            "good_summary": "A good summary",
+            "why_good": "Because it is concise",
+            "bad_summary": "A bad summary",
+            "why_bad": "Because it misses key points",
+        },
+        "stakeholder_requirements": {"items": ["Requirement one", "Requirement two"]},
+        "metric_ids": [],
+    }, headers=headers)
+    assert response.status_code == 200
+    data = response.json()
+    updated_aspect = next((a for a in data["aspects"] if a["id"] == aspect_id), None)
+    assert updated_aspect is not None
+    assert updated_aspect["definition"] == "Updated definition"
+
+
+def test_update_path_aspect_not_found(client, created_path):
+    response = client.put(f"/api/paths/{created_path}/aspects/nonexistent_aspect_xyz",
+                          json={"definition": "Ghost", "metric_ids": []},
+                          headers={"X-Admin-Token": TEST_TOKEN})
+    assert response.status_code == 404
+
+
+# --- Task 7: DELETE /api/paths/{path_id}/aspects/{aspect_id} ---
+
+def test_remove_aspect_from_path(client, path_with_aspect):
+    path_id, aspect_id = path_with_aspect
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    response = client.delete(f"/api/paths/{path_id}/aspects/{aspect_id}", headers=headers)
+    assert response.status_code == 204
+    detail = client.get(f"/api/paths/{path_id}").json()
+    assert all(a["id"] != aspect_id for a in detail["aspects"])
+
+
+def test_remove_aspect_from_path_not_found(client, created_path):
+    response = client.delete(f"/api/paths/{created_path}/aspects/nonexistent_xyz",
+                             headers={"X-Admin-Token": TEST_TOKEN})
+    assert response.status_code == 404

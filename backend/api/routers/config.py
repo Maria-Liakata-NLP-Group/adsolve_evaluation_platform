@@ -331,6 +331,193 @@ def delete_path(path_id: str, db: Session = Depends(get_db)) -> None:
     db.commit()
 
 
+@router.post("/paths/{path_id}/aspects", response_model=PathDetail, status_code=201,
+             dependencies=[Depends(require_admin)])
+def add_aspect_to_path(
+    path_id: str, body: PathAspectCreate, db: Session = Depends(get_db)
+) -> PathDetail:
+    """Add an aspect to a path with optional initial configuration."""
+    if db.execute(text("SELECT id FROM paths WHERE id = :id"), {"id": path_id}).one_or_none() is None:
+        raise HTTPException(status_code=404, detail="Path not found")
+    if db.execute(text("SELECT id FROM aspects WHERE id = :id"), {"id": body.aspect_id}).one_or_none() is None:
+        raise HTTPException(status_code=404, detail="Aspect not found")
+
+    existing_link = db.execute(
+        text("SELECT id FROM path_aspects WHERE path_id = :path_id AND aspect_id = :aspect_id"),
+        {"path_id": path_id, "aspect_id": body.aspect_id},
+    ).one_or_none()
+    if existing_link:
+        raise HTTPException(status_code=409, detail="Aspect is already linked to this path.")
+
+    max_order = db.execute(
+        text("SELECT COALESCE(MAX(sort_order), -1) FROM path_aspects WHERE path_id = :path_id"),
+        {"path_id": path_id},
+    ).scalar_one()
+
+    pa_id = db.execute(
+        text("""
+            INSERT INTO path_aspects
+                (path_id, aspect_id, definition, sort_order, examples, stakeholder_requirements)
+            VALUES (:path_id, :aspect_id, :definition, :sort_order,
+                    CAST(:examples AS jsonb), CAST(:stakeholder_requirements AS jsonb))
+            RETURNING id
+        """),
+        {
+            "path_id": path_id,
+            "aspect_id": body.aspect_id,
+            "definition": body.definition or "",
+            "sort_order": max_order + 1,
+            "examples": json.dumps(body.examples.model_dump()) if body.examples else None,
+            "stakeholder_requirements": (
+                json.dumps(body.stakeholder_requirements.model_dump())
+                if body.stakeholder_requirements else None
+            ),
+        },
+    ).scalar_one()
+
+    try:
+        for metric_id in body.metric_ids:
+            db.execute(
+                text("INSERT INTO path_aspect_metrics (path_aspect_id, metric_id) VALUES (:pa_id, :mid) ON CONFLICT DO NOTHING"),
+                {"pa_id": pa_id, "mid": metric_id},
+            )
+            db.execute(
+                text("INSERT INTO aspect_metrics (aspect_id, metric_id) VALUES (:aid, :mid) ON CONFLICT DO NOTHING"),
+                {"aid": body.aspect_id, "mid": metric_id},
+            )
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=422, detail="One or more metric_ids do not exist.")
+
+    return get_path(path_id, db)
+
+
+@router.put("/paths/{path_id}/aspects/{aspect_id}", response_model=PathDetail,
+            dependencies=[Depends(require_admin)])
+def update_path_aspect(
+    path_id: str, aspect_id: str, body: PathAspectWrite, db: Session = Depends(get_db)
+) -> PathDetail:
+    """Update a path-aspect's definition, examples, requirements, and metrics."""
+    pa_id = db.execute(
+        text("SELECT id FROM path_aspects WHERE path_id = :path_id AND aspect_id = :aspect_id"),
+        {"path_id": path_id, "aspect_id": aspect_id},
+    ).scalar_one_or_none()
+    if pa_id is None:
+        raise HTTPException(status_code=404, detail="Path aspect not found")
+
+    # Guard: check for run-blocked metric removals before making changes.
+    current_ids = {
+        r["metric_id"]
+        for r in db.execute(
+            text("SELECT metric_id FROM path_aspect_metrics WHERE path_aspect_id = :pa_id"),
+            {"pa_id": pa_id},
+        ).mappings().all()
+    }
+    removing_ids = current_ids - set(body.metric_ids)
+
+    if removing_ids:
+        run_blocked = db.execute(
+            text("""
+                SELECT DISTINCT rm.metric_id
+                FROM run_metrics rm
+                JOIN evaluation_runs er ON er.id = rm.run_id
+                WHERE er.path_id = :path_id
+                  AND rm.metric_id = ANY(:removing_ids)
+            """),
+            {"path_id": path_id, "removing_ids": list(removing_ids)},
+        ).mappings().all()
+
+        if run_blocked:
+            blocked = [r["metric_id"] for r in run_blocked]
+            raise HTTPException(
+                status_code=409,
+                detail={
+                    "message": f"Cannot remove {len(blocked)} metric(s) used in runs.",
+                    "blocked_metric_ids": blocked,
+                },
+            )
+
+    db.execute(
+        text("""
+            UPDATE path_aspects
+               SET definition               = :definition,
+                   examples                 = CAST(:examples AS jsonb),
+                   stakeholder_requirements = CAST(:stakeholder_requirements AS jsonb)
+             WHERE id = :pa_id
+        """),
+        {
+            "pa_id": pa_id,
+            "definition": body.definition or "",
+            "examples": json.dumps(body.examples.model_dump()) if body.examples else None,
+            "stakeholder_requirements": (
+                json.dumps(body.stakeholder_requirements.model_dump())
+                if body.stakeholder_requirements else None
+            ),
+        },
+    )
+
+    db.execute(
+        text("DELETE FROM path_aspect_metrics WHERE path_aspect_id = :pa_id"),
+        {"pa_id": pa_id},
+    )
+
+    try:
+        for metric_id in body.metric_ids:
+            db.execute(
+                text("INSERT INTO path_aspect_metrics (path_aspect_id, metric_id) VALUES (:pa_id, :mid) ON CONFLICT DO NOTHING"),
+                {"pa_id": pa_id, "mid": metric_id},
+            )
+            db.execute(
+                text("INSERT INTO aspect_metrics (aspect_id, metric_id) VALUES (:aid, :mid) ON CONFLICT DO NOTHING"),
+                {"aid": aspect_id, "mid": metric_id},
+            )
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=422, detail="One or more metric_ids do not exist.")
+
+    return get_path(path_id, db)
+
+
+@router.delete("/paths/{path_id}/aspects/{aspect_id}", status_code=204,
+               dependencies=[Depends(require_admin)])
+def remove_aspect_from_path(
+    path_id: str, aspect_id: str, db: Session = Depends(get_db)
+) -> None:
+    """Remove an aspect from a path. Returns 409 if any of its metrics are used in runs."""
+    pa_id = db.execute(
+        text("SELECT id FROM path_aspects WHERE path_id = :path_id AND aspect_id = :aspect_id"),
+        {"path_id": path_id, "aspect_id": aspect_id},
+    ).scalar_one_or_none()
+    if pa_id is None:
+        raise HTTPException(status_code=404, detail="Path aspect not found")
+
+    blocking = db.execute(
+        text("""
+            SELECT DISTINCT pam.metric_id
+            FROM path_aspect_metrics pam
+            JOIN evaluation_runs er ON er.path_id = :path_id
+            JOIN run_metrics rm ON rm.run_id = er.id AND rm.metric_id = pam.metric_id
+            WHERE pam.path_aspect_id = :pa_id
+        """),
+        {"path_id": path_id, "pa_id": pa_id},
+    ).mappings().all()
+
+    if blocking:
+        blocked_ids = [r["metric_id"] for r in blocking]
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "message": f"Cannot remove aspect — {len(blocked_ids)} metric(s) used in runs.",
+                "blocked_metric_ids": blocked_ids,
+            },
+        )
+
+    db.execute(text("DELETE FROM path_aspects WHERE id = :pa_id"), {"pa_id": pa_id})
+    db.commit()
+
+
 @router.get("/aspects", response_model=list[AspectSummary])
 def get_aspects(db: Session = Depends(get_db)) -> list[AspectSummary]:
     """Return all aspects ordered by label."""
