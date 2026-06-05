@@ -1,5 +1,6 @@
 import os
 import pytest
+from sqlalchemy import text as sql_text
 
 TEST_TOKEN = "test-admin-token-abc123"
 
@@ -287,3 +288,113 @@ def test_path_detail_includes_run_metric_ids(client):
     detail = client.get(f"/api/paths/{paths[0]['id']}").json()
     assert "run_metric_ids" in detail
     assert isinstance(detail["run_metric_ids"], list)
+
+
+TEST_PATH_LABEL = "Test Data Source Plan PoC"
+TEST_PATH_ID = "test_data_source_plan_poc"
+
+
+@pytest.fixture
+def seeded_ids(client):
+    """Return a valid use_case_id and task_id from seeded data."""
+    paths = client.get("/api/paths").json()
+    return {"use_case_id": paths[0]["use_case_id"], "task_id": paths[0]["task_id"]}
+
+
+@pytest.fixture
+def created_path(client, seeded_ids):
+    """Create a test path and delete it after the test.
+
+    Uses a direct DB delete before creation to avoid failures when a prior test
+    left the same path ID in the database (e.g. because DELETE /api/paths is not
+    yet implemented).
+    """
+    from api.db import engine  # import here to avoid circular imports at module level
+
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    # Pre-cleanup: remove any leftover path from a previous test run
+    with engine.connect() as conn:
+        conn.execute(sql_text("DELETE FROM paths WHERE id = :id"), {"id": TEST_PATH_ID})
+        conn.commit()
+
+    response = client.post("/api/paths", json={
+        "use_case_id": seeded_ids["use_case_id"],
+        "task_id": seeded_ids["task_id"],
+        "data_source_label": TEST_PATH_LABEL,
+        "data_source_description": "Created by test suite",
+        "task_description": "Test task description",
+    }, headers=headers)
+    assert response.status_code == 201, f"Fixture failed: {response.json()}"
+    yield TEST_PATH_ID
+    client.delete(f"/api/paths/{TEST_PATH_ID}", headers=headers)
+
+
+def test_create_path(client, seeded_ids):
+    from api.db import engine  # import here to avoid circular imports at module level
+
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    # Pre-cleanup: ensure no leftover path from a prior session
+    with engine.connect() as conn:
+        conn.execute(sql_text("DELETE FROM paths WHERE id = :id"), {"id": TEST_PATH_ID})
+        conn.commit()
+    response = client.post("/api/paths", json={
+        "use_case_id": seeded_ids["use_case_id"],
+        "task_id": seeded_ids["task_id"],
+        "data_source_label": TEST_PATH_LABEL,
+        "data_source_description": "A test data source",
+        "task_description": "A test task description",
+    }, headers=headers)
+    assert response.status_code == 201
+    data = response.json()
+    assert data["id"] == TEST_PATH_ID
+    assert data["data_source_label"] == TEST_PATH_LABEL
+    assert data["run_metric_ids"] == []
+    assert data["aspects"] == []
+    # Teardown: remove the created path (DELETE endpoint not yet implemented; direct SQL used)
+    with engine.connect() as conn:
+        conn.execute(sql_text("DELETE FROM paths WHERE id = :id"), {"id": TEST_PATH_ID})
+        conn.commit()
+
+
+def test_create_path_with_new_task(client, seeded_ids):
+    from api.db import engine  # import here to avoid circular imports at module level
+
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    new_path_id = "test_new_task_source_poc"
+    # Pre-cleanup: ensure no leftover path from a prior session
+    with engine.connect() as conn:
+        conn.execute(sql_text("DELETE FROM paths WHERE id = :id"), {"id": new_path_id})
+        conn.execute(sql_text("DELETE FROM tasks WHERE id = 'test_new_task_poc'"))
+        conn.commit()
+    response = client.post("/api/paths", json={
+        "use_case_id": seeded_ids["use_case_id"],
+        "task_label": "Test New Task PoC",
+        "data_source_label": "Test New Task Source PoC",
+    }, headers=headers)
+    assert response.status_code == 201
+    data = response.json()
+    assert data["task_id"] == "test_new_task_poc"
+    # Teardown: remove the created path and task (DELETE endpoint not yet implemented)
+    with engine.connect() as conn:
+        conn.execute(sql_text("DELETE FROM paths WHERE id = :id"), {"id": new_path_id})
+        conn.execute(sql_text("DELETE FROM tasks WHERE id = 'test_new_task_poc'"))
+        conn.commit()
+
+
+def test_create_path_requires_auth(client, seeded_ids):
+    response = client.post("/api/paths", json={
+        "use_case_id": seeded_ids["use_case_id"],
+        "task_id": seeded_ids["task_id"],
+        "data_source_label": "No Auth Test",
+    })
+    assert response.status_code == 422
+
+
+def test_create_path_duplicate_id_returns_409(client, seeded_ids, created_path):
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    response = client.post("/api/paths", json={
+        "use_case_id": seeded_ids["use_case_id"],
+        "task_id": seeded_ids["task_id"],
+        "data_source_label": TEST_PATH_LABEL,
+    }, headers=headers)
+    assert response.status_code == 409

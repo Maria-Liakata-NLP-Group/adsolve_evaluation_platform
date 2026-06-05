@@ -217,6 +217,56 @@ def get_path(path_id: str, db: Session = Depends(get_db)) -> PathDetail:
     )
 
 
+@router.post("/paths", response_model=PathDetail, status_code=201,
+             dependencies=[Depends(require_admin)])
+def create_path(body: PathCreate, db: Session = Depends(get_db)) -> PathDetail:
+    """Create a new evaluation path. Creates a new task row if task_label is provided."""
+    if not body.task_id and not body.task_label:
+        raise HTTPException(status_code=422, detail="Either task_id or task_label must be provided.")
+
+    path_id = _to_slug(body.data_source_label)
+    if not path_id:
+        raise HTTPException(status_code=422, detail="data_source_label must produce a non-empty slug.")
+
+    existing = db.execute(
+        text("SELECT id FROM paths WHERE id = :id"), {"id": path_id}
+    ).one_or_none()
+    if existing:
+        raise HTTPException(status_code=409, detail="A path with this id already exists.")
+
+    task_id = body.task_id
+    if not task_id:
+        task_id = _to_slug(body.task_label)
+        task_exists = db.execute(
+            text("SELECT id FROM tasks WHERE id = :id"), {"id": task_id}
+        ).one_or_none()
+        if not task_exists:
+            db.execute(
+                text("INSERT INTO tasks (id, label) VALUES (:id, :label)"),
+                {"id": task_id, "label": body.task_label},
+            )
+
+    db.execute(
+        text("""
+            INSERT INTO paths (id, use_case_id, task_id, data_source_id,
+                               data_source_label, data_source_description, task_description)
+            VALUES (:id, :use_case_id, :task_id, :data_source_id,
+                    :data_source_label, :data_source_description, :task_description)
+        """),
+        {
+            "id": path_id,
+            "use_case_id": body.use_case_id,
+            "task_id": task_id,
+            "data_source_id": path_id,
+            "data_source_label": body.data_source_label,
+            "data_source_description": body.data_source_description,
+            "task_description": body.task_description,
+        },
+    )
+    db.commit()
+    return get_path(path_id, db)
+
+
 @router.get("/aspects", response_model=list[AspectSummary])
 def get_aspects(db: Session = Depends(get_db)) -> list[AspectSummary]:
     """Return all aspects ordered by label."""
