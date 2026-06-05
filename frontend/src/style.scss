@@ -294,6 +294,11 @@ html, body {
   letter-spacing: 0.06em;
 }
 
+.admin-button-group {
+  display: flex;
+  gap: 0.4rem;
+}
+
 /* ── Admin UI: inline item action buttons (Edit / Delete) ───── */
 .admin-item-actions {
   display: flex;

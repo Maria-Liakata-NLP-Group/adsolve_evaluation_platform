@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 const AdminEditHeader = ({ title, onCancel, onSave, saving, canSave }) => (
   <div className="admin-edit-header">
     <span className="admin-edit-title">{title}</span>
-    <div style={{ display: "flex", gap: "0.4rem" }}>
+    <div className="admin-button-group">
       <button type="button" onClick={onCancel} className="admin-btn-secondary">
         Cancel
       </button>
