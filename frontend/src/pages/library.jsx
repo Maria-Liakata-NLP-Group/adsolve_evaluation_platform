@@ -12,6 +12,7 @@ import PathDetailPanel from "../components/PathDetailPanel";
 import CreateNewRun from "../components/CreateNewRun";
 
 const MODES = ["aspects", "metrics", "paths"];
+const MODE_LABELS = { aspects: "ASPECTS", metrics: "METRICS", paths: "TASKS" };
 
 const toSlug = (label) =>
   label.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
@@ -197,7 +198,7 @@ const Library = () => {
                 className={`button is-small is-fullwidth ${mode === m ? "is-link is-selected" : ""}`}
                 onClick={() => onSelectMode(m)}
               >
-                {m.toUpperCase()}
+                {MODE_LABELS[m]}
               </button>
             ))}
           </div>

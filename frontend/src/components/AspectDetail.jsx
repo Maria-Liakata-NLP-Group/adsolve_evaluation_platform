@@ -235,7 +235,7 @@ const AspectDetail = ({ aspectId, onNavigateToMetric, onNavigateToPath, onDelete
 
       <div style={{ marginTop: "2rem" }}>
         <p className="is-size-7 is-uppercase has-text-grey" style={{ letterSpacing: "0.1em", marginBottom: "0.75rem" }}>
-          Used in Paths
+          Used in Tasks
         </p>
         {loading ? (
           <p className="has-text-grey is-italic">Loading…</p>
