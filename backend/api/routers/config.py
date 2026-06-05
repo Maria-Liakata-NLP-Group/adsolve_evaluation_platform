@@ -438,31 +438,29 @@ def update_path_aspect(
                 },
             )
 
-    db.execute(
-        text("""
-            UPDATE path_aspects
-               SET definition               = :definition,
-                   examples                 = CAST(:examples AS jsonb),
-                   stakeholder_requirements = CAST(:stakeholder_requirements AS jsonb)
-             WHERE id = :pa_id
-        """),
-        {
-            "pa_id": pa_id,
-            "definition": body.definition or "",
-            "examples": json.dumps(body.examples.model_dump()) if body.examples else None,
-            "stakeholder_requirements": (
-                json.dumps(body.stakeholder_requirements.model_dump())
-                if body.stakeholder_requirements else None
-            ),
-        },
-    )
-
-    db.execute(
-        text("DELETE FROM path_aspect_metrics WHERE path_aspect_id = :pa_id"),
-        {"pa_id": pa_id},
-    )
-
     try:
+        db.execute(
+            text("""
+                UPDATE path_aspects
+                   SET definition               = :definition,
+                       examples                 = CAST(:examples AS jsonb),
+                       stakeholder_requirements = CAST(:stakeholder_requirements AS jsonb)
+                 WHERE id = :pa_id
+            """),
+            {
+                "pa_id": pa_id,
+                "definition": body.definition or "",
+                "examples": json.dumps(body.examples.model_dump()) if body.examples else None,
+                "stakeholder_requirements": (
+                    json.dumps(body.stakeholder_requirements.model_dump())
+                    if body.stakeholder_requirements else None
+                ),
+            },
+        )
+        db.execute(
+            text("DELETE FROM path_aspect_metrics WHERE path_aspect_id = :pa_id"),
+            {"pa_id": pa_id},
+        )
         for metric_id in body.metric_ids:
             db.execute(
                 text("INSERT INTO path_aspect_metrics (path_aspect_id, metric_id) VALUES (:pa_id, :mid) ON CONFLICT DO NOTHING"),
@@ -495,11 +493,13 @@ def remove_aspect_from_path(
 
     blocking = db.execute(
         text("""
-            SELECT DISTINCT pam.metric_id
-            FROM path_aspect_metrics pam
-            JOIN evaluation_runs er ON er.path_id = :path_id
-            JOIN run_metrics rm ON rm.run_id = er.id AND rm.metric_id = pam.metric_id
-            WHERE pam.path_aspect_id = :pa_id
+            SELECT DISTINCT rm.metric_id
+            FROM run_metrics rm
+            JOIN evaluation_runs er ON er.id = rm.run_id
+            WHERE er.path_id = :path_id
+              AND rm.metric_id = ANY(
+                  SELECT metric_id FROM path_aspect_metrics WHERE path_aspect_id = :pa_id
+              )
         """),
         {"path_id": path_id, "pa_id": pa_id},
     ).mappings().all()
