@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import hmac
+import json
 import os
+import re
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Header, HTTPException
@@ -15,6 +17,7 @@ from ..schemas.config import (
     AspectPathRecord,
     AspectSummary,
     AspectWrite,
+    ExamplesWrite,
     InfraGroup,
     InfraOption,
     InfrastructureSchema,
@@ -23,8 +26,13 @@ from ..schemas.config import (
     MetricSummary,
     MetricWrite,
     PathAspect,
+    PathAspectCreate,
+    PathAspectWrite,
+    PathCreate,
     PathDetail,
     PathSummary,
+    PathWrite,
+    TaskSummary,
     UseCaseSchema,
 )
 
@@ -38,6 +46,11 @@ def require_admin(x_admin_token: str = Header(...)) -> None:
         raise HTTPException(status_code=503, detail="Admin auth not configured on server.")
     if not hmac.compare_digest(x_admin_token, expected):
         raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+def _to_slug(label: str) -> str:
+    """Derive a URL-safe ID from a text label."""
+    return re.sub(r"[^a-z0-9_]", "", label.lower().replace(" ", "_"))
 
 
 @router.get("/admin/verify")
@@ -73,6 +86,15 @@ def get_use_cases(db: Session = Depends(get_db)) -> list[UseCaseSchema]:
     """Return all use cases ordered by id."""
     rows = db.execute(
         text("SELECT id, label, description FROM use_cases ORDER BY id")
+    ).mappings().all()
+    return [dict(r) for r in rows]
+
+
+@router.get("/tasks", response_model=list[TaskSummary])
+def get_tasks(db: Session = Depends(get_db)) -> list[TaskSummary]:
+    """Return all tasks ordered by label."""
+    rows = db.execute(
+        text("SELECT id, label FROM tasks ORDER BY label")
     ).mappings().all()
     return [dict(r) for r in rows]
 
@@ -141,6 +163,17 @@ def get_path(path_id: str, db: Session = Depends(get_db)) -> PathDetail:
         {"path_id": path_id},
     ).mappings().all()
 
+    run_metric_rows = db.execute(
+        text("""
+            SELECT DISTINCT rm.metric_id
+            FROM run_metrics rm
+            JOIN evaluation_runs er ON er.id = rm.run_id
+            WHERE er.path_id = :path_id
+        """),
+        {"path_id": path_id},
+    ).mappings().all()
+    run_metric_ids = [r["metric_id"] for r in run_metric_rows]
+
     # Group metrics by their parent path_aspect_id.
     metrics_by_aspect: dict[int, list[MetricSchema]] = {}
     for mr in metric_rows:
@@ -180,6 +213,7 @@ def get_path(path_id: str, db: Session = Depends(get_db)) -> PathDetail:
         data_source_label=path_row["data_source_label"],
         data_source_description=path_row["data_source_description"],
         aspects=aspects,
+        run_metric_ids=run_metric_ids,
     )
 
 

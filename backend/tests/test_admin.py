@@ -270,3 +270,20 @@ def test_delete_metric_blocked_when_in_aspect_pool(client):
     assert metric_in_pool is not None, "No seeded aspect has metrics in pool"
     response = client.delete(f"/api/metrics/{metric_in_pool}", headers=headers)
     assert response.status_code == 409
+
+
+def test_get_tasks_returns_list(client):
+    response = client.get("/api/tasks")
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    assert len(data) > 0
+    assert "id" in data[0]
+    assert "label" in data[0]
+
+
+def test_path_detail_includes_run_metric_ids(client):
+    paths = client.get("/api/paths").json()
+    detail = client.get(f"/api/paths/{paths[0]['id']}").json()
+    assert "run_metric_ids" in detail
+    assert isinstance(detail["run_metric_ids"], list)
