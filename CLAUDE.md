@@ -20,3 +20,5 @@ For JavaScript code:
 - use array methods like map, filter, and reduce instead of for loops when working with arrays
 - use const and let instead of var for variable declarations
 - any reusable style should be defined as css classes. Do NOT use the same inline styles repeatedly. Inline-styles should only be used for small, specific changes, never for general, especially repeated styles.
+- Always use template literals for string concatenation instead of the + operator
+- always include proptype definitions for React components
