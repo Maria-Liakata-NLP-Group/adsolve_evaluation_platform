@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useBreadcrumbs } from "../components/BreadcrumbContext";
 import { useAdmin } from "../hooks/useAdmin";
-import { getAspects, getMetrics, getPaths, createMetric, createAspect } from "../api/config";
+import { getAspects, getMetrics, getPaths, getUseCases, getTasks, createMetric, createAspect, createPath } from "../api/config";
 import AspectDetail from "../components/AspectDetail";
 import MetricDetail from "../components/MetricDetail";
 import PathsMenu from "../components/PathsMenu";
@@ -52,6 +52,17 @@ const Library = () => {
   const [addAspectSaving, setAddAspectSaving] = useState(false);
   const [addAspectAllMetrics, setAddAspectAllMetrics] = useState([]);
 
+  // Add Task form state
+  const [addingPath, setAddingPath] = useState(false);
+  const [addPathForm, setAddPathForm] = useState({
+    use_case_id: "", task_id: "", task_label: "",
+    data_source_label: "", data_source_description: "", task_description: "",
+  });
+  const [addPathUseCases, setAddPathUseCases] = useState([]);
+  const [addPathTasks, setAddPathTasks] = useState([]);
+  const [addPathError, setAddPathError] = useState(null);
+  const [addPathSaving, setAddPathSaving] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -75,9 +86,9 @@ const Library = () => {
   const items = mode === "aspects" ? aspects : metrics;
   const view = searchParams.get("view") ?? null;
 
-  const onSelectMode = (newMode) => { setAdding(false); setAddingAspect(false); setSearchParams({ mode: newMode }); };
+  const onSelectMode = (newMode) => { setAdding(false); setAddingAspect(false); setAddingPath(false); setSearchParams({ mode: newMode }); };
   const onSelectItem = (id) => { setAdding(false); setAddingAspect(false); setSearchParams({ mode, id }); };
-  const onSelectPath = (pathId) => setSearchParams({ mode: "paths", id: pathId });
+  const onSelectPath = (pathId) => { setAddingPath(false); setSearchParams({ mode: "paths", id: pathId }); };
   const onCreateRun = (pathId) => setSearchParams({ mode: "paths", id: pathId, view: "new-run" });
   const onNavigateToMetric = (metric) => setSearchParams({ mode: "metrics", id: metric.id });
   const onNavigateToAspect = (aspect) => setSearchParams({ mode: "aspects", id: aspect.id });
@@ -177,6 +188,64 @@ const Library = () => {
     setAspects((prev) => prev.map((a) => a.id === id ? { ...a, label } : a));
   };
 
+  const startAddingPath = async () => {
+    try {
+      const [useCaseData, taskData] = await Promise.all([getUseCases(), getTasks()]);
+      setAddPathUseCases(useCaseData);
+      setAddPathTasks(taskData);
+    } catch {
+      setAddPathUseCases([]);
+      setAddPathTasks([]);
+    }
+    setAddingPath(true);
+    setAddPathForm({ use_case_id: "", task_id: "", task_label: "", data_source_label: "", data_source_description: "", task_description: "" });
+    setAddPathError(null);
+    setSearchParams({ mode: "paths" });
+  };
+
+  const cancelAddingPath = () => setAddingPath(false);
+
+  const handleCreatePath = async () => {
+    setAddPathSaving(true);
+    setAddPathError(null);
+    try {
+      const isNewTask = addPathForm.task_id === "__new__";
+      const payload = {
+        use_case_id: addPathForm.use_case_id,
+        task_id: isNewTask ? null : addPathForm.task_id,
+        task_label: isNewTask ? addPathForm.task_label.trim() : null,
+        data_source_label: addPathForm.data_source_label.trim(),
+        data_source_description: addPathForm.data_source_description.trim() || null,
+        task_description: addPathForm.task_description.trim() || null,
+      };
+      const created = await createPath(payload, token);
+      setPaths((prev) => [...prev, {
+        id: created.id,
+        use_case_id: created.use_case_id,
+        use_case_label: created.use_case_label,
+        task_id: created.task_id,
+        task_label: created.task_label,
+        data_source_id: created.data_source_id,
+        data_source_label: created.data_source_label,
+      }]);
+      setAddingPath(false);
+      setSearchParams({ mode: "paths", id: created.id });
+    } catch (err) {
+      setAddPathError(err.message ?? "Create failed. Please try again.");
+    } finally {
+      setAddPathSaving(false);
+    }
+  };
+
+  const handlePathDeleted = () => {
+    setPaths((prev) => prev.filter((p) => p.id !== selectedId));
+    setSearchParams({ mode: "paths" });
+  };
+
+  const handlePathUpdated = ({ id, data_source_label }) => {
+    setPaths((prev) => prev.map((p) => p.id === id ? { ...p, data_source_label } : p));
+  };
+
   if (loading) return <div className="section"><p>Loading…</p></div>;
   if (error) return <div className="section"><p className="has-text-danger">{error}</p></div>;
 
@@ -259,6 +328,23 @@ const Library = () => {
               }}
             >
               + Add Aspect
+            </button>
+          </div>
+        )}
+
+        {/* Add Task button — visible to admins in paths mode */}
+        {isAdmin && mode === "paths" && (
+          <div style={{ padding: "0.6rem", borderTop: "1px solid var(--bulma-border)" }}>
+            <button
+              type="button"
+              onClick={startAddingPath}
+              style={{
+                width: "100%", padding: "0.4rem", fontSize: "0.75rem",
+                background: "rgba(255,196,81,0.1)", border: "1px dashed rgba(255,196,81,0.4)",
+                color: "#ffc451", borderRadius: "4px", cursor: "pointer",
+              }}
+            >
+              + Add Task
             </button>
           </div>
         )}
@@ -428,10 +514,87 @@ const Library = () => {
           </>
         )}
 
+        {/* Add Task form */}
+        {addingPath && (() => {
+          const derivedPathId = toSlug(addPathForm.data_source_label);
+          const isNewTask = addPathForm.task_id === "__new__";
+          const taskOk = (addPathForm.task_id && !isNewTask) || (isNewTask && addPathForm.task_label.trim());
+          const isValid = addPathForm.use_case_id && taskOk && derivedPathId;
+          return (
+            <>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                <span style={{ fontSize: "0.72rem", color: "#ffc451", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                  New Task
+                </span>
+                <div style={{ display: "flex", gap: "0.4rem" }}>
+                  <button type="button" onClick={cancelAddingPath} style={secondaryBtn}>Cancel</button>
+                  <button type="button" onClick={handleCreatePath}
+                    disabled={addPathSaving || !isValid}
+                    style={{ ...primaryBtn, opacity: addPathSaving || !isValid ? 0.5 : 1 }}>
+                    {addPathSaving ? "Creating…" : "Create"}
+                  </button>
+                </div>
+              </div>
+
+              <label style={labelStyle}>Use case *</label>
+              <select value={addPathForm.use_case_id}
+                onChange={(e) => setAddPathForm((p) => ({ ...p, use_case_id: e.target.value }))}
+                style={{ ...inputStyle, marginBottom: "0.75rem" }}>
+                <option value="" disabled>Select a use case…</option>
+                {addPathUseCases.map((uc) => (
+                  <option key={uc.id} value={uc.id}>{uc.label}</option>
+                ))}
+              </select>
+
+              <label style={labelStyle}>Task *</label>
+              <select value={addPathForm.task_id}
+                onChange={(e) => setAddPathForm((p) => ({ ...p, task_id: e.target.value, task_label: "" }))}
+                style={{ ...inputStyle, marginBottom: "0.5rem" }}>
+                <option value="" disabled>Select a task…</option>
+                {addPathTasks.map((t) => (
+                  <option key={t.id} value={t.id}>{t.label}</option>
+                ))}
+                <option value="__new__">— New task —</option>
+              </select>
+
+              {isNewTask && (
+                <>
+                  <label style={labelStyle}>New task label *</label>
+                  <input value={addPathForm.task_label}
+                    onChange={(e) => setAddPathForm((p) => ({ ...p, task_label: e.target.value }))}
+                    placeholder="e.g. Summarisation"
+                    style={{ ...inputStyle, marginBottom: "0.75rem" }} />
+                </>
+              )}
+
+              <label style={labelStyle}>Data source label * <span style={{ color: "#666", fontStyle: "italic", fontSize: "0.68rem", textTransform: "none" }}>(ID: {derivedPathId || "—"})</span></label>
+              <input value={addPathForm.data_source_label}
+                onChange={(e) => setAddPathForm((p) => ({ ...p, data_source_label: e.target.value }))}
+                placeholder="e.g. Social Media Posts"
+                style={{ ...inputStyle, marginBottom: "0.75rem" }}
+                autoFocus />
+
+              <label style={labelStyle}>Task description</label>
+              <textarea value={addPathForm.task_description}
+                onChange={(e) => setAddPathForm((p) => ({ ...p, task_description: e.target.value }))}
+                rows={3} placeholder="Describe the task…"
+                style={{ ...inputStyle, resize: "vertical", marginBottom: "0.75rem" }} />
+
+              <label style={labelStyle}>Data source description</label>
+              <textarea value={addPathForm.data_source_description}
+                onChange={(e) => setAddPathForm((p) => ({ ...p, data_source_description: e.target.value }))}
+                rows={3} placeholder="Describe the data source…"
+                style={{ ...inputStyle, resize: "vertical", marginBottom: "0.75rem" }} />
+
+              {addPathError && <p style={{ color: "#e07070", fontSize: "0.8rem" }}>{addPathError}</p>}
+            </>
+          );
+        })()}
+
         {/* Normal right-panel views */}
         {!adding && !addingAspect && mode === "aspects" && !selectedId && <p className="has-text-grey">Select an aspect from the list.</p>}
         {!adding && mode === "metrics" && !selectedId && <p className="has-text-grey">Select a metric from the list.</p>}
-        {!adding && mode === "paths" && !selectedId && <p className="has-text-grey">Select a data source from the tree.</p>}
+        {!adding && mode === "paths" && !selectedId && !addingPath && <p className="has-text-grey">Select a data source from the tree.</p>}
 
         {!adding && !addingAspect && selectedId && mode === "aspects" && (
           <AspectDetail
@@ -450,8 +613,14 @@ const Library = () => {
             onUpdated={handleMetricUpdated}
           />
         )}
-        {!adding && selectedId && mode === "paths" && view !== "new-run" && (
-          <PathDetailPanel pathId={selectedId} onCreateRun={onCreateRun} onNavigateToAspect={onNavigateToAspect} />
+        {!adding && !addingPath && selectedId && mode === "paths" && view !== "new-run" && (
+          <PathDetailPanel
+            pathId={selectedId}
+            onCreateRun={onCreateRun}
+            onNavigateToAspect={onNavigateToAspect}
+            onDeleted={handlePathDeleted}
+            onUpdated={handlePathUpdated}
+          />
         )}
         {!adding && selectedId && mode === "paths" && view === "new-run" && (
           <CreateNewRun pathId={selectedId} onCancel={() => setSearchParams({ mode: "paths", id: selectedId })} />
