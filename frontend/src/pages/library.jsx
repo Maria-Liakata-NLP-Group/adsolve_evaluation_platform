@@ -8,13 +8,14 @@ import { getAspects, getMetrics, getPaths } from "../api/config";
 import AspectDetail from "../components/library/details/AspectDetail";
 import MetricDetail from "../components/library/details/MetricDetail";
 import PathsMenu from "../components/library/menus/PathsMenu";
+import ItemList from "../components/library/menus/ItemList";
 import PathDetailPanel from "../components/library/details/PathDetailPanel";
 import CreateNewRun from "../components/library/edits_and_create/CreateNewRun";
 import CreateMetricForm from "../components/library/edits_and_create/CreateMetricForm";
 import CreateAspectForm from "../components/library/edits_and_create/CreateAspectForm";
 import CreateTaskForm from "../components/library/edits_and_create/CreateTaskForm";
 
-const MODES = ["aspects", "metrics", "paths"];
+const MODES = ["metrics", "aspects", "paths"];
 const MODE_LABELS = { aspects: "ASPECTS", metrics: "METRICS", paths: "TASKS" };
 
 const Library = () => {
@@ -177,7 +178,10 @@ const Library = () => {
 						borderBottom: "1px solid var(--bulma-border)",
 					}}
 				>
-					<div className="buttons has-addons" style={{ margin: 0 }}>
+					<div
+						className="buttons has-addons"
+						style={{ margin: 0 }}
+					>
 						{MODES.map((m) => (
 							<button
 								key={m}
@@ -200,41 +204,28 @@ const Library = () => {
 							onSelectPath={onSelectPath}
 						/>
 					) : (
-						items.map((item) => (
-							<button
-								key={item.id}
-								type="button"
-								onClick={() => onSelectItem(item.id)}
-								style={{
-									display: "block",
-									width: "100%",
-									textAlign: "left",
-									padding: "0.45rem 0.75rem",
-									borderRadius: "6px",
-									border: "none",
-									background:
-										selectedId === item.id
-											? "var(--bulma-link-light)"
-											: "transparent",
-									color:
-										selectedId === item.id ? "var(--bulma-link)" : "inherit",
-									fontWeight: selectedId === item.id ? 600 : 400,
-									fontSize: "0.85rem",
-									cursor: "pointer",
-								}}
-							>
-								{item.label}
-							</button>
-						))
+						<ItemList
+							items={items}
+							selectedId={selectedId}
+							onSelectItem={onSelectItem}
+						/>
 					)}
 				</div>
 
 				{/* Admin add buttons */}
 				{isAdmin && mode === "metrics" && (
-					<div style={{ padding: "0.6rem", borderTop: "1px solid var(--bulma-border)" }}>
+					<div
+						style={{
+							padding: "0.6rem",
+							borderTop: "1px solid var(--bulma-border)",
+						}}
+					>
 						<button
 							type="button"
-							onClick={() => { setAdding(true); setSearchParams({ mode: "metrics" }); }}
+							onClick={() => {
+								setAdding(true);
+								setSearchParams({ mode: "metrics" });
+							}}
 							className="admin-btn-add"
 							style={{ width: "100%" }}
 						>
@@ -243,10 +234,18 @@ const Library = () => {
 					</div>
 				)}
 				{isAdmin && mode === "aspects" && (
-					<div style={{ padding: "0.6rem", borderTop: "1px solid var(--bulma-border)" }}>
+					<div
+						style={{
+							padding: "0.6rem",
+							borderTop: "1px solid var(--bulma-border)",
+						}}
+					>
 						<button
 							type="button"
-							onClick={() => { setAddingAspect(true); setSearchParams({ mode: "aspects" }); }}
+							onClick={() => {
+								setAddingAspect(true);
+								setSearchParams({ mode: "aspects" });
+							}}
 							className="admin-btn-add"
 							style={{ width: "100%" }}
 						>
@@ -255,10 +254,18 @@ const Library = () => {
 					</div>
 				)}
 				{isAdmin && mode === "paths" && (
-					<div style={{ padding: "0.6rem", borderTop: "1px solid var(--bulma-border)" }}>
+					<div
+						style={{
+							padding: "0.6rem",
+							borderTop: "1px solid var(--bulma-border)",
+						}}
+					>
 						<button
 							type="button"
-							onClick={() => { setAddingPath(true); setSearchParams({ mode: "paths" }); }}
+							onClick={() => {
+								setAddingPath(true);
+								setSearchParams({ mode: "paths" });
+							}}
 							className="admin-btn-add"
 							style={{ width: "100%" }}
 						>
@@ -318,15 +325,19 @@ const Library = () => {
 						onUpdated={handleMetricUpdated}
 					/>
 				)}
-				{!adding && !addingPath && selectedId && mode === "paths" && view !== "new-run" && (
-					<PathDetailPanel
-						pathId={selectedId}
-						onCreateRun={onCreateRun}
-						onNavigateToAspect={onNavigateToAspect}
-						onDeleted={handlePathDeleted}
-						onUpdated={handlePathUpdated}
-					/>
-				)}
+				{!adding &&
+					!addingPath &&
+					selectedId &&
+					mode === "paths" &&
+					view !== "new-run" && (
+						<PathDetailPanel
+							pathId={selectedId}
+							onCreateRun={onCreateRun}
+							onNavigateToAspect={onNavigateToAspect}
+							onDeleted={handlePathDeleted}
+							onUpdated={handlePathUpdated}
+						/>
+					)}
 				{!adding && selectedId && mode === "paths" && view === "new-run" && (
 					<CreateNewRun
 						pathId={selectedId}
