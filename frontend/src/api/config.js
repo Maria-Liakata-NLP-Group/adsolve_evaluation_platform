@@ -49,3 +49,25 @@ export const updateAspect = (id, data, token) =>
 // Resolves to null on 204 success; throws ApiError(409) if aspect is in use
 export const deleteAspect = (id, token) =>
   del(`/api/aspects/${id}`, adminHeaders(token));
+
+export const getTasks = () => get("/api/tasks");
+
+export const createPath = (data, token) =>
+  post("/api/paths", data, adminHeaders(token));
+
+export const updatePath = (id, data, token) =>
+  put(`/api/paths/${id}`, data, adminHeaders(token));
+
+// Resolves to null on 204 success; throws ApiError(409) if path has runs
+export const deletePath = (id, token) =>
+  del(`/api/paths/${id}`, adminHeaders(token));
+
+export const addAspectToPath = (pathId, data, token) =>
+  post(`/api/paths/${pathId}/aspects`, data, adminHeaders(token));
+
+export const updatePathAspect = (pathId, aspectId, data, token) =>
+  put(`/api/paths/${pathId}/aspects/${aspectId}`, data, adminHeaders(token));
+
+// Resolves to null on 204 success; throws ApiError(409) if metrics in use
+export const removeAspectFromPath = (pathId, aspectId, token) =>
+  del(`/api/paths/${pathId}/aspects/${aspectId}`, adminHeaders(token));
