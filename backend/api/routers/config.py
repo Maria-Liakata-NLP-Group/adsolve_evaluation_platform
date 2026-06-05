@@ -246,24 +246,28 @@ def create_path(body: PathCreate, db: Session = Depends(get_db)) -> PathDetail:
                 {"id": task_id, "label": body.task_label},
             )
 
-    db.execute(
-        text("""
-            INSERT INTO paths (id, use_case_id, task_id, data_source_id,
-                               data_source_label, data_source_description, task_description)
-            VALUES (:id, :use_case_id, :task_id, :data_source_id,
-                    :data_source_label, :data_source_description, :task_description)
-        """),
-        {
-            "id": path_id,
-            "use_case_id": body.use_case_id,
-            "task_id": task_id,
-            "data_source_id": path_id,
-            "data_source_label": body.data_source_label,
-            "data_source_description": body.data_source_description,
-            "task_description": body.task_description,
-        },
-    )
-    db.commit()
+    try:
+        db.execute(
+            text("""
+                INSERT INTO paths (id, use_case_id, task_id, data_source_id,
+                                   data_source_label, data_source_description, task_description)
+                VALUES (:id, :use_case_id, :task_id, :data_source_id,
+                        :data_source_label, :data_source_description, :task_description)
+            """),
+            {
+                "id": path_id,
+                "use_case_id": body.use_case_id,
+                "task_id": task_id,
+                "data_source_id": path_id,
+                "data_source_label": body.data_source_label,
+                "data_source_description": body.data_source_description,
+                "task_description": body.task_description,
+            },
+        )
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=422, detail="Invalid use_case_id or task_id reference.")
     return get_path(path_id, db)
 
 
