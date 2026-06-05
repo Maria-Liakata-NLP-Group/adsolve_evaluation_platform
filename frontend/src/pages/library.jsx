@@ -1,6 +1,6 @@
 /** @format */
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useBreadcrumbs } from "../components/navigation_and_controls/BreadcrumbContext";
 import { useAdmin } from "../hooks/useAdmin";
@@ -42,27 +42,28 @@ const Library = () => {
 	const [addingAspect, setAddingAspect] = useState(false);
 	const [addingPath, setAddingPath] = useState(false);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			setLoading(true);
-			setError(null);
-			try {
-				const [aspectData, metricData, pathData] = await Promise.all([
-					getAspects(),
-					getMetrics(),
-					getPaths(),
-				]);
-				setAspects(aspectData);
-				setMetrics(metricData);
-				setPaths(pathData);
-			} catch {
-				setError("Failed to load library data.");
-			} finally {
-				setLoading(false);
-			}
-		};
-		fetchData();
+	const fetchData = useCallback(async (showLoading = false) => {
+		if (showLoading) setLoading(true);
+		setError(null);
+		try {
+			const [aspectData, metricData, pathData] = await Promise.all([
+				getAspects(),
+				getMetrics(),
+				getPaths(),
+			]);
+			setAspects(aspectData);
+			setMetrics(metricData);
+			setPaths(pathData);
+		} catch {
+			setError("Failed to load library data.");
+		} finally {
+			setLoading(false);
+		}
 	}, []);
+
+	useEffect(() => {
+		fetchData(true);
+	}, [fetchData]);
 
 	const items = mode === "aspects" ? aspects : metrics;
 
@@ -88,56 +89,19 @@ const Library = () => {
 	const onNavigateToAspect = (aspect) =>
 		setSearchParams({ mode: "aspects", id: aspect.id });
 
-	const handleMetricCreated = (created) => {
-		setMetrics((prev) => [...prev, { id: created.id, label: created.label }]);
+	const handleCreated = (created) => {
+		fetchData();
 		setAdding(false);
-		setSearchParams({ mode: "metrics", id: created.id });
-	};
-	const handleMetricDeleted = () => {
-		setMetrics((prev) => prev.filter((m) => m.id !== selectedId));
-		setSearchParams({ mode: "metrics" });
-	};
-	const handleMetricUpdated = ({ id, label }) => {
-		setMetrics((prev) => prev.map((m) => (m.id === id ? { ...m, label } : m)));
-	};
-
-	const handleAspectCreated = (created) => {
-		setAspects((prev) => [...prev, { id: created.id, label: created.label }]);
 		setAddingAspect(false);
-		setSearchParams({ mode: "aspects", id: created.id });
-	};
-	const handleAspectDeleted = () => {
-		setAspects((prev) => prev.filter((a) => a.id !== selectedId));
-		setSearchParams({ mode: "aspects" });
-	};
-	const handleAspectUpdated = ({ id, label }) => {
-		setAspects((prev) => prev.map((a) => (a.id === id ? { ...a, label } : a)));
-	};
-
-	const handlePathCreated = (created) => {
-		setPaths((prev) => [
-			...prev,
-			{
-				id: created.id,
-				use_case_id: created.use_case_id,
-				use_case_label: created.use_case_label,
-				task_id: created.task_id,
-				task_label: created.task_label,
-				data_source_id: created.data_source_id,
-				data_source_label: created.data_source_label,
-			},
-		]);
 		setAddingPath(false);
-		setSearchParams({ mode: "paths", id: created.id });
+		setSearchParams({ mode, id: created.id });
 	};
-	const handlePathDeleted = () => {
-		setPaths((prev) => prev.filter((p) => p.id !== selectedId));
-		setSearchParams({ mode: "paths" });
+	const handleDeleted = () => {
+		fetchData();
+		setSearchParams({ mode });
 	};
-	const handlePathUpdated = ({ id, data_source_label }) => {
-		setPaths((prev) =>
-			prev.map((p) => (p.id === id ? { ...p, data_source_label } : p)),
-		);
+	const handleUpdated = () => {
+		fetchData();
 	};
 
 	if (loading)
@@ -279,19 +243,19 @@ const Library = () => {
 			<div style={{ flex: 1, overflowY: "auto", padding: "2rem" }}>
 				{adding && (
 					<CreateMetricForm
-						onCreated={handleMetricCreated}
+						onCreated={handleCreated}
 						onCancel={() => setAdding(false)}
 					/>
 				)}
 				{addingAspect && (
 					<CreateAspectForm
-						onCreated={handleAspectCreated}
+						onCreated={handleCreated}
 						onCancel={() => setAddingAspect(false)}
 					/>
 				)}
 				{addingPath && (
 					<CreateTaskForm
-						onCreated={handlePathCreated}
+						onCreated={handleCreated}
 						onCancel={() => setAddingPath(false)}
 					/>
 				)}
@@ -313,16 +277,16 @@ const Library = () => {
 						aspectId={selectedId}
 						onNavigateToMetric={onNavigateToMetric}
 						onNavigateToPath={onSelectPath}
-						onDeleted={handleAspectDeleted}
-						onUpdated={handleAspectUpdated}
+						onDeleted={handleDeleted}
+						onUpdated={handleUpdated}
 					/>
 				)}
 				{!adding && selectedId && mode === "metrics" && (
 					<MetricDetail
 						metricId={selectedId}
 						onNavigateToAspect={onNavigateToAspect}
-						onDeleted={handleMetricDeleted}
-						onUpdated={handleMetricUpdated}
+						onDeleted={handleDeleted}
+						onUpdated={handleUpdated}
 					/>
 				)}
 				{!adding &&
@@ -334,8 +298,8 @@ const Library = () => {
 							pathId={selectedId}
 							onCreateRun={onCreateRun}
 							onNavigateToAspect={onNavigateToAspect}
-							onDeleted={handlePathDeleted}
-							onUpdated={handlePathUpdated}
+							onDeleted={handleDeleted}
+							onUpdated={handleUpdated}
 						/>
 					)}
 				{!adding && selectedId && mode === "paths" && view === "new-run" && (
