@@ -361,53 +361,57 @@ const Library = () => {
                 New Metric
               </span>
               <div style={{ display: "flex", gap: "0.4rem" }}>
-                <button type="button" onClick={cancelAdding} style={secondaryBtn}>Cancel</button>
+                <button type="button" onClick={cancelAdding} className="admin-btn-secondary">Cancel</button>
                 <button
                   type="button"
                   onClick={handleCreate}
                   disabled={addSaving || !addForm.label.trim() || !derivedId}
-                  style={{ ...primaryBtn, opacity: addSaving || !addForm.label.trim() || !derivedId ? 0.5 : 1 }}
+                  className="admin-btn-primary"
+                  style={{ opacity: addSaving || !addForm.label.trim() || !derivedId ? 0.5 : 1 }}
                 >
                   {addSaving ? "Creating…" : "Create"}
                 </button>
               </div>
             </div>
 
-            <label style={labelStyle}>ID <span style={{ color: "#666", fontStyle: "italic", fontSize: "0.68rem", textTransform: "none" }}>(auto-generated)</span></label>
-            <input value={derivedId || "—"} disabled style={{ ...inputStyle, color: derivedId ? "#666" : "#e07070", marginBottom: derivedId ? "0.75rem" : "0.25rem" }} />
+            <label className="admin-label">ID <span style={{ color: "#666", fontStyle: "italic", fontSize: "0.68rem", textTransform: "none" }}>(auto-generated)</span></label>
+            <input value={derivedId || "—"} disabled className="admin-input" style={{ color: derivedId ? "#666" : "#e07070", marginBottom: derivedId ? "0.75rem" : "0.25rem" }} />
             {!derivedId && addForm.label.trim() && (
               <p style={{ color: "#e07070", fontSize: "0.72rem", marginBottom: "0.75rem" }}>
                 Label must contain at least one letter or number.
               </p>
             )}
 
-            <label style={labelStyle}>Label *</label>
+            <label className="admin-label">Label *</label>
             <input
               value={addForm.label}
               onChange={(e) => setAddForm((p) => ({ ...p, label: e.target.value }))}
               placeholder="e.g. Conciseness"
-              style={{ ...inputStyle, marginBottom: "0.75rem" }}
+              className="admin-input"
+              style={{ marginBottom: "0.75rem" }}
               autoFocus
             />
 
-            <label style={labelStyle}>Description</label>
+            <label className="admin-label">Description</label>
             <textarea
               value={addForm.description}
               onChange={(e) => setAddForm((p) => ({ ...p, description: e.target.value }))}
               rows={3}
               placeholder="Describe this metric…"
-              style={{ ...inputStyle, resize: "vertical", marginBottom: "0.75rem" }}
+              className="admin-input"
+              style={{ resize: "vertical", marginBottom: "0.75rem" }}
             />
 
-            <label style={labelStyle}>Tags <span style={{ color: "#666", fontWeight: 400 }}>(comma-separated)</span></label>
+            <label className="admin-label">Tags <span style={{ color: "#666", fontWeight: 400 }}>(comma-separated)</span></label>
             <input
               value={addForm.tags}
               onChange={(e) => setAddForm((p) => ({ ...p, tags: e.target.value }))}
               placeholder="e.g. lexical, overlap"
-              style={{ ...inputStyle, marginBottom: "0.75rem" }}
+              className="admin-input"
+              style={{ marginBottom: "0.75rem" }}
             />
 
-            <label style={labelStyle}>Supported Compute Environments</label>
+            <label className="admin-label">Supported Compute Environments</label>
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
               {COMPUTE_OPTIONS.map((opt) => (
                 <label key={opt} style={{ display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.82rem", color: "#ccc", cursor: "pointer" }}>
@@ -417,7 +421,7 @@ const Library = () => {
               ))}
             </div>
 
-            <label style={labelStyle}>Supported Reference Modes</label>
+            <label className="admin-label">Supported Reference Modes</label>
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "1rem" }}>
               {REFERENCE_OPTIONS.map((opt) => (
                 <label key={opt} style={{ display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.82rem", color: "#ccc", cursor: "pointer" }}>
@@ -439,40 +443,43 @@ const Library = () => {
                 New Aspect
               </span>
               <div style={{ display: "flex", gap: "0.4rem" }}>
-                <button type="button" onClick={cancelAddingAspect} style={secondaryBtn}>Cancel</button>
+                <button type="button" onClick={cancelAddingAspect} className="admin-btn-secondary">Cancel</button>
                 <button
                   type="button"
                   onClick={handleCreateAspect}
                   disabled={addAspectSaving || !addAspectForm.label.trim() || !toSlug(addAspectForm.label)}
-                  style={{ ...primaryBtn, opacity: addAspectSaving || !addAspectForm.label.trim() || !toSlug(addAspectForm.label) ? 0.5 : 1 }}
+                  className="admin-btn-primary"
+                  style={{ opacity: addAspectSaving || !addAspectForm.label.trim() || !toSlug(addAspectForm.label) ? 0.5 : 1 }}
                 >
                   {addAspectSaving ? "Creating…" : "Create"}
                 </button>
               </div>
             </div>
 
-            <label style={labelStyle}>ID <span style={{ color: "#666", fontStyle: "italic", fontSize: "0.68rem", textTransform: "none" }}>(auto-generated)</span></label>
-            <input value={toSlug(addAspectForm.label) || "—"} disabled style={{ ...inputStyle, color: toSlug(addAspectForm.label) ? "#666" : "#e07070", marginBottom: "0.75rem" }} />
+            <label className="admin-label">ID <span style={{ color: "#666", fontStyle: "italic", fontSize: "0.68rem", textTransform: "none" }}>(auto-generated)</span></label>
+            <input value={toSlug(addAspectForm.label) || "—"} disabled className="admin-input" style={{ color: toSlug(addAspectForm.label) ? "#666" : "#e07070", marginBottom: "0.75rem" }} />
 
-            <label style={labelStyle}>Label *</label>
+            <label className="admin-label">Label *</label>
             <input
               value={addAspectForm.label}
               onChange={(e) => setAddAspectForm((p) => ({ ...p, label: e.target.value }))}
               placeholder="e.g. Coherence"
-              style={{ ...inputStyle, marginBottom: "0.75rem" }}
+              className="admin-input"
+              style={{ marginBottom: "0.75rem" }}
               autoFocus
             />
 
-            <label style={labelStyle}>Description</label>
+            <label className="admin-label">Description</label>
             <textarea
               value={addAspectForm.description}
               onChange={(e) => setAddAspectForm((p) => ({ ...p, description: e.target.value }))}
               rows={3}
               placeholder="Describe this aspect…"
-              style={{ ...inputStyle, resize: "vertical", marginBottom: "0.75rem" }}
+              className="admin-input"
+              style={{ resize: "vertical", marginBottom: "0.75rem" }}
             />
 
-            <label style={labelStyle}>Metrics</label>
+            <label className="admin-label">Metrics</label>
             {addAspectForm.metric_ids.length > 0 && (
               <div style={{ marginBottom: "0.5rem" }}>
                 {addAspectAllMetrics
@@ -499,7 +506,8 @@ const Library = () => {
                   if (id) setAddAspectForm((p) => ({ ...p, metric_ids: [...p.metric_ids, id] }));
                   e.target.value = "";
                 }}
-                style={{ ...inputStyle, marginBottom: "0.75rem" }}
+                className="admin-input"
+              style={{ marginBottom: "0.75rem" }}
               >
                 <option value="" disabled>Select a metric to add…</option>
                 {addAspectAllMetrics
@@ -527,29 +535,32 @@ const Library = () => {
                   New Task
                 </span>
                 <div style={{ display: "flex", gap: "0.4rem" }}>
-                  <button type="button" onClick={cancelAddingPath} style={secondaryBtn}>Cancel</button>
+                  <button type="button" onClick={cancelAddingPath} className="admin-btn-secondary">Cancel</button>
                   <button type="button" onClick={handleCreatePath}
                     disabled={addPathSaving || !isValid}
-                    style={{ ...primaryBtn, opacity: addPathSaving || !isValid ? 0.5 : 1 }}>
+                    className="admin-btn-primary"
+                    style={{ opacity: addPathSaving || !isValid ? 0.5 : 1 }}>
                     {addPathSaving ? "Creating…" : "Create"}
                   </button>
                 </div>
               </div>
 
-              <label style={labelStyle}>Use case *</label>
+              <label className="admin-label">Use case *</label>
               <select value={addPathForm.use_case_id}
                 onChange={(e) => setAddPathForm((p) => ({ ...p, use_case_id: e.target.value }))}
-                style={{ ...inputStyle, marginBottom: "0.75rem" }}>
+                className="admin-input"
+                style={{ marginBottom: "0.75rem" }}>
                 <option value="" disabled>Select a use case…</option>
                 {addPathUseCases.map((uc) => (
                   <option key={uc.id} value={uc.id}>{uc.label}</option>
                 ))}
               </select>
 
-              <label style={labelStyle}>Task *</label>
+              <label className="admin-label">Task *</label>
               <select value={addPathForm.task_id}
                 onChange={(e) => setAddPathForm((p) => ({ ...p, task_id: e.target.value, task_label: "" }))}
-                style={{ ...inputStyle, marginBottom: "0.5rem" }}>
+                className="admin-input"
+                style={{ marginBottom: "0.5rem" }}>
                 <option value="" disabled>Select a task…</option>
                 {addPathTasks.map((t) => (
                   <option key={t.id} value={t.id}>{t.label}</option>
@@ -559,32 +570,36 @@ const Library = () => {
 
               {isNewTask && (
                 <>
-                  <label style={labelStyle}>New task label *</label>
+                  <label className="admin-label">New task label *</label>
                   <input value={addPathForm.task_label}
                     onChange={(e) => setAddPathForm((p) => ({ ...p, task_label: e.target.value }))}
                     placeholder="e.g. Summarisation"
-                    style={{ ...inputStyle, marginBottom: "0.75rem" }} />
+                    className="admin-input"
+                    style={{ marginBottom: "0.75rem" }} />
                 </>
               )}
 
-              <label style={labelStyle}>Data source label * <span style={{ color: "#666", fontStyle: "italic", fontSize: "0.68rem", textTransform: "none" }}>(ID: {derivedPathId || "—"})</span></label>
+              <label className="admin-label">Data source label * <span style={{ color: "#666", fontStyle: "italic", fontSize: "0.68rem", textTransform: "none" }}>(ID: {derivedPathId || "—"})</span></label>
               <input value={addPathForm.data_source_label}
                 onChange={(e) => setAddPathForm((p) => ({ ...p, data_source_label: e.target.value }))}
                 placeholder="e.g. Social Media Posts"
-                style={{ ...inputStyle, marginBottom: "0.75rem" }}
+                className="admin-input"
+                style={{ marginBottom: "0.75rem" }}
                 autoFocus />
 
-              <label style={labelStyle}>Task description</label>
+              <label className="admin-label">Task description</label>
               <textarea value={addPathForm.task_description}
                 onChange={(e) => setAddPathForm((p) => ({ ...p, task_description: e.target.value }))}
                 rows={3} placeholder="Describe the task…"
-                style={{ ...inputStyle, resize: "vertical", marginBottom: "0.75rem" }} />
+                className="admin-input"
+                style={{ resize: "vertical", marginBottom: "0.75rem" }} />
 
-              <label style={labelStyle}>Data source description</label>
+              <label className="admin-label">Data source description</label>
               <textarea value={addPathForm.data_source_description}
                 onChange={(e) => setAddPathForm((p) => ({ ...p, data_source_description: e.target.value }))}
                 rows={3} placeholder="Describe the data source…"
-                style={{ ...inputStyle, resize: "vertical", marginBottom: "0.75rem" }} />
+                className="admin-input"
+                style={{ resize: "vertical", marginBottom: "0.75rem" }} />
 
               {addPathError && <p style={{ color: "#e07070", fontSize: "0.8rem" }}>{addPathError}</p>}
             </>
@@ -628,29 +643,6 @@ const Library = () => {
       </div>
     </div>
   );
-};
-
-const primaryBtn = {
-  background: "#ffc451", color: "#151515", border: "none",
-  padding: "0.3rem 0.8rem", borderRadius: "4px",
-  fontFamily: '"Raleway", sans-serif', fontWeight: 700,
-  fontSize: "0.78rem", cursor: "pointer",
-};
-
-const secondaryBtn = {
-  background: "transparent", color: "#aaa", border: "1px solid #444",
-  padding: "0.3rem 0.8rem", borderRadius: "4px", fontSize: "0.78rem", cursor: "pointer",
-};
-
-const labelStyle = {
-  display: "block", fontSize: "0.7rem", color: "#666",
-  textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem",
-};
-
-const inputStyle = {
-  width: "100%", boxSizing: "border-box",
-  background: "rgba(255,255,255,0.06)", border: "1px solid #444",
-  borderRadius: "4px", color: "#fff", padding: "0.4rem 0.6rem", fontSize: "0.85rem",
 };
 
 export default Library;

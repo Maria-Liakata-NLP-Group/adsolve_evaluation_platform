@@ -116,37 +116,38 @@ const MetricDetail = ({ metricId, onNavigateToAspect, onDeleted, onUpdated }) =>
             Editing metric
           </span>
           <div style={{ display: "flex", gap: "0.4rem" }}>
-            <button type="button" onClick={cancelEdit} style={secondaryBtn}>Cancel</button>
-            <button type="button" onClick={handleSave} disabled={saving || !form.label.trim()} style={{ ...primaryBtn, opacity: saving || !form.label.trim() ? 0.5 : 1 }}>
+            <button type="button" onClick={cancelEdit} className="admin-btn-secondary">Cancel</button>
+            <button type="button" onClick={handleSave} disabled={saving || !form.label.trim()} className="admin-btn-primary" style={{ opacity: saving || !form.label.trim() ? 0.5 : 1 }}>
               {saving ? "Saving…" : "Save"}
             </button>
           </div>
         </div>
 
-        <label style={labelStyle}>Label *</label>
+        <label className="admin-label">Label *</label>
         <input
           value={form.label}
           onChange={(e) => setForm((p) => ({ ...p, label: e.target.value }))}
-          style={inputStyle}
+          className="admin-input"
         />
 
-        <label style={labelStyle}>Description</label>
+        <label className="admin-label">Description</label>
         <textarea
           value={form.description}
           onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
           rows={4}
-          style={{ ...inputStyle, resize: "vertical" }}
+          className="admin-input"
+          style={{ resize: "vertical" }}
         />
 
-        <label style={labelStyle}>Tags <span style={{ color: "#666", fontWeight: 400 }}>(comma-separated)</span></label>
+        <label className="admin-label">Tags <span style={{ color: "#666", fontWeight: 400 }}>(comma-separated)</span></label>
         <input
           value={form.tags}
           onChange={(e) => setForm((p) => ({ ...p, tags: e.target.value }))}
           placeholder="e.g. lexical, overlap"
-          style={inputStyle}
+          className="admin-input"
         />
 
-        <label style={labelStyle}>Supported Compute Environments</label>
+        <label className="admin-label">Supported Compute Environments</label>
         <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "1rem" }}>
           {COMPUTE_OPTIONS.map((opt) => (
             <label key={opt} style={{ display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.82rem", color: "#ccc", cursor: "pointer" }}>
@@ -160,7 +161,7 @@ const MetricDetail = ({ metricId, onNavigateToAspect, onDeleted, onUpdated }) =>
           ))}
         </div>
 
-        <label style={labelStyle}>Supported Reference Modes</label>
+        <label className="admin-label">Supported Reference Modes</label>
         <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "1rem" }}>
           {REFERENCE_OPTIONS.map((opt) => (
             <label key={opt} style={{ display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.82rem", color: "#ccc", cursor: "pointer" }}>
@@ -214,31 +215,6 @@ const MetricDetail = ({ metricId, onNavigateToAspect, onDeleted, onUpdated }) =>
       <AssociatedItems label="Associated Aspects" items={detail?.aspects ?? []} loading={loading} onItemClick={onNavigateToAspect} />
     </>
   );
-};
-
-const primaryBtn = {
-  background: "#ffc451", color: "#151515", border: "none",
-  padding: "0.3rem 0.8rem", borderRadius: "4px",
-  fontFamily: '"Raleway", sans-serif', fontWeight: 700,
-  fontSize: "0.78rem", cursor: "pointer",
-};
-
-const secondaryBtn = {
-  background: "transparent", color: "#aaa", border: "1px solid #444",
-  padding: "0.3rem 0.8rem", borderRadius: "4px", fontSize: "0.78rem", cursor: "pointer",
-};
-
-const labelStyle = {
-  display: "block", fontSize: "0.7rem", color: "#666",
-  textTransform: "uppercase", letterSpacing: "0.05em",
-  marginBottom: "0.25rem", marginTop: "0.75rem",
-};
-
-const inputStyle = {
-  width: "100%", boxSizing: "border-box",
-  background: "rgba(255,255,255,0.06)", border: "1px solid #444",
-  borderRadius: "4px", color: "#fff", padding: "0.4rem 0.6rem",
-  fontSize: "0.85rem",
 };
 
 export default MetricDetail;

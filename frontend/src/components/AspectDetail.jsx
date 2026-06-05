@@ -135,30 +135,31 @@ const AspectDetail = ({ aspectId, onNavigateToMetric, onNavigateToPath, onDelete
             Editing aspect
           </span>
           <div style={{ display: "flex", gap: "0.4rem" }}>
-            <button type="button" onClick={cancelEdit} style={secondaryBtn}>Cancel</button>
+            <button type="button" onClick={cancelEdit} className="admin-btn-secondary">Cancel</button>
             <button type="button" onClick={handleSave} disabled={saving || !form.label.trim()}
-              style={{ ...primaryBtn, opacity: saving || !form.label.trim() ? 0.5 : 1 }}>
+              className="admin-btn-primary" style={{ opacity: saving || !form.label.trim() ? 0.5 : 1 }}>
               {saving ? "Saving…" : "Save"}
             </button>
           </div>
         </div>
 
-        <label style={labelStyle}>Label *</label>
+        <label className="admin-label">Label *</label>
         <input
           value={form.label}
           onChange={(e) => setForm((p) => ({ ...p, label: e.target.value }))}
-          style={inputStyle}
+          className="admin-input"
         />
 
-        <label style={labelStyle}>Description</label>
+        <label className="admin-label">Description</label>
         <textarea
           value={form.description}
           onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
           rows={4}
-          style={{ ...inputStyle, resize: "vertical" }}
+          className="admin-input"
+          style={{ resize: "vertical" }}
         />
 
-        <label style={labelStyle}>Metrics</label>
+        <label className="admin-label">Metrics</label>
         <div style={{ marginBottom: "0.5rem" }}>
           {assignedMetrics.length === 0 && (
             <p style={{ fontSize: "0.78rem", color: "#666", marginBottom: "0.5rem" }}>No metrics assigned.</p>
@@ -184,11 +185,12 @@ const AspectDetail = ({ aspectId, onNavigateToMetric, onNavigateToPath, onDelete
 
         {availableToAdd.length > 0 && (
           <>
-            <label style={labelStyle}>Add metric</label>
+            <label className="admin-label">Add metric</label>
             <select
               defaultValue=""
               onChange={(e) => { addMetric(e.target.value); e.target.value = ""; }}
-              style={{ ...inputStyle, marginBottom: "1rem" }}
+              className="admin-input"
+              style={{ marginBottom: "1rem" }}
             >
               <option value="" disabled>Select a metric to add…</option>
               {availableToAdd.map((m) => (
@@ -265,31 +267,6 @@ const AspectDetail = ({ aspectId, onNavigateToMetric, onNavigateToPath, onDelete
       </div>
     </>
   );
-};
-
-const primaryBtn = {
-  background: "#ffc451", color: "#151515", border: "none",
-  padding: "0.3rem 0.8rem", borderRadius: "4px",
-  fontFamily: '"Raleway", sans-serif', fontWeight: 700,
-  fontSize: "0.78rem", cursor: "pointer",
-};
-
-const secondaryBtn = {
-  background: "transparent", color: "#aaa", border: "1px solid #444",
-  padding: "0.3rem 0.8rem", borderRadius: "4px", fontSize: "0.78rem", cursor: "pointer",
-};
-
-const labelStyle = {
-  display: "block", fontSize: "0.7rem", color: "#666",
-  textTransform: "uppercase", letterSpacing: "0.05em",
-  marginBottom: "0.25rem", marginTop: "0.75rem",
-};
-
-const inputStyle = {
-  width: "100%", boxSizing: "border-box",
-  background: "rgba(255,255,255,0.06)", border: "1px solid #444",
-  borderRadius: "4px", color: "#fff", padding: "0.4rem 0.6rem",
-  fontSize: "0.85rem",
 };
 
 AspectDetail.propTypes = {

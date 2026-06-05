@@ -85,47 +85,47 @@ const PathAspectEditForm = ({ aspect, pathId, runMetricIds, onSave, onCancel }) 
           Editing: {aspect.label}
         </span>
         <div style={{ display: "flex", gap: "0.4rem" }}>
-          <button type="button" onClick={onCancel} style={secondaryBtn}>Cancel</button>
+          <button type="button" onClick={onCancel} className="admin-btn-secondary">Cancel</button>
           <button type="button" onClick={handleSave} disabled={saving}
-            style={{ ...primaryBtn, opacity: saving ? 0.5 : 1 }}>
+            className="admin-btn-primary" style={{ opacity: saving ? 0.5 : 1 }}>
             {saving ? "Saving…" : "Save"}
           </button>
         </div>
       </div>
 
-      <label style={labelStyle}>Definition</label>
+      <label className="admin-label">Definition</label>
       <textarea value={definition} onChange={(e) => setDefinition(e.target.value)}
-        rows={3} style={{ ...inputStyle, resize: "vertical", marginBottom: "0.75rem" }} />
+        rows={3} className="admin-input" style={{ resize: "vertical", marginBottom: "0.75rem" }} />
 
       <p style={{ fontSize: "0.7rem", color: "#888", textTransform: "uppercase", letterSpacing: "0.05em", marginTop: "0.5rem", marginBottom: "0.4rem" }}>
         Examples
       </p>
 
-      <label style={labelStyle}>Original posts <span style={{ color: "#555", fontWeight: 400, textTransform: "none" }}>(one per line)</span></label>
+      <label className="admin-label">Original posts <span style={{ color: "#555", fontWeight: 400, textTransform: "none" }}>(one per line)</span></label>
       <textarea value={originalPostsText} onChange={(e) => setOriginalPostsText(e.target.value)}
-        rows={3} style={{ ...inputStyle, resize: "vertical", marginBottom: "0.75rem" }} />
+        rows={3} className="admin-input" style={{ resize: "vertical", marginBottom: "0.75rem" }} />
 
-      <label style={labelStyle}>Good summary</label>
+      <label className="admin-label">Good summary</label>
       <textarea value={goodSummary} onChange={(e) => setGoodSummary(e.target.value)}
-        rows={2} style={{ ...inputStyle, resize: "vertical", marginBottom: "0.75rem" }} />
+        rows={2} className="admin-input" style={{ resize: "vertical", marginBottom: "0.75rem" }} />
 
-      <label style={labelStyle}>Why this is good</label>
+      <label className="admin-label">Why this is good</label>
       <textarea value={whyGood} onChange={(e) => setWhyGood(e.target.value)}
-        rows={2} style={{ ...inputStyle, resize: "vertical", marginBottom: "0.75rem" }} />
+        rows={2} className="admin-input" style={{ resize: "vertical", marginBottom: "0.75rem" }} />
 
-      <label style={labelStyle}>Bad summary</label>
+      <label className="admin-label">Bad summary</label>
       <textarea value={badSummary} onChange={(e) => setBadSummary(e.target.value)}
-        rows={2} style={{ ...inputStyle, resize: "vertical", marginBottom: "0.75rem" }} />
+        rows={2} className="admin-input" style={{ resize: "vertical", marginBottom: "0.75rem" }} />
 
-      <label style={labelStyle}>Why this is bad</label>
+      <label className="admin-label">Why this is bad</label>
       <textarea value={whyBad} onChange={(e) => setWhyBad(e.target.value)}
-        rows={2} style={{ ...inputStyle, resize: "vertical", marginBottom: "0.75rem" }} />
+        rows={2} className="admin-input" style={{ resize: "vertical", marginBottom: "0.75rem" }} />
 
-      <label style={labelStyle}>Stakeholder requirements</label>
+      <label className="admin-label">Stakeholder requirements</label>
       {requirements.map((req, index) => (
         <div key={index} style={{ display: "flex", gap: "0.4rem", marginBottom: "0.4rem" }}>
           <input value={req} onChange={(e) => updateRequirement(index, e.target.value)}
-            placeholder="Requirement…" style={{ ...inputStyle, flex: 1 }} />
+            placeholder="Requirement…" className="admin-input" style={{ flex: 1 }} />
           <button type="button" onClick={() => removeRequirement(index)}
             style={{ background: "none", border: "none", color: "#e07070", cursor: "pointer", fontSize: "0.85rem" }}>
             ✕
@@ -137,7 +137,7 @@ const PathAspectEditForm = ({ aspect, pathId, runMetricIds, onSave, onCancel }) 
         + Add requirement
       </button>
 
-      <label style={labelStyle}>Metrics</label>
+      <label className="admin-label">Metrics</label>
       {assignedMetrics.length === 0 && (
         <p style={{ fontSize: "0.78rem", color: "#666", marginBottom: "0.5rem" }}>No metrics assigned.</p>
       )}
@@ -157,7 +157,7 @@ const PathAspectEditForm = ({ aspect, pathId, runMetricIds, onSave, onCancel }) 
       {availableToAdd.length > 0 && (
         <select defaultValue=""
           onChange={(e) => { addMetric(e.target.value); e.target.value = ""; }}
-          style={{ ...inputStyle, marginBottom: "0.75rem" }}>
+          className="admin-input" style={{ marginBottom: "0.75rem" }}>
           <option value="" disabled>Select a metric to add…</option>
           {availableToAdd.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
         </select>
@@ -166,30 +166,6 @@ const PathAspectEditForm = ({ aspect, pathId, runMetricIds, onSave, onCancel }) 
       {saveError && <p style={{ color: "#e07070", fontSize: "0.8rem" }}>{saveError}</p>}
     </div>
   );
-};
-
-const primaryBtn = {
-  background: "#ffc451", color: "#151515", border: "none",
-  padding: "0.3rem 0.8rem", borderRadius: "4px",
-  fontFamily: '"Raleway", sans-serif', fontWeight: 700,
-  fontSize: "0.78rem", cursor: "pointer",
-};
-
-const secondaryBtn = {
-  background: "transparent", color: "#aaa", border: "1px solid #444",
-  padding: "0.3rem 0.8rem", borderRadius: "4px", fontSize: "0.78rem", cursor: "pointer",
-};
-
-const labelStyle = {
-  display: "block", fontSize: "0.7rem", color: "#666",
-  textTransform: "uppercase", letterSpacing: "0.05em",
-  marginBottom: "0.25rem", marginTop: "0.75rem",
-};
-
-const inputStyle = {
-  width: "100%", boxSizing: "border-box",
-  background: "rgba(255,255,255,0.06)", border: "1px solid #444",
-  borderRadius: "4px", color: "#fff", padding: "0.4rem 0.6rem", fontSize: "0.85rem",
 };
 
 export default PathAspectEditForm;
