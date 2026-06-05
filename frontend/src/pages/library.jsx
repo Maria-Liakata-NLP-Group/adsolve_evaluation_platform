@@ -304,11 +304,8 @@ const Library = () => {
             <button
               type="button"
               onClick={startAdding}
-              style={{
-                width: "100%", padding: "0.4rem", fontSize: "0.75rem",
-                background: "rgba(255,196,81,0.1)", border: "1px dashed rgba(255,196,81,0.4)",
-                color: "#ffc451", borderRadius: "4px", cursor: "pointer",
-              }}
+              className="admin-btn-add"
+              style={{ width: "100%" }}
             >
               + Add Metric
             </button>
@@ -321,11 +318,8 @@ const Library = () => {
             <button
               type="button"
               onClick={startAddingAspect}
-              style={{
-                width: "100%", padding: "0.4rem", fontSize: "0.75rem",
-                background: "rgba(255,196,81,0.1)", border: "1px dashed rgba(255,196,81,0.4)",
-                color: "#ffc451", borderRadius: "4px", cursor: "pointer",
-              }}
+              className="admin-btn-add"
+              style={{ width: "100%" }}
             >
               + Add Aspect
             </button>
@@ -338,11 +332,8 @@ const Library = () => {
             <button
               type="button"
               onClick={startAddingPath}
-              style={{
-                width: "100%", padding: "0.4rem", fontSize: "0.75rem",
-                background: "rgba(255,196,81,0.1)", border: "1px dashed rgba(255,196,81,0.4)",
-                color: "#ffc451", borderRadius: "4px", cursor: "pointer",
-              }}
+              className="admin-btn-add"
+              style={{ width: "100%" }}
             >
               + Add Task
             </button>

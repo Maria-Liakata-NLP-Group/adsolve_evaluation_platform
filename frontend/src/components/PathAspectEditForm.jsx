@@ -132,8 +132,7 @@ const PathAspectEditForm = ({ aspect, pathId, runMetricIds, onSave, onCancel }) 
           </button>
         </div>
       ))}
-      <button type="button" onClick={addRequirement}
-        style={{ background: "none", border: "1px dashed #555", color: "#aaa", borderRadius: "4px", padding: "0.25rem 0.75rem", fontSize: "0.78rem", cursor: "pointer", marginBottom: "0.75rem" }}>
+      <button type="button" onClick={addRequirement} className="admin-btn-add-inline">
         + Add requirement
       </button>
 

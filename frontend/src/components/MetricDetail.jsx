@@ -5,6 +5,7 @@ import { getMetric, updateMetric, deleteMetric } from "../api/config";
 import { useAdmin } from "../hooks/useAdmin";
 import AdminItemActions from "./AdminItemActions";
 import AssociatedItems from "./AssociatedItems";
+import ConfirmModal from "./ConfirmModal";
 import DescriptionSection from "./DescriptionSection";
 
 const COMPUTE_OPTIONS = ["cpu_only", "gpu_available", "cloud_inference"];
@@ -21,6 +22,7 @@ const MetricDetail = ({ metricId, onNavigateToAspect, onDeleted, onUpdated }) =>
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
   const [deleteError, setDeleteError] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     if (!metricId) return;
@@ -190,7 +192,7 @@ const MetricDetail = ({ metricId, onNavigateToAspect, onDeleted, onUpdated }) =>
           canDelete={canDelete}
           blockingMessage={blockingMessage}
           onEdit={startEdit}
-          onDelete={handleDelete}
+          onDelete={() => setConfirmDelete(true)}
         />
       </div>
 
@@ -213,6 +215,15 @@ const MetricDetail = ({ metricId, onNavigateToAspect, onDeleted, onUpdated }) =>
         <AssociatedItems label="Supported Compute Environments" items={toItems(detail?.supported_compute_environments)} loading={loading} />
       </div>
       <AssociatedItems label="Associated Aspects" items={detail?.aspects ?? []} loading={loading} onItemClick={onNavigateToAspect} />
+
+      <ConfirmModal
+        isOpen={confirmDelete}
+        title="Delete Metric"
+        message={`Are you sure you want to delete "${detail?.label}"? This cannot be undone.`}
+        confirmLabel="Yes, delete metric"
+        onConfirm={() => { setConfirmDelete(false); handleDelete(); }}
+        onCancel={() => setConfirmDelete(false)}
+      />
     </>
   );
 };

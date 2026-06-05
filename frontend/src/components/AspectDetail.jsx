@@ -6,6 +6,7 @@ import { getAspect, getAspectPaths, getMetrics, updateAspect, deleteAspect } fro
 import { useAdmin } from "../hooks/useAdmin";
 import AdminItemActions from "./AdminItemActions";
 import AssociatedItems from "./AssociatedItems";
+import ConfirmModal from "./ConfirmModal";
 import DescriptionSection from "./DescriptionSection";
 import PathAspectCard from "./PathAspectCard";
 
@@ -20,6 +21,7 @@ const AspectDetail = ({ aspectId, onNavigateToMetric, onNavigateToPath, onDelete
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
   const [deleteError, setDeleteError] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     if (!aspectId) return;
@@ -215,7 +217,7 @@ const AspectDetail = ({ aspectId, onNavigateToMetric, onNavigateToPath, onDelete
           canDelete={canDelete}
           blockingMessage={blockingMessage}
           onEdit={startEdit}
-          onDelete={handleDelete}
+          onDelete={() => setConfirmDelete(true)}
         />
       </div>
 
@@ -265,6 +267,15 @@ const AspectDetail = ({ aspectId, onNavigateToMetric, onNavigateToPath, onDelete
           </div>
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={confirmDelete}
+        title="Delete Aspect"
+        message={`Are you sure you want to delete "${detail?.label}"? This cannot be undone.`}
+        confirmLabel="Yes, delete aspect"
+        onConfirm={() => { setConfirmDelete(false); handleDelete(); }}
+        onCancel={() => setConfirmDelete(false)}
+      />
     </>
   );
 };

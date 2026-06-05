@@ -14,6 +14,7 @@ import {
 import { getRunsByPath } from "../api/runs";
 import { useAdmin } from "../hooks/useAdmin";
 import AdminItemActions from "./AdminItemActions";
+import ConfirmModal from "./ConfirmModal";
 import DescriptionSection from "./DescriptionSection";
 import PathAspectCard from "./PathAspectCard";
 import PathAspectEditForm from "./PathAspectEditForm";
@@ -46,6 +47,7 @@ const PathDetailPanel = ({
 	const [selectedAspectToAdd, setSelectedAspectToAdd] = useState("");
 	const [addAspectLoading, setAddAspectLoading] = useState(false);
 	const [removeAspectError, setRemoveAspectError] = useState(null);
+	const [confirm, setConfirm] = useState(null); // { title, message, confirmLabel, onConfirm }
 
 	useEffect(() => {
 		if (!pathId) return;
@@ -227,7 +229,12 @@ const PathDetailPanel = ({
 							canDelete={canDelete}
 							blockingMessage={blockingMessage}
 							onEdit={startEditPath}
-							onDelete={handleDeletePath}
+							onDelete={() => setConfirm({
+								title: "Delete Task",
+								message: `Are you sure you want to delete "${detail.data_source_label}"? This cannot be undone.`,
+								confirmLabel: "Yes, delete task",
+								onConfirm: handleDeletePath,
+							})}
 						/>
 					)}
 				</div>
@@ -436,7 +443,12 @@ const PathDetailPanel = ({
 														type="button"
 														onClick={(e) => {
 															e.stopPropagation();
-															handleRemoveAspect(aspect.id);
+															setConfirm({
+																title: "Remove Aspect",
+																message: `Are you sure you want to remove "${aspect.label}" from this task?`,
+																confirmLabel: "Yes, remove aspect",
+																onConfirm: () => handleRemoveAspect(aspect.id),
+															});
 														}}
 														disabled={!canRemoveAspect(aspect)}
 														title={
@@ -519,15 +531,7 @@ const PathDetailPanel = ({
 							type="button"
 							onClick={startAddingAspect}
 							disabled={addAspectLoading}
-							style={{
-								background: "rgba(255,196,81,0.1)",
-								border: "1px dashed rgba(255,196,81,0.4)",
-								color: "#ffc451",
-								borderRadius: "4px",
-								padding: "0.4rem 1rem",
-								fontSize: "0.78rem",
-								cursor: "pointer",
-							}}
+							className="admin-btn-add"
 						>
 							{addAspectLoading ? "Loading…" : "+ Add Aspect"}
 						</button>
@@ -590,6 +594,15 @@ const PathDetailPanel = ({
 					))}
 				</div>
 			)}
+
+			<ConfirmModal
+				isOpen={!!confirm}
+				title={confirm?.title}
+				message={confirm?.message}
+				confirmLabel={confirm?.confirmLabel}
+				onConfirm={() => { confirm?.onConfirm(); setConfirm(null); }}
+				onCancel={() => setConfirm(null)}
+			/>
 		</>
 	);
 };
