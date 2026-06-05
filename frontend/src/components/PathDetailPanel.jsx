@@ -301,21 +301,21 @@ const PathDetailPanel = ({
 									>
 										<div className="is-flex is-justify-content-space-between is-align-items-flex-end mb-2">
 											<p className="has-text-weight-semibold">{aspect.label}</p>
-											<AdminItemActions
-											canDelete={canRemoveAspect(aspect)}
-											blockingMessage="Metrics used in a run — cannot remove"
-											deleteLabel="Remove"
-											onEdit={(e) => { e.stopPropagation(); setEditingAspectId(aspect.id); }}
-											onDelete={(e) => {
-												e.stopPropagation();
-												setConfirm({
-													title: "Remove Aspect",
-													message: `Are you sure you want to remove "${aspect.label}" from this task?`,
-													confirmLabel: "Yes, remove aspect",
-													onConfirm: () => handleRemoveAspect(aspect.id),
-												});
-											}}
-										/>
+												<AdminItemActions
+												canDelete={canRemoveAspect(aspect)}
+												blockingMessage="Metrics used in a run — cannot remove"
+												deleteLabel="Remove"
+												onEdit={(e) => { e.stopPropagation(); setEditingAspectId(aspect.id); }}
+												onDelete={(e) => {
+													e.stopPropagation();
+													setConfirm({
+														title: "Remove Aspect",
+														message: `Are you sure you want to remove "${aspect.label}" from this task?`,
+														confirmLabel: "Yes, remove aspect",
+														onConfirm: () => handleRemoveAspect(aspect.id),
+													});
+												}}
+											/>
 										</div>
 
 										{aspect.definition && (
