@@ -3,7 +3,8 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getPath, getRunsByPath, getAspects, updatePath, deletePath, addAspectToPath, removeAspectFromPath } from "../api/config";
+import { getPath, getAspects, updatePath, deletePath, addAspectToPath, removeAspectFromPath } from "../api/config";
+import { getRunsByPath } from "../api/runs";
 import { useAdmin } from "../hooks/useAdmin";
 import AdminItemActions from "./AdminItemActions";
 import DescriptionSection from "./DescriptionSection";

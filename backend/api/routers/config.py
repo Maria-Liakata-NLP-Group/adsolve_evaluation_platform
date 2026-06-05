@@ -237,6 +237,8 @@ def create_path(body: PathCreate, db: Session = Depends(get_db)) -> PathDetail:
     task_id = body.task_id
     if not task_id:
         task_id = _to_slug(body.task_label)
+        if not task_id:
+            raise HTTPException(status_code=422, detail="task_label must produce a non-empty slug.")
         task_exists = db.execute(
             text("SELECT id FROM tasks WHERE id = :id"), {"id": task_id}
         ).one_or_none()
