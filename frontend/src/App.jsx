@@ -2,7 +2,7 @@
 
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AdminProvider } from "./hooks/useAdmin";
-import AppHeader from "./components/AppHeader";
+import AppHeader from "./components/navigation_and_controls/AppHeader";
 import Home from "./pages/home";
 import Dashboard from "./pages/dashboard";
 import RunExplorer from "./pages/runExplorer";

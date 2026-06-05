@@ -1,13 +1,13 @@
 /** @format */
 
 import { useEffect, useState } from "react";
-import { getMetric, deleteMetric } from "../api/config";
-import { useAdmin } from "../hooks/useAdmin";
-import AdminItemActions from "./AdminItemActions";
+import { getMetric, deleteMetric } from "../../api/config";
+import { useAdmin } from "../../hooks/useAdmin";
+import AdminItemActions from "../../navigation_and_controls/AdminItemActions";
 import AssociatedItems from "./AssociatedItems";
-import ConfirmModal from "./ConfirmModal";
+import ConfirmModal from "../../modals_and_cards/ConfirmModal";
 import DescriptionSection from "./DescriptionSection";
-import MetricDetailEdit from "./MetricDetailEdit";
+import MetricDetailEdit from "../edits_and_create/MetricDetailEdit";
 
 const toItems = (strings) => (strings ?? []).map((s) => ({ id: s, label: s }));
 

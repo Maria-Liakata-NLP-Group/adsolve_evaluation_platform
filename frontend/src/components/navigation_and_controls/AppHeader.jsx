@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useBreadcrumbs } from "./BreadcrumbContext";
-import { useAdmin } from "../hooks/useAdmin";
-import AdminTokenModal from "./AdminTokenModal";
+import { useAdmin } from "../../hooks/useAdmin";
+import AdminTokenModal from "../modals_and_cards/AdminTokenModal";
 
 const AppHeader = () => {
   const { breadcrumbs } = useBreadcrumbs();

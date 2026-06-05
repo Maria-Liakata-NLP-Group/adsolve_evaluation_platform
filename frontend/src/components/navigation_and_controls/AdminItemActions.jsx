@@ -1,7 +1,7 @@
 /** @format */
 
 import PropTypes from "prop-types";
-import { useAdmin } from "../hooks/useAdmin";
+import { useAdmin } from "../../hooks/useAdmin";
 
 // Renders Edit + Delete buttons only when the user is an admin.
 // canDelete=false disables the Delete button and shows blockingMessage as a tooltip.

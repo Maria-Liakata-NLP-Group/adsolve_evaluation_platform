@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useBreadcrumbs } from "../components/BreadcrumbContext";
+import { useBreadcrumbs } from "../components/navigation_and_controls/BreadcrumbContext";
 import { useAdmin } from "../hooks/useAdmin";
 import { getAspects, getMetrics, getPaths, getUseCases, getTasks, createMetric, createAspect, createPath } from "../api/config";
-import AspectDetail from "../components/AspectDetail";
-import MetricDetail from "../components/MetricDetail";
-import PathsMenu from "../components/PathsMenu";
-import PathDetailPanel from "../components/PathDetailPanel";
-import CreateNewRun from "../components/CreateNewRun";
+import AspectDetail from "../components/library/details/AspectDetail";
+import MetricDetail from "../components/library/details/MetricDetail";
+import PathsMenu from "../components/library/menus/PathsMenu";
+import PathDetailPanel from "../components/library/details/PathDetailPanel";
+import CreateNewRun from "../components/library/edits_and_create/CreateNewRun";
 
 const MODES = ["aspects", "metrics", "paths"];
 const MODE_LABELS = { aspects: "ASPECTS", metrics: "METRICS", paths: "TASKS" };

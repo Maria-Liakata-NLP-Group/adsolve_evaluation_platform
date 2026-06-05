@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import PropTypes from "prop-types";
-import InputDisplay from "./inputDisplay";
+import InputDisplay from "../modals_and_cards/inputDisplay";
 
 const getScoreColour = (score) => {
 	if (score == null) return "transparent";

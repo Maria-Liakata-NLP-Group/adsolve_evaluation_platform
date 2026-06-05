@@ -2,14 +2,14 @@
 
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { getAspect, getAspectPaths, deleteAspect } from "../api/config";
-import { useAdmin } from "../hooks/useAdmin";
-import AdminItemActions from "./AdminItemActions";
-import AspectDetailEdit from "./AspectDetailEdit";
+import { getAspect, getAspectPaths, deleteAspect } from "../../api/config";
+import { useAdmin } from "../../hooks/useAdmin";
+import AdminItemActions from "../../navigation_and_controls/AdminItemActions";
+import AspectDetailEdit from "../edits_and_create/AspectDetailEdit";
 import AssociatedItems from "./AssociatedItems";
-import ConfirmModal from "./ConfirmModal";
+import ConfirmModal from "../../modals_and_cards/ConfirmModal";
 import DescriptionSection from "./DescriptionSection";
-import PathAspectCard from "./PathAspectCard";
+import PathAspectCard from "../../modals_and_cards/PathAspectCard";
 
 const AspectDetail = ({ aspectId, onNavigateToMetric, onNavigateToPath, onDeleted, onUpdated }) => {
   const { token } = useAdmin();

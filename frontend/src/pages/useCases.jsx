@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Breadcrumbs from "../components/breadcrumbs";
-import ContentSquare from "../components/contentSquare";
+import Breadcrumbs from "../components/navigation_and_controls/breadcrumbs";
+import ContentSquare from "../components/dashboard/contentSquare";
 import { getUseCases } from "../api/config";
 
 const UseCases = () => {

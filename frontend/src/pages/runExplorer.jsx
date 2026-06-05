@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useBreadcrumbs } from "../components/BreadcrumbContext";
-import RunCard from "../components/RunCard";
+import { useBreadcrumbs } from "../components/navigation_and_controls/BreadcrumbContext";
+import RunCard from "../components/modals_and_cards/RunCard";
 import { getRuns } from "../api/runs";
 
 const RunExplorer = () => {

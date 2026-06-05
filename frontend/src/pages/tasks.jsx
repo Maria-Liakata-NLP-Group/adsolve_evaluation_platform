@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import Breadcrumbs from "../components/breadcrumbs";
-import RunCard from "../components/RunCard";
+import Breadcrumbs from "../components/navigation_and_controls/breadcrumbs";
+import RunCard from "../components/modals_and_cards/RunCard";
 import { getRuns } from "../api/runs";
 
 const Tasks = () => {

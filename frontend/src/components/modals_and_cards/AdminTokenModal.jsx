@@ -1,7 +1,7 @@
 /** @format */
 
 import { useState } from "react";
-import { useAdmin } from "../hooks/useAdmin";
+import { useAdmin } from "../../hooks/useAdmin";
 
 const AdminTokenModal = ({ isOpen, onClose }) => {
   const { isAdmin, login, logout } = useAdmin();

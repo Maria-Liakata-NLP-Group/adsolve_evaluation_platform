@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useBreadcrumbs } from "../components/BreadcrumbContext";
-import DocumentDisplay from "../components/documentDisplay";
-import InfoTooltip from "../components/InfoTooltip";
-import MetricsScatterPlot from "../components/metricsScatterPlot";
+import { useBreadcrumbs } from "../components/navigation_and_controls/BreadcrumbContext";
+import DocumentDisplay from "../components/dashboard/documentDisplay";
+import InfoTooltip from "../components/modals_and_cards/InfoTooltip";
+import MetricsScatterPlot from "../components/dashboard/metricsScatterPlot";
 import { getDashboard, getDocument, getRunById } from "../api/runs";
 
 const buildChartData = (dashData, byDataset, currentId, datasets, models) => {

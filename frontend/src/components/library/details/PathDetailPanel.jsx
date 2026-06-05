@@ -9,16 +9,16 @@ import {
 	deletePath,
 	addAspectToPath,
 	removeAspectFromPath,
-} from "../api/config";
-import { getRunsByPath } from "../api/runs";
-import { useAdmin } from "../hooks/useAdmin";
-import AdminItemActions from "./AdminItemActions";
-import ConfirmModal from "./ConfirmModal";
+} from "../../api/config";
+import { getRunsByPath } from "../../api/runs";
+import { useAdmin } from "../../hooks/useAdmin";
+import AdminItemActions from "../../navigation_and_controls/AdminItemActions";
+import ConfirmModal from "../../modals_and_cards/ConfirmModal";
 import DescriptionSection from "./DescriptionSection";
-import PathAspectCard from "./PathAspectCard";
-import PathAspectEditForm from "./PathAspectEditForm";
-import RunCard from "./RunCard";
-import PathDetailEdit from "./PathDetailEdit";
+import PathAspectCard from "../../modals_and_cards/PathAspectCard";
+import PathAspectEditForm from "../edits_and_create/PathAspectEditForm";
+import RunCard from "../../modals_and_cards/RunCard";
+import PathDetailEdit from "../edits_and_create/PathDetailEdit";
 
 const PathDetailPanel = ({
 	pathId,

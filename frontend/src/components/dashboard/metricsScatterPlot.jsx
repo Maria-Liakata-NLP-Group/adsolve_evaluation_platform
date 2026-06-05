@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Plot from "react-plotly.js";
-import InfoTooltip from "./InfoTooltip";
+import InfoTooltip from "../modals_and_cards/InfoTooltip";
 
 const MetricsScatterPlot = ({
 	documentIds,

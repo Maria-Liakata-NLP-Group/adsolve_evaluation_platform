@@ -2,9 +2,9 @@
 
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { updateMetric } from "../api/config";
-import { useAdmin } from "../hooks/useAdmin";
-import AdminEditHeader from "./AdminEditHeader";
+import { updateMetric } from "../../api/config";
+import { useAdmin } from "../../hooks/useAdmin";
+import AdminEditHeader from "../../navigation_and_controls/AdminEditHeader";
 
 const COMPUTE_OPTIONS = ["cpu_only", "gpu_available", "cloud_inference"];
 const REFERENCE_OPTIONS = ["reference_free", "reference_based"];
