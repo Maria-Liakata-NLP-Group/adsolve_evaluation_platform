@@ -271,6 +271,66 @@ def create_path(body: PathCreate, db: Session = Depends(get_db)) -> PathDetail:
     return get_path(path_id, db)
 
 
+@router.put("/paths/{path_id}", response_model=PathDetail,
+            dependencies=[Depends(require_admin)])
+def update_path(
+    path_id: str, body: PathWrite, db: Session = Depends(get_db)
+) -> PathDetail:
+    """Update a path's data_source_label, task_description, and data_source_description."""
+    existing = db.execute(
+        text("SELECT id FROM paths WHERE id = :id"), {"id": path_id}
+    ).one_or_none()
+    if existing is None:
+        raise HTTPException(status_code=404, detail="Path not found")
+
+    db.execute(
+        text("""
+            UPDATE paths
+               SET data_source_label       = :data_source_label,
+                   data_source_description = :data_source_description,
+                   task_description        = :task_description
+             WHERE id = :id
+        """),
+        {
+            "id": path_id,
+            "data_source_label": body.data_source_label,
+            "data_source_description": body.data_source_description,
+            "task_description": body.task_description,
+        },
+    )
+    db.commit()
+    return get_path(path_id, db)
+
+
+@router.delete("/paths/{path_id}", status_code=204,
+               dependencies=[Depends(require_admin)])
+def delete_path(path_id: str, db: Session = Depends(get_db)) -> None:
+    """Delete a path. Returns 409 if it has any evaluation runs."""
+    existing = db.execute(
+        text("SELECT id FROM paths WHERE id = :id"), {"id": path_id}
+    ).one_or_none()
+    if existing is None:
+        raise HTTPException(status_code=404, detail="Path not found")
+
+    blocking = db.execute(
+        text("SELECT id FROM evaluation_runs WHERE path_id = :path_id"),
+        {"path_id": path_id},
+    ).mappings().all()
+
+    if blocking:
+        run_ids = [r["id"] for r in blocking]
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "message": f"Path has {len(run_ids)} run(s).",
+                "blocking_run_ids": run_ids,
+            },
+        )
+
+    db.execute(text("DELETE FROM paths WHERE id = :id"), {"id": path_id})
+    db.commit()
+
+
 @router.get("/aspects", response_model=list[AspectSummary])
 def get_aspects(db: Session = Depends(get_db)) -> list[AspectSummary]:
     """Return all aspects ordered by label."""

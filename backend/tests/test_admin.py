@@ -398,3 +398,52 @@ def test_create_path_duplicate_id_returns_409(client, seeded_ids, created_path):
         "data_source_label": TEST_PATH_LABEL,
     }, headers=headers)
     assert response.status_code == 409
+
+
+def test_update_path(client, created_path):
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    response = client.put(f"/api/paths/{created_path}", json={
+        "data_source_label": "Updated Data Source Label",
+        "data_source_description": "Updated description",
+        "task_description": "Updated task description",
+    }, headers=headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["data_source_label"] == "Updated Data Source Label"
+    assert data["data_source_description"] == "Updated description"
+    assert data["task_description"] == "Updated task description"
+
+
+def test_update_path_not_found(client):
+    response = client.put("/api/paths/nonexistent_path_xyz", json={
+        "data_source_label": "Ghost",
+    }, headers={"X-Admin-Token": TEST_TOKEN})
+    assert response.status_code == 404
+
+
+def test_delete_path_success(client, seeded_ids):
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    path_id = "test_path_delete_target_poc"
+    client.post("/api/paths", json={
+        "use_case_id": seeded_ids["use_case_id"],
+        "task_id": seeded_ids["task_id"],
+        "data_source_label": "Test Path Delete Target PoC",
+    }, headers=headers)
+    response = client.delete(f"/api/paths/{path_id}", headers=headers)
+    assert response.status_code == 204
+    assert client.get(f"/api/paths/{path_id}").status_code == 404
+
+
+def test_delete_path_blocked_when_has_runs(client):
+    """Seeded paths all have evaluation runs — deleting one must return 409."""
+    headers = {"X-Admin-Token": TEST_TOKEN}
+    paths = client.get("/api/paths").json()
+    response = client.delete(f"/api/paths/{paths[0]['id']}", headers=headers)
+    assert response.status_code == 409
+    assert "detail" in response.json()
+
+
+def test_delete_path_not_found(client):
+    response = client.delete("/api/paths/nonexistent_path_xyz",
+                             headers={"X-Admin-Token": TEST_TOKEN})
+    assert response.status_code == 404
