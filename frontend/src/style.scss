@@ -332,6 +332,22 @@ html, body {
   cursor: not-allowed;
 }
 
+.admin-checkbox-group {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.admin-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: #ccc;
+  cursor: pointer;
+}
+
 /* ── Admin UI: inline item action buttons (Edit / Delete) ───── */
 .admin-item-actions {
   display: flex;

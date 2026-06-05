@@ -87,12 +87,9 @@ const MetricDetailEdit = ({ metric, onSaved, onCancel }) => {
       />
 
       <label className="admin-label">Supported Compute Environments</label>
-      <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "1rem" }}>
+      <div className="admin-checkbox-group">
         {COMPUTE_OPTIONS.map((opt) => (
-          <label
-            key={opt}
-            style={{ display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.82rem", color: "#ccc", cursor: "pointer" }}
-          >
+          <label key={opt} className="admin-checkbox-label">
             <input
               type="checkbox"
               checked={form.supported_compute_environments.includes(opt)}
@@ -104,12 +101,9 @@ const MetricDetailEdit = ({ metric, onSaved, onCancel }) => {
       </div>
 
       <label className="admin-label">Supported Reference Modes</label>
-      <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "1rem" }}>
+      <div className="admin-checkbox-group">
         {REFERENCE_OPTIONS.map((opt) => (
-          <label
-            key={opt}
-            style={{ display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.82rem", color: "#ccc", cursor: "pointer" }}
-          >
+          <label key={opt} className="admin-checkbox-label">
             <input
               type="checkbox"
               checked={form.supported_reference_modes.includes(opt)}
