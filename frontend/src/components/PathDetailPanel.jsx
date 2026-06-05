@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import {
 	getPath,
 	getAspects,
-	updatePath,
 	deletePath,
 	addAspectToPath,
 	removeAspectFromPath,
@@ -19,6 +18,7 @@ import DescriptionSection from "./DescriptionSection";
 import PathAspectCard from "./PathAspectCard";
 import PathAspectEditForm from "./PathAspectEditForm";
 import RunCard from "./RunCard";
+import PathDetailEdit from "./PathDetailEdit";
 
 const PathDetailPanel = ({
 	pathId,
@@ -35,9 +35,6 @@ const PathDetailPanel = ({
 
 	// Path-level edit state
 	const [editingPath, setEditingPath] = useState(false);
-	const [pathForm, setPathForm] = useState(null);
-	const [savingPath, setSavingPath] = useState(false);
-	const [pathSaveError, setPathSaveError] = useState(null);
 	const [deleteError, setDeleteError] = useState(null);
 
 	// Aspect management state
@@ -52,7 +49,6 @@ const PathDetailPanel = ({
 	useEffect(() => {
 		if (!pathId) return;
 		setEditingPath(false);
-		setPathForm(null);
 		setEditingAspectId(null);
 		setAddingAspect(false);
 		setDeleteError(null);
@@ -83,45 +79,6 @@ const PathDetailPanel = ({
 
 	const canRemoveAspect = (aspect) =>
 		!aspect.metrics.some((m) => (detail?.run_metric_ids ?? []).includes(m.id));
-
-	// Path field edit handlers
-	const startEditPath = () => {
-		setSavingPath(false);
-		setPathSaveError(null);
-		setPathForm({
-			data_source_label: detail.data_source_label,
-			data_source_description: detail.data_source_description ?? "",
-			task_description: detail.task_description ?? "",
-		});
-		setEditingPath(true);
-	};
-
-	const cancelEditPath = () => {
-		setEditingPath(false);
-		setPathForm(null);
-		setPathSaveError(null);
-	};
-
-	const handleSavePath = async () => {
-		setSavingPath(true);
-		setPathSaveError(null);
-		try {
-			const payload = {
-				data_source_label: pathForm.data_source_label.trim(),
-				data_source_description:
-					pathForm.data_source_description.trim() || null,
-				task_description: pathForm.task_description.trim() || null,
-			};
-			const updated = await updatePath(pathId, payload, token);
-			setDetail(updated);
-			setEditingPath(false);
-			onUpdated?.({ id: pathId, data_source_label: updated.data_source_label });
-		} catch (err) {
-			setPathSaveError(err.message ?? "Save failed. Please try again.");
-		} finally {
-			setSavingPath(false);
-		}
-	};
 
 	const handleDeletePath = async () => {
 		setDeleteError(null);
@@ -228,7 +185,7 @@ const PathDetailPanel = ({
 						<AdminItemActions
 							canDelete={canDelete}
 							blockingMessage={blockingMessage}
-							onEdit={startEditPath}
+							onEdit={() => setEditingPath(true)}
 							onDelete={() => setConfirm({
 								title: "Delete Task",
 								message: `Are you sure you want to delete "${detail.data_source_label}"? This cannot be undone.`,
@@ -240,92 +197,15 @@ const PathDetailPanel = ({
 				</div>
 
 				{editingPath ? (
-					<>
-						<div
-							style={{
-								display: "flex",
-								justifyContent: "space-between",
-								alignItems: "center",
-								margin: "0.75rem 0 0.5rem",
-							}}
-						>
-							<span
-								style={{
-									fontSize: "0.72rem",
-									color: "#ffc451",
-									fontWeight: 600,
-									textTransform: "uppercase",
-									letterSpacing: "0.06em",
-								}}
-							>
-								Editing task
-							</span>
-							<div style={{ display: "flex", gap: "0.4rem" }}>
-								<button
-									type="button"
-									onClick={cancelEditPath}
-									className="admin-btn-secondary"
-								>
-									Cancel
-								</button>
-								<button
-									type="button"
-									onClick={handleSavePath}
-									disabled={savingPath || !pathForm.data_source_label.trim()}
-									className="admin-btn-primary"
-									style={{
-										opacity:
-											savingPath || !pathForm.data_source_label.trim()
-												? 0.5
-												: 1,
-									}}
-								>
-									{savingPath ? "Saving…" : "Save"}
-								</button>
-							</div>
-						</div>
-						<label className="admin-label">Data source label *</label>
-						<input
-							value={pathForm.data_source_label}
-							onChange={(e) =>
-								setPathForm((p) => ({
-									...p,
-									data_source_label: e.target.value,
-								}))
-							}
-							className="admin-input"
-							style={{ marginBottom: "0.75rem" }}
-							autoFocus
-						/>
-						<label className="admin-label">Task description</label>
-						<textarea
-							value={pathForm.task_description}
-							onChange={(e) =>
-								setPathForm((p) => ({ ...p, task_description: e.target.value }))
-							}
-							rows={3}
-							className="admin-input"
-							style={{ resize: "vertical", marginBottom: "0.75rem" }}
-						/>
-						<label className="admin-label">Data source description</label>
-						<textarea
-							value={pathForm.data_source_description}
-							onChange={(e) =>
-								setPathForm((p) => ({
-									...p,
-									data_source_description: e.target.value,
-								}))
-							}
-							rows={3}
-							className="admin-input"
-							style={{ resize: "vertical", marginBottom: "0.75rem" }}
-						/>
-						{pathSaveError && (
-							<p style={{ color: "#e07070", fontSize: "0.8rem" }}>
-								{pathSaveError}
-							</p>
-						)}
-					</>
+					<PathDetailEdit
+						path={detail}
+						onSaved={(updated) => {
+							setDetail(updated);
+							setEditingPath(false);
+							onUpdated?.({ id: pathId, data_source_label: updated.data_source_label });
+						}}
+						onCancel={() => setEditingPath(false)}
+					/>
 				) : (
 					<h2
 						className="title is-4"
@@ -421,53 +301,21 @@ const PathDetailPanel = ({
 									>
 										<div className="is-flex is-justify-content-space-between is-align-items-flex-end mb-2">
 											<p className="has-text-weight-semibold">{aspect.label}</p>
-											{isAdmin && (
-												<div
-													style={{
-														display: "flex",
-														gap: "0.4rem",
-														alignSelf: "flex-start",
-													}}
-												>
-													<button
-														type="button"
-														onClick={(e) => {
-															e.stopPropagation();
-															setEditingAspectId(aspect.id);
-														}}
-														className="admin-btn-secondary"
-													>
-														Edit
-													</button>
-													<button
-														type="button"
-														onClick={(e) => {
-															e.stopPropagation();
-															setConfirm({
-																title: "Remove Aspect",
-																message: `Are you sure you want to remove "${aspect.label}" from this task?`,
-																confirmLabel: "Yes, remove aspect",
-																onConfirm: () => handleRemoveAspect(aspect.id),
-															});
-														}}
-														disabled={!canRemoveAspect(aspect)}
-														title={
-															!canRemoveAspect(aspect)
-																? "Metrics used in a run — cannot remove"
-																: "Remove aspect"
-														}
-														className="admin-btn-secondary"
-														style={{
-															opacity: !canRemoveAspect(aspect) ? 0.4 : 1,
-															cursor: !canRemoveAspect(aspect)
-																? "not-allowed"
-																: "pointer",
-														}}
-													>
-														Remove
-													</button>
-												</div>
-											)}
+											<AdminItemActions
+											canDelete={canRemoveAspect(aspect)}
+											blockingMessage="Metrics used in a run — cannot remove"
+											deleteLabel="Remove"
+											onEdit={(e) => { e.stopPropagation(); setEditingAspectId(aspect.id); }}
+											onDelete={(e) => {
+												e.stopPropagation();
+												setConfirm({
+													title: "Remove Aspect",
+													message: `Are you sure you want to remove "${aspect.label}" from this task?`,
+													confirmLabel: "Yes, remove aspect",
+													onConfirm: () => handleRemoveAspect(aspect.id),
+												});
+											}}
+										/>
 										</div>
 
 										{aspect.definition && (
