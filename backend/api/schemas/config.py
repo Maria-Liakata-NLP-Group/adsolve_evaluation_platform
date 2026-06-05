@@ -104,6 +104,7 @@ class PathDetail(BaseModel):
     data_source_label: str
     data_source_description: Optional[str] = None
     aspects: list[PathAspect] = []
+    run_metric_ids: list[str] = []
 
 
 class MetricWrite(BaseModel):
@@ -123,3 +124,46 @@ class AspectWrite(BaseModel):
     label: str
     description: Optional[str] = None
     metric_ids: list[str] = []
+
+
+class ExamplesWrite(BaseModel):
+    original_posts: list[str] = []
+    good_summary: Optional[str] = None
+    why_good: Optional[str] = None
+    bad_summary: Optional[str] = None
+    why_bad: Optional[str] = None
+
+
+class StakeholderRequirementsWrite(BaseModel):
+    items: list[str] = []
+
+
+class PathAspectWrite(BaseModel):
+    definition: Optional[str] = None
+    examples: Optional[ExamplesWrite] = None
+    stakeholder_requirements: Optional[StakeholderRequirementsWrite] = None
+    metric_ids: list[str] = []
+
+
+class PathAspectCreate(PathAspectWrite):
+    aspect_id: str
+
+
+class PathWrite(BaseModel):
+    data_source_label: str
+    data_source_description: Optional[str] = None
+    task_description: Optional[str] = None
+
+
+class PathCreate(BaseModel):
+    use_case_id: str
+    task_id: Optional[str] = None    # pick an existing task
+    task_label: Optional[str] = None  # OR provide label to create a new task
+    data_source_label: str
+    data_source_description: Optional[str] = None
+    task_description: Optional[str] = None
+
+
+class TaskSummary(BaseModel):
+    id: str
+    label: str
