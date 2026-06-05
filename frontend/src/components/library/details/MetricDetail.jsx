@@ -1,8 +1,8 @@
 /** @format */
 
 import { useEffect, useState } from "react";
-import { getMetric, deleteMetric } from "../../api/config";
-import { useAdmin } from "../../hooks/useAdmin";
+import { getMetric, deleteMetric } from "../../../api/config";
+import { useAdmin } from "../../../hooks/useAdmin";
 import AdminItemActions from "../../navigation_and_controls/AdminItemActions";
 import AssociatedItems from "./AssociatedItems";
 import ConfirmModal from "../../modals_and_cards/ConfirmModal";

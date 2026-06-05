@@ -9,9 +9,9 @@ import {
 	deletePath,
 	addAspectToPath,
 	removeAspectFromPath,
-} from "../../api/config";
-import { getRunsByPath } from "../../api/runs";
-import { useAdmin } from "../../hooks/useAdmin";
+} from "../../../api/config";
+import { getRunsByPath } from "../../../api/runs";
+import { useAdmin } from "../../../hooks/useAdmin";
 import AdminItemActions from "../../navigation_and_controls/AdminItemActions";
 import ConfirmModal from "../../modals_and_cards/ConfirmModal";
 import DescriptionSection from "./DescriptionSection";

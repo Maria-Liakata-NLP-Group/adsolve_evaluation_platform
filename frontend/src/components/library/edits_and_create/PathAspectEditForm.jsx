@@ -1,8 +1,8 @@
 /** @format */
 
 import { useEffect, useState } from "react";
-import { getMetrics, updatePathAspect } from "../../api/config";
-import { useAdmin } from "../../hooks/useAdmin";
+import { getMetrics, updatePathAspect } from "../../../api/config";
+import { useAdmin } from "../../../hooks/useAdmin";
 
 // Convert newline-separated textarea value to array of strings
 const parseLines = (text) =>

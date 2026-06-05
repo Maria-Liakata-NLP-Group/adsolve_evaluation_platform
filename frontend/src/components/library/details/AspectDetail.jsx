@@ -2,8 +2,8 @@
 
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { getAspect, getAspectPaths, deleteAspect } from "../../api/config";
-import { useAdmin } from "../../hooks/useAdmin";
+import { getAspect, getAspectPaths, deleteAspect } from "../../../api/config";
+import { useAdmin } from "../../../hooks/useAdmin";
 import AdminItemActions from "../../navigation_and_controls/AdminItemActions";
 import AspectDetailEdit from "../edits_and_create/AspectDetailEdit";
 import AssociatedItems from "./AssociatedItems";

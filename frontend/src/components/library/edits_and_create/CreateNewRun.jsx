@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import PathAspectCard from "../../modals_and_cards/PathAspectCard";
-import { getPath } from "../../api/config";
-import { usePathConfig } from "../../hooks/usePathConfig";
+import { getPath } from "../../../api/config";
+import { usePathConfig } from "../../../hooks/usePathConfig";
 
 const getAvailableDataSources = (useCaseId, taskId, paths) =>
 	(paths || [])

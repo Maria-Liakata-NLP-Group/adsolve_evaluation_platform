@@ -2,8 +2,8 @@
 
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { getMetrics, updateAspect } from "../../api/config";
-import { useAdmin } from "../../hooks/useAdmin";
+import { getMetrics, updateAspect } from "../../../api/config";
+import { useAdmin } from "../../../hooks/useAdmin";
 import AdminEditHeader from "../../navigation_and_controls/AdminEditHeader";
 
 const AspectDetailEdit = ({ aspect, paths, onSaved, onCancel }) => {

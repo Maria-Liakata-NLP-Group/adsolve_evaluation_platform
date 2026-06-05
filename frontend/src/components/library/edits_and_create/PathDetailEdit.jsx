@@ -2,8 +2,8 @@
 
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { updatePath } from "../../api/config";
-import { useAdmin } from "../../hooks/useAdmin";
+import { updatePath } from "../../../api/config";
+import { useAdmin } from "../../../hooks/useAdmin";
 import AdminEditHeader from "../../navigation_and_controls/AdminEditHeader";
 
 const PathDetailEdit = ({ path, onSaved, onCancel }) => {
