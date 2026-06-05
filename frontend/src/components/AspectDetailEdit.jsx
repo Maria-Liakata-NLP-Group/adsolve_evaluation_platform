@@ -93,17 +93,14 @@ const AspectDetailEdit = ({ aspect, paths, onSaved, onCancel }) => {
         {assignedMetrics.map((m) => {
           const removable = canRemoveMetric(m.id);
           return (
-            <div
-              key={m.id}
-              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.3rem 0.5rem", background: "rgba(255,255,255,0.04)", borderRadius: "4px", marginBottom: "0.25rem" }}
-            >
-              <span style={{ fontSize: "0.82rem", color: "#ccc" }}>{m.label}</span>
+            <div key={m.id} className="admin-metric-row">
+              <span className="admin-metric-label">{m.label}</span>
               <button
                 type="button"
                 onClick={() => removable && removeMetric(m.id)}
                 disabled={!removable}
                 title={!removable ? "Used in a path — cannot remove" : "Remove from pool"}
-                style={{ background: "none", border: "none", cursor: removable ? "pointer" : "not-allowed", color: removable ? "#e07070" : "#555", fontSize: "0.78rem", padding: "0 0.25rem" }}
+                className={removable ? "admin-metric-remove" : "admin-metric-remove--locked"}
               >
                 ✕
               </button>

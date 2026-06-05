@@ -299,6 +299,39 @@ html, body {
   gap: 0.4rem;
 }
 
+.admin-metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.3rem 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  margin-bottom: 0.25rem;
+}
+
+.admin-metric-label {
+  font-size: 0.82rem;
+  color: #ccc;
+}
+
+.admin-metric-remove {
+  background: none;
+  border: none;
+  font-size: 0.78rem;
+  padding: 0 0.25rem;
+  color: #e07070;
+  cursor: pointer;
+}
+
+.admin-metric-remove--locked {
+  background: none;
+  border: none;
+  font-size: 0.78rem;
+  padding: 0 0.25rem;
+  color: #555;
+  cursor: not-allowed;
+}
+
 /* ── Admin UI: inline item action buttons (Edit / Delete) ───── */
 .admin-item-actions {
   display: flex;
