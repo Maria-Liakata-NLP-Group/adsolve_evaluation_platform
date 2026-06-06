@@ -138,13 +138,26 @@ const Library = () => {
 							<button
 								key={m}
 								type="button"
-								className={`button is-small is-fullwidth ${mode === m ? "is-link is-selected" : ""}`}
+								className={`button is-small  ${mode === m ? "is-link is-selected" : ""}`}
+								style={{ flex: "1 1 0" }}
 								onClick={() => onSelectMode(m)}
 							>
 								{MODE_LABELS[m]}
 							</button>
 						))}
 					</div>
+					{isAdmin && (
+						<button
+							type="button"
+							onClick={() => {
+								setAdding(true);
+								setSearchParams({ mode });
+							}}
+							className="admin-btn-add"
+						>
+							{`+ Add ${ADD_BUTTON_LABELS[mode]}`}
+						</button>
+					)}
 				</div>
 
 				{/* Item list */}
@@ -163,27 +176,6 @@ const Library = () => {
 						/>
 					)}
 				</div>
-
-				{isAdmin && (
-					<div
-						style={{
-							padding: "0.6rem",
-							borderTop: "1px solid var(--bulma-border)",
-						}}
-					>
-						<button
-							type="button"
-							onClick={() => {
-								setAdding(true);
-								setSearchParams({ mode });
-							}}
-							className="admin-btn-add"
-							style={{ width: "100%" }}
-						>
-							{`+ Add ${ADD_BUTTON_LABELS[mode]}`}
-						</button>
-					</div>
-				)}
 			</div>
 
 			{/* Right panel */}
