@@ -78,9 +78,6 @@ const Library = () => {
 		setAdding(false);
 		setSearchParams({ mode, id });
 	};
-	const onSelectPath = (pathId) => {
-		setSearchParams({ mode: "paths", id: pathId });
-	};
 
 	const handleCreated = (created) => {
 		fetchData();
@@ -156,7 +153,7 @@ const Library = () => {
 						<PathsMenu
 							paths={paths}
 							selectedId={selectedId}
-							onSelectPath={onSelectPath}
+							onSelectPath={onSelectItem}
 						/>
 					) : (
 						<ItemList
@@ -178,7 +175,7 @@ const Library = () => {
 							type="button"
 							onClick={() => {
 								setAdding(true);
-								setSearchParams({ mode: mode });
+								setSearchParams({ mode });
 							}}
 							className="admin-btn-add"
 							style={{ width: "100%" }}
@@ -228,7 +225,9 @@ const Library = () => {
 						onNavigateToMetric={(metric) =>
 							setSearchParams({ mode: "metrics", id: metric.id })
 						}
-						onNavigateToPath={onSelectPath}
+						onNavigateToPath={(path) =>
+							setSearchParams({ mode: "paths", id: path.path_id })
+						}
 						onDeleted={handleDeleted}
 						onUpdated={handleUpdated}
 					/>
