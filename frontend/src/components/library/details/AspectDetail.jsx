@@ -29,8 +29,6 @@ const AspectDetail = ({
 	useEffect(() => {
 		if (!aspectId) return;
 		setEditing(false);
-		setDetail(null);
-		setPaths([]);
 		setDeleteError(null);
 		const fetchAll = async () => {
 			setLoading(true);
