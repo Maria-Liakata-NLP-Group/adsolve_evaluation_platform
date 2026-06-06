@@ -248,7 +248,7 @@ const PathDetailPanel = ({
 				style={{ letterSpacing: "0.1em", marginBottom: "0.75rem" }}
 			>
 				<span>Recommended Aspects </span>
-				{isAdmin && !addingAspect && (
+				{isAdmin && (
 					<button
 						type="button"
 						onClick={startAddingAspect}
