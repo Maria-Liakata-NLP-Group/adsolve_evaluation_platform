@@ -17,6 +17,11 @@ import CreateTaskForm from "../components/library/edits_and_create/CreateTaskFor
 
 const MODES = ["metrics", "aspects", "paths"];
 const MODE_LABELS = { aspects: "ASPECTS", metrics: "METRICS", paths: "TASKS" };
+const ADD_BUTTON_LABELS = {
+	aspects: "Aspect",
+	metrics: "Metric",
+	paths: "Task",
+};
 
 const Library = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -39,8 +44,6 @@ const Library = () => {
 	const [error, setError] = useState(null);
 
 	const [adding, setAdding] = useState(false);
-	const [addingAspect, setAddingAspect] = useState(false);
-	const [addingPath, setAddingPath] = useState(false);
 
 	const fetchData = useCallback(async (showLoading = false) => {
 		if (showLoading) setLoading(true);
@@ -69,31 +72,19 @@ const Library = () => {
 
 	const onSelectMode = (newMode) => {
 		setAdding(false);
-		setAddingAspect(false);
-		setAddingPath(false);
 		setSearchParams({ mode: newMode });
 	};
 	const onSelectItem = (id) => {
 		setAdding(false);
-		setAddingAspect(false);
 		setSearchParams({ mode, id });
 	};
 	const onSelectPath = (pathId) => {
-		setAddingPath(false);
 		setSearchParams({ mode: "paths", id: pathId });
 	};
-	const onCreateRun = (pathId) =>
-		setSearchParams({ mode: "paths", id: pathId, view: "new-run" });
-	const onNavigateToMetric = (metric) =>
-		setSearchParams({ mode: "metrics", id: metric.id });
-	const onNavigateToAspect = (aspect) =>
-		setSearchParams({ mode: "aspects", id: aspect.id });
 
 	const handleCreated = (created) => {
 		fetchData();
 		setAdding(false);
-		setAddingAspect(false);
-		setAddingPath(false);
 		setSearchParams({ mode, id: created.id });
 	};
 	const handleDeleted = () => {
@@ -176,8 +167,7 @@ const Library = () => {
 					)}
 				</div>
 
-				{/* Admin add buttons */}
-				{isAdmin && mode === "metrics" && (
+				{isAdmin && (
 					<div
 						style={{
 							padding: "0.6rem",
@@ -188,52 +178,12 @@ const Library = () => {
 							type="button"
 							onClick={() => {
 								setAdding(true);
-								setSearchParams({ mode: "metrics" });
+								setSearchParams({ mode: mode });
 							}}
 							className="admin-btn-add"
 							style={{ width: "100%" }}
 						>
-							+ Add Metric
-						</button>
-					</div>
-				)}
-				{isAdmin && mode === "aspects" && (
-					<div
-						style={{
-							padding: "0.6rem",
-							borderTop: "1px solid var(--bulma-border)",
-						}}
-					>
-						<button
-							type="button"
-							onClick={() => {
-								setAddingAspect(true);
-								setSearchParams({ mode: "aspects" });
-							}}
-							className="admin-btn-add"
-							style={{ width: "100%" }}
-						>
-							+ Add Aspect
-						</button>
-					</div>
-				)}
-				{isAdmin && mode === "paths" && (
-					<div
-						style={{
-							padding: "0.6rem",
-							borderTop: "1px solid var(--bulma-border)",
-						}}
-					>
-						<button
-							type="button"
-							onClick={() => {
-								setAddingPath(true);
-								setSearchParams({ mode: "paths" });
-							}}
-							className="admin-btn-add"
-							style={{ width: "100%" }}
-						>
-							+ Add Task
+							{`+ Add ${ADD_BUTTON_LABELS[mode]}`}
 						</button>
 					</div>
 				)}
@@ -241,41 +191,43 @@ const Library = () => {
 
 			{/* Right panel */}
 			<div style={{ flex: 1, overflowY: "auto", padding: "2rem" }}>
-				{adding && (
+				{adding && mode === "metrics" && (
 					<CreateMetricForm
 						onCreated={handleCreated}
 						onCancel={() => setAdding(false)}
 					/>
 				)}
-				{addingAspect && (
+				{adding && mode === "aspects" && (
 					<CreateAspectForm
 						onCreated={handleCreated}
-						onCancel={() => setAddingAspect(false)}
+						onCancel={() => setAdding(false)}
 					/>
 				)}
-				{addingPath && (
+				{adding && mode === "paths" && (
 					<CreateTaskForm
 						onCreated={handleCreated}
-						onCancel={() => setAddingPath(false)}
+						onCancel={() => setAdding(false)}
 					/>
 				)}
 
 				{/* Empty state prompts */}
-				{!adding && !addingAspect && mode === "aspects" && !selectedId && (
+				{!adding && mode === "aspects" && !selectedId && (
 					<p className="has-text-grey">Select an aspect from the list.</p>
 				)}
 				{!adding && mode === "metrics" && !selectedId && (
 					<p className="has-text-grey">Select a metric from the list.</p>
 				)}
-				{!adding && mode === "paths" && !selectedId && !addingPath && (
+				{!adding && mode === "paths" && !selectedId && (
 					<p className="has-text-grey">Select a data source from the tree.</p>
 				)}
 
 				{/* Detail views */}
-				{!adding && !addingAspect && selectedId && mode === "aspects" && (
+				{!adding && selectedId && mode === "aspects" && (
 					<AspectDetail
 						aspectId={selectedId}
-						onNavigateToMetric={onNavigateToMetric}
+						onNavigateToMetric={(metric) =>
+							setSearchParams({ mode: "metrics", id: metric.id })
+						}
 						onNavigateToPath={onSelectPath}
 						onDeleted={handleDeleted}
 						onUpdated={handleUpdated}
@@ -284,24 +236,30 @@ const Library = () => {
 				{!adding && selectedId && mode === "metrics" && (
 					<MetricDetail
 						metricId={selectedId}
-						onNavigateToAspect={onNavigateToAspect}
+						onNavigateToAspect={(aspect) =>
+							setSearchParams({ mode: "aspects", id: aspect.id })
+						}
 						onDeleted={handleDeleted}
 						onUpdated={handleUpdated}
 					/>
 				)}
-				{!adding &&
-					!addingPath &&
-					selectedId &&
-					mode === "paths" &&
-					view !== "new-run" && (
-						<PathDetailPanel
-							pathId={selectedId}
-							onCreateRun={onCreateRun}
-							onNavigateToAspect={onNavigateToAspect}
-							onDeleted={handleDeleted}
-							onUpdated={handleUpdated}
-						/>
-					)}
+				{!adding && selectedId && mode === "paths" && view !== "new-run" && (
+					<PathDetailPanel
+						pathId={selectedId}
+						onCreateRun={(pathId) =>
+							setSearchParams({
+								mode: "paths",
+								id: pathId,
+								view: "new-run",
+							})
+						}
+						onNavigateToAspect={(aspect) =>
+							setSearchParams({ mode: "aspects", id: aspect.id })
+						}
+						onDeleted={handleDeleted}
+						onUpdated={handleUpdated}
+					/>
+				)}
 				{!adding && selectedId && mode === "paths" && view === "new-run" && (
 					<CreateNewRun
 						pathId={selectedId}
