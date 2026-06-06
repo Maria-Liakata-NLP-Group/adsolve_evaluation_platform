@@ -11,23 +11,50 @@ import Library from "./pages/library";
 import "./style.scss";
 
 const App = () => {
-  const location = useLocation();
-  const isHome = location.pathname === "/";
+	const location = useLocation();
+	const isHome = location.pathname === "/";
+	const isRuns = location.pathname === "/runs";
 
-  return (
-    <AdminProvider>
-      {!isHome && <AppHeader />}
-      <div style={!isHome ? { maxWidth: "1400px", margin: "0 auto", width: "100%", padding: "0 2rem" } : {}}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/intrinsic-metrics" element={<IntrinsicMetrics />} />
-          <Route path="/runs" element={<RunExplorer />} />
-          <Route path="/use-cases/:useCaseId/:pathId/:runId" element={<Dashboard />} />
-          <Route path="/library" element={<Library />} />
-        </Routes>
-      </div>
-    </AdminProvider>
-  );
+	return (
+		<AdminProvider>
+			{!isHome && <AppHeader />}
+			<div
+				style={
+					isRuns
+						? {
+								maxWidth: "1400px",
+								margin: "0 auto",
+								width: "100%",
+								padding: "0 2rem",
+							}
+						: {}
+				}
+			>
+				<Routes>
+					<Route
+						path="/"
+						element={<Home />}
+					/>
+					<Route
+						path="/intrinsic-metrics"
+						element={<IntrinsicMetrics />}
+					/>
+					<Route
+						path="/runs"
+						element={<RunExplorer />}
+					/>
+					<Route
+						path="/use-cases/:useCaseId/:pathId/:runId"
+						element={<Dashboard />}
+					/>
+					<Route
+						path="/library"
+						element={<Library />}
+					/>
+				</Routes>
+			</div>
+		</AdminProvider>
+	);
 };
 
 export default App;

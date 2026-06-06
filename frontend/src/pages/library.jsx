@@ -107,10 +107,9 @@ const Library = () => {
 
 	return (
 		<div
+			className="is-flex"
 			style={{
-				display: "flex",
-				height: "calc(100vh - 40px)",
-				overflow: "hidden",
+				minHeight: "calc(100vh - 40px)",
 			}}
 		>
 			{/* Left panel */}
@@ -146,6 +145,10 @@ const Library = () => {
 							</button>
 						))}
 					</div>
+				</div>
+
+				{/* Item list */}
+				<div style={{ position: "relative", marginTop: "0.5rem" }}>
 					{isAdmin && (
 						<button
 							type="button"
@@ -154,14 +157,14 @@ const Library = () => {
 								setSearchParams({ mode });
 							}}
 							className="admin-btn-add"
-						>
-							{`+ Add ${ADD_BUTTON_LABELS[mode]}`}
-						</button>
+							style={{
+								position: "absolute",
+								right: "0.25rem",
+								top: "-0.25rem",
+							}}
+						/>
 					)}
-				</div>
 
-				{/* Item list */}
-				<div style={{ flex: 1, overflowY: "auto", padding: "0.5rem" }}>
 					{mode === "paths" ? (
 						<PathsMenu
 							paths={paths}

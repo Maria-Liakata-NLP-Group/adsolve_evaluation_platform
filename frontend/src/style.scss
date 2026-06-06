@@ -214,12 +214,28 @@ html, body {
 /* Gold dashed — used in library sidebar and detail panels */
 .admin-btn-add {
   background: rgba(255, 196, 81, 0.1);
-  border: 1px dashed rgba(255, 196, 81, 0.4);
+  border: 1px solid rgba(255, 196, 81, 0.4);
   color: #ffc451;
-  border-radius: 4px;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.78rem;
+  border-radius: 50%;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  line-height: 1;
+  flex-shrink: 0;
   cursor: pointer;
+  &::before {
+    content: "+";
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+  &:hover {
+    background-color: #ffc451;
+    color: black;
+  }
 }
 
 /* Grey dashed — used inline within forms (e.g. "+ Add requirement") */

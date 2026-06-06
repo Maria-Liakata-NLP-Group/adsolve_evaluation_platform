@@ -186,12 +186,14 @@ const PathDetailPanel = ({
 							canDelete={canDelete}
 							blockingMessage={blockingMessage}
 							onEdit={() => setEditingPath(true)}
-							onDelete={() => setConfirm({
-								title: "Delete Task",
-								message: `Are you sure you want to delete "${detail.data_source_label}"? This cannot be undone.`,
-								confirmLabel: "Yes, delete task",
-								onConfirm: handleDeletePath,
-							})}
+							onDelete={() =>
+								setConfirm({
+									title: "Delete Task",
+									message: `Are you sure you want to delete "${detail.data_source_label}"? This cannot be undone.`,
+									confirmLabel: "Yes, delete task",
+									onConfirm: handleDeletePath,
+								})
+							}
 						/>
 					)}
 				</div>
@@ -202,7 +204,10 @@ const PathDetailPanel = ({
 						onSaved={(updated) => {
 							setDetail(updated);
 							setEditingPath(false);
-							onUpdated?.({ id: pathId, data_source_label: updated.data_source_label });
+							onUpdated?.({
+								id: pathId,
+								data_source_label: updated.data_source_label,
+							});
 						}}
 						onCancel={() => setEditingPath(false)}
 					/>
@@ -239,11 +244,65 @@ const PathDetailPanel = ({
 
 			{/* Recommended aspects */}
 			<p
-				className="is-size-7 is-uppercase has-text-grey"
+				className="is-size-7 is-uppercase has-text-grey is-flex is-align-items-center is-gap-1"
 				style={{ letterSpacing: "0.1em", marginBottom: "0.75rem" }}
 			>
-				Recommended Aspects
+				<span>Recommended Aspects </span>
+				{isAdmin && !addingAspect && (
+					<button
+						type="button"
+						onClick={startAddingAspect}
+						disabled={addAspectLoading}
+						className="admin-btn-add"
+					/>
+				)}
 			</p>
+
+			{/* Add Aspect — admin only */}
+
+			{addingAspect && (
+				<div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+					<select
+						value={selectedAspectToAdd}
+						onChange={(e) => setSelectedAspectToAdd(e.target.value)}
+						className="admin-input"
+						style={{ flex: 1 }}
+					>
+						<option
+							value=""
+							disabled
+						>
+							Select an aspect to add…
+						</option>
+						{availableAspects.map((a) => (
+							<option
+								key={a.id}
+								value={a.id}
+							>
+								{a.label}
+							</option>
+						))}
+					</select>
+					<button
+						type="button"
+						onClick={handleAddAspect}
+						disabled={!selectedAspectToAdd || addAspectLoading}
+						className="admin-btn-primary"
+						style={{
+							opacity: !selectedAspectToAdd || addAspectLoading ? 0.5 : 1,
+						}}
+					>
+						{addAspectLoading ? "Adding…" : "Add"}
+					</button>
+					<button
+						type="button"
+						onClick={() => setAddingAspect(false)}
+						className="admin-btn-secondary"
+					>
+						Cancel
+					</button>
+				</div>
+			)}
 
 			{removeAspectError && (
 				<p
@@ -301,11 +360,14 @@ const PathDetailPanel = ({
 									>
 										<div className="is-flex is-justify-content-space-between is-align-items-flex-end mb-2">
 											<p className="has-text-weight-semibold">{aspect.label}</p>
-												<AdminItemActions
+											<AdminItemActions
 												canDelete={canRemoveAspect(aspect)}
 												blockingMessage="Metrics used in a run — cannot remove"
 												deleteLabel="Remove"
-												onEdit={(e) => { e.stopPropagation(); setEditingAspectId(aspect.id); }}
+												onEdit={(e) => {
+													e.stopPropagation();
+													setEditingAspectId(aspect.id);
+												}}
 												onDelete={(e) => {
 													e.stopPropagation();
 													setConfirm({
@@ -326,64 +388,6 @@ const PathDetailPanel = ({
 							)}
 						</div>
 					))}
-				</div>
-			)}
-
-			{/* Add Aspect — admin only */}
-			{isAdmin && (
-				<div style={{ marginBottom: "2rem" }}>
-					{addingAspect ? (
-						<div
-							style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}
-						>
-							<select
-								value={selectedAspectToAdd}
-								onChange={(e) => setSelectedAspectToAdd(e.target.value)}
-								className="admin-input"
-								style={{ flex: 1 }}
-							>
-								<option
-									value=""
-									disabled
-								>
-									Select an aspect to add…
-								</option>
-								{availableAspects.map((a) => (
-									<option
-										key={a.id}
-										value={a.id}
-									>
-										{a.label}
-									</option>
-								))}
-							</select>
-							<button
-								type="button"
-								onClick={handleAddAspect}
-								disabled={!selectedAspectToAdd || addAspectLoading}
-								className="admin-btn-primary"
-								style={{ opacity: !selectedAspectToAdd || addAspectLoading ? 0.5 : 1 }}
-							>
-								{addAspectLoading ? "Adding…" : "Add"}
-							</button>
-							<button
-								type="button"
-								onClick={() => setAddingAspect(false)}
-								className="admin-btn-secondary"
-							>
-								Cancel
-							</button>
-						</div>
-					) : (
-						<button
-							type="button"
-							onClick={startAddingAspect}
-							disabled={addAspectLoading}
-							className="admin-btn-add"
-						>
-							{addAspectLoading ? "Loading…" : "+ Add Aspect"}
-						</button>
-					)}
 				</div>
 			)}
 
@@ -448,7 +452,10 @@ const PathDetailPanel = ({
 				title={confirm?.title}
 				message={confirm?.message}
 				confirmLabel={confirm?.confirmLabel}
-				onConfirm={() => { confirm?.onConfirm(); setConfirm(null); }}
+				onConfirm={() => {
+					confirm?.onConfirm();
+					setConfirm(null);
+				}}
 				onCancel={() => setConfirm(null)}
 			/>
 		</>
