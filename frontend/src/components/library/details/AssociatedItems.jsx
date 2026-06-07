@@ -7,7 +7,7 @@
  */
 const AssociatedItems = ({ label, items, loading, onItemClick }) => (
   <div>
-    <p className="is-size-7 is-uppercase has-text-grey" style={{ letterSpacing: "0.1em", marginBottom: "0.6rem" }}>
+    <p className="is-size-7 is-uppercase has-text-grey ls-wide" style={{ marginBottom: "0.6rem" }}>
       {label}
     </p>
     {loading && <p className="has-text-grey is-size-7">Loading…</p>}
@@ -21,9 +21,8 @@ const AssociatedItems = ({ label, items, loading, onItemClick }) => (
             <button
               key={item.id}
               type="button"
-              className="tag is-medium"
+              className="tag is-medium is-clickable"
               style={{
-                cursor: "pointer",
                 background: "#fff8e6",
                 border: "1.5px solid #ffc451",
                 color: "#9a6f00",

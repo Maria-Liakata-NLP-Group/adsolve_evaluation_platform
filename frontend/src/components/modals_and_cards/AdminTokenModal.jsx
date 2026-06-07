@@ -43,23 +43,23 @@ const AdminTokenModal = ({ isOpen, onClose }) => {
   return (
     <div style={overlayStyle} onClick={onClose} onKeyDown={(e) => e.key === "Escape" && onClose()} tabIndex={-1}>
       <div style={boxStyle} onClick={(e) => e.stopPropagation()}>
-        <h3 style={{ color: "#fff", fontFamily: '"Raleway", sans-serif', marginBottom: "1rem" }}>
+        <h3 className="font-ui mb-4" style={{ color: "#fff" }}>
           Admin Access
         </h3>
 
         {isAdmin ? (
           <>
-            <p style={{ color: "#aaa", fontSize: "0.85rem", marginBottom: "1rem" }}>
+            <p className="mb-4" style={{ color: "#aaa", fontSize: "0.85rem" }}>
               You are signed in as admin.
             </p>
-            <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
+            <div className="is-flex is-justify-content-flex-end gap-2">
               <button type="button" onClick={onClose} className="btn-secondary" style={secondaryBtn}>Cancel</button>
               <button type="button" onClick={handleLogout} style={dangerBtn}>Sign out</button>
             </div>
           </>
         ) : (
           <>
-            <p style={{ color: "#aaa", fontSize: "0.85rem", marginBottom: "0.75rem" }}>
+            <p className="mb-3" style={{ color: "#aaa", fontSize: "0.85rem" }}>
               Paste your admin token to enable edit controls.
             </p>
             <input
@@ -76,11 +76,11 @@ const AdminTokenModal = ({ isOpen, onClose }) => {
               }}
             />
             {error && (
-              <p style={{ color: "#e07070", fontSize: "0.78rem", marginBottom: "0.75rem" }}>
+              <p className="text-error mb-3">
                 {error}
               </p>
             )}
-            <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
+            <div className="is-flex is-justify-content-flex-end gap-2">
               <button type="button" onClick={onClose} className="btn-secondary" style={secondaryBtn}>Cancel</button>
               <button
                 type="button"

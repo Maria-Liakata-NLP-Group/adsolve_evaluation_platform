@@ -72,13 +72,10 @@ const RunExplorer = () => {
 
 			{/* Filters */}
 			<div
-				className="is-flex"
-				style={{ gap: "1rem", marginBottom: "2rem", flexWrap: "wrap" }}
+				className="is-flex is-flex-wrap-wrap gap-4"
+				style={{ marginBottom: "2rem" }}
 			>
-				<div
-					className="field"
-					style={{ marginBottom: 0 }}
-				>
+				<div className="field mb-0">
 					<div className="control">
 						<div className="select">
 							<select
@@ -99,10 +96,7 @@ const RunExplorer = () => {
 					</div>
 				</div>
 
-				<div
-					className="field"
-					style={{ marginBottom: 0 }}
-				>
+				<div className="field mb-0">
 					<div className="control">
 						<div className="select">
 							<select

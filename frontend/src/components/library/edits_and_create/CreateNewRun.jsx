@@ -174,16 +174,10 @@ const CreateNewRun = ({ pathId, onCancel }) => {
 
 	return (
 		<div>
-			<h1
-				className="title is-4"
-				style={{ marginBottom: "0.25rem" }}
-			>
+			<h1 className="title is-4 mb-1">
 				Create Evaluation Run
 			</h1>
-			<p
-				className="subtitle is-6"
-				style={{ marginBottom: "2rem" }}
-			>
+			<p className="subtitle is-6 mb-6">
 				Create new configuration for{" "}
 				{selectedPath
 					? `${selectedPath.use_case_label} → ${selectedPath.task_label} → ${selectedPath.data_source_label}`
@@ -345,7 +339,7 @@ const CreateNewRun = ({ pathId, onCancel }) => {
 				</section>
 			)}
 
-			<section className="block" style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+			<section className="block is-flex is-align-items-center gap-3">
 				<button
 					type="button"
 					className="button is-primary is-large"

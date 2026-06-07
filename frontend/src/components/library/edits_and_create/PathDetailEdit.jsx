@@ -47,8 +47,7 @@ const PathDetailEdit = ({ path, onSaved, onCancel }) => {
       <input
         value={form.data_source_label}
         onChange={(e) => setForm((p) => ({ ...p, data_source_label: e.target.value }))}
-        className="admin-input"
-        style={{ marginBottom: "0.75rem" }}
+        className="admin-input mb-3"
         autoFocus
       />
 
@@ -57,8 +56,8 @@ const PathDetailEdit = ({ path, onSaved, onCancel }) => {
         value={form.task_description}
         onChange={(e) => setForm((p) => ({ ...p, task_description: e.target.value }))}
         rows={3}
-        className="admin-input"
-        style={{ resize: "vertical", marginBottom: "0.75rem" }}
+        className="admin-input mb-3"
+        style={{ resize: "vertical" }}
       />
 
       <label className="admin-label">Data source description</label>
@@ -66,8 +65,8 @@ const PathDetailEdit = ({ path, onSaved, onCancel }) => {
         value={form.data_source_description}
         onChange={(e) => setForm((p) => ({ ...p, data_source_description: e.target.value }))}
         rows={3}
-        className="admin-input"
-        style={{ resize: "vertical", marginBottom: "0.75rem" }}
+        className="admin-input mb-3"
+        style={{ resize: "vertical" }}
       />
 
       {saveError && <p className="text-error">{saveError}</p>}

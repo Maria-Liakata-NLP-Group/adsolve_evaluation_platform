@@ -114,13 +114,7 @@ const MetricsScatterPlot = ({
 
 	return (
 		<div className="p-4">
-			<div
-				style={{
-					display: "flex",
-					alignItems: "center",
-					marginBottom: "0.25rem",
-				}}
-			>
+			<div className="is-flex is-align-items-center mb-1">
 				<span style={{ fontSize: "0.85rem", fontWeight: 600, color: "#333" }}>
 					{metric}
 				</span>

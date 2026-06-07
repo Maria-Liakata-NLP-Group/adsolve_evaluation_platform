@@ -109,12 +109,10 @@ const Library = () => {
 		>
 			{/* Left panel */}
 			<div
+				className="is-flex is-flex-direction-column is-flex-shrink-0"
 				style={{
 					width: "260px",
-					flexShrink: 0,
 					borderRight: "1px solid var(--bulma-border)",
-					display: "flex",
-					flexDirection: "column",
 				}}
 			>
 				{/* Mode toggle */}
@@ -125,8 +123,7 @@ const Library = () => {
 					}}
 				>
 					<div
-						className="buttons has-addons"
-						style={{ margin: 0 }}
+						className="buttons has-addons mb-0"
 					>
 						{MODES.map((m) => (
 							<button

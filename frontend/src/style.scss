@@ -12,6 +12,11 @@
   --brand-muted: #909090;
   --brand-error: #e07070;
 
+  /* Font families */
+  --font-heading: "Poppins", sans-serif;
+  --font-ui: "Raleway", sans-serif;
+  --font-body: "Open Sans", sans-serif;
+
   /* Spacing scale */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
@@ -41,6 +46,28 @@
 .title {
   font-family: "Poppins", sans-serif;
 }
+
+/* ── Font family utilities ───────────────────────────────────── */
+.font-ui      { font-family: var(--font-ui); }
+.font-heading { font-family: var(--font-heading); }
+
+/* ── Background utilities ────────────────────────────────────── */
+.bg-dark { background: var(--brand-dark); }
+
+/* ── Text color utilities (for dark backgrounds) ─────────────── */
+.text-white-muted { color: rgba(255, 255, 255, 0.72); } /* readable body text */
+.text-white-dim   { color: rgba(255, 255, 255, 0.45); } /* subtle/secondary text */
+
+/* ── Letter-spacing utilities ────────────────────────────────── */
+.ls-wide  { letter-spacing: 0.1em; }  /* section labels, item headings */
+.ls-tight { letter-spacing: 0.03em; } /* buttons */
+
+/* ── Gap utilities (Bulma doesn't provide these) ─────────────── */
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.gap-5 { gap: 1.5rem; }
 
 *,
 *::before,

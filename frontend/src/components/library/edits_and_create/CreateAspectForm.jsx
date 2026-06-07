@@ -71,8 +71,8 @@ const CreateAspectForm = ({ onCreated, onCancel }) => {
       <input
         value={derivedId || "—"}
         disabled
-        className="admin-input"
-        style={{ color: derivedId ? "#666" : "#e07070", marginBottom: "0.75rem" }}
+        className="admin-input mb-3"
+        style={{ color: derivedId ? "#666" : "#e07070" }}
       />
 
       <label className="admin-label">Label *</label>
@@ -80,8 +80,7 @@ const CreateAspectForm = ({ onCreated, onCancel }) => {
         value={form.label}
         onChange={(e) => setForm((p) => ({ ...p, label: e.target.value }))}
         placeholder="e.g. Coherence"
-        className="admin-input"
-        style={{ marginBottom: "0.75rem" }}
+        className="admin-input mb-3"
         autoFocus
       />
 
@@ -91,13 +90,13 @@ const CreateAspectForm = ({ onCreated, onCancel }) => {
         onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
         rows={3}
         placeholder="Describe this aspect…"
-        className="admin-input"
-        style={{ resize: "vertical", marginBottom: "0.75rem" }}
+        className="admin-input mb-3"
+        style={{ resize: "vertical" }}
       />
 
       <label className="admin-label">Metrics</label>
       {selectedMetrics.length > 0 && (
-        <div style={{ marginBottom: "0.5rem" }}>
+        <div className="mb-2">
           {selectedMetrics.map((m) => (
             <div key={m.id} className="admin-metric-row">
               <span className="admin-metric-label">{m.label}</span>
@@ -119,8 +118,7 @@ const CreateAspectForm = ({ onCreated, onCancel }) => {
             if (e.target.value) addMetric(e.target.value);
             e.target.value = "";
           }}
-          className="admin-input"
-          style={{ marginBottom: "0.75rem" }}
+          className="admin-input mb-3"
         >
           <option value="" disabled>Select a metric to add…</option>
           {availableMetrics.map((m) => (

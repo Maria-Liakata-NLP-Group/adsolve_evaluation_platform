@@ -76,8 +76,7 @@ const CreateTaskForm = ({ onCreated, onCancel }) => {
       <select
         value={form.use_case_id}
         onChange={(e) => setForm((p) => ({ ...p, use_case_id: e.target.value }))}
-        className="admin-input"
-        style={{ marginBottom: "0.75rem" }}
+        className="admin-input mb-3"
       >
         <option value="" disabled>Select a use case…</option>
         {useCases.map((uc) => (
@@ -91,8 +90,7 @@ const CreateTaskForm = ({ onCreated, onCancel }) => {
         onChange={(e) =>
           setForm((p) => ({ ...p, task_id: e.target.value, task_label: "" }))
         }
-        className="admin-input"
-        style={{ marginBottom: "0.5rem" }}
+        className="admin-input mb-2"
       >
         <option value="" disabled>Select a task…</option>
         {tasks.map((t) => (
@@ -108,8 +106,7 @@ const CreateTaskForm = ({ onCreated, onCancel }) => {
             value={form.task_label}
             onChange={(e) => setForm((p) => ({ ...p, task_label: e.target.value }))}
             placeholder="e.g. Summarisation"
-            className="admin-input"
-            style={{ marginBottom: "0.75rem" }}
+            className="admin-input mb-3"
           />
         </>
       )}
@@ -124,8 +121,7 @@ const CreateTaskForm = ({ onCreated, onCancel }) => {
         value={form.data_source_label}
         onChange={(e) => setForm((p) => ({ ...p, data_source_label: e.target.value }))}
         placeholder="e.g. Social Media Posts"
-        className="admin-input"
-        style={{ marginBottom: "0.75rem" }}
+        className="admin-input mb-3"
         autoFocus
       />
 
@@ -135,8 +131,8 @@ const CreateTaskForm = ({ onCreated, onCancel }) => {
         onChange={(e) => setForm((p) => ({ ...p, task_description: e.target.value }))}
         rows={3}
         placeholder="Describe the task…"
-        className="admin-input"
-        style={{ resize: "vertical", marginBottom: "0.75rem" }}
+        className="admin-input mb-3"
+        style={{ resize: "vertical" }}
       />
 
       <label className="admin-label">Data source description</label>
@@ -147,8 +143,8 @@ const CreateTaskForm = ({ onCreated, onCancel }) => {
         }
         rows={3}
         placeholder="Describe the data source…"
-        className="admin-input"
-        style={{ resize: "vertical", marginBottom: "0.75rem" }}
+        className="admin-input mb-3"
+        style={{ resize: "vertical" }}
       />
 
       {error && <p className="text-error">{error}</p>}

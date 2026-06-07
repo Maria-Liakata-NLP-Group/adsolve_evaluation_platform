@@ -13,10 +13,10 @@ const Home = () => {
 		>
 			{/* Hero */}
 			<div
+				className="has-text-centered"
 				style={{
 					background: "#151515",
 					padding: "4rem 2rem 3.5rem",
-					textAlign: "center",
 					position: "relative",
 					overflow: "hidden",
 				}}
@@ -96,13 +96,12 @@ const Home = () => {
 				</div>
 
 				<h1
+					className="font-heading mb-4"
 					style={{
-						fontFamily: '"Poppins", sans-serif',
 						fontSize: "2.9rem",
 						fontWeight: 700,
 						lineHeight: 1.15,
 						color: "#fff",
-						marginBottom: "1rem",
 					}}
 				>
 					Trust the models you deploy
@@ -111,11 +110,10 @@ const Home = () => {
 				</h1>
 
 				<p
+					className="font-ui text-white-muted"
 					style={{
-						fontFamily: '"Raleway", sans-serif',
 						fontSize: "1.05rem",
 						fontWeight: 400,
-						color: "rgba(255,255,255,0.72)",
 						maxWidth: "560px",
 						margin: "0 auto 2.5rem",
 						lineHeight: 1.7,
@@ -125,25 +123,18 @@ const Home = () => {
 					reliable and fit for purpose in the real world.
 				</p>
 
-				<div
-					style={{
-						display: "flex",
-						gap: "1rem",
-						justifyContent: "center",
-						flexWrap: "wrap",
-					}}
-				>
+				<div className="is-flex is-justify-content-center is-flex-wrap-wrap gap-4">
 					<button
 						onClick={() => navigate("/runs")}
-						className="btn-primary"
-						style={{ padding: "0.8rem 2rem", letterSpacing: "0.03em" }}
+						className="btn-primary ls-tight"
+						style={{ padding: "0.8rem 2rem" }}
 					>
 						Explore Runs
 					</button>
 					<button
 						onClick={() => navigate("/library")}
-						className="btn-outline"
-						style={{ padding: "0.8rem 2rem", letterSpacing: "0.03em" }}
+						className="btn-outline ls-tight"
+						style={{ padding: "0.8rem 2rem" }}
 					>
 						Evaluation Builder
 					</button>
@@ -197,8 +188,8 @@ const Home = () => {
 								{icon}
 							</div>
 							<h3
+								className="font-ui"
 								style={{
-									fontFamily: '"Raleway", sans-serif',
 									fontSize: "0.85rem",
 									fontWeight: 700,
 									color: "#fff",
@@ -208,9 +199,9 @@ const Home = () => {
 								{title}
 							</h3>
 							<p
+								className="text-white-dim"
 								style={{
 									fontSize: "0.76rem",
-									color: "rgba(255,255,255,0.45)",
 									lineHeight: 1.5,
 								}}
 							>
@@ -245,23 +236,15 @@ const Home = () => {
 				].map(({ icon, title, desc }) => (
 					<div
 						key={title}
-						style={{
-							display: "flex",
-							gap: "1.5rem",
-							alignItems: "flex-start",
-							marginBottom: "2rem",
-						}}
+						className="is-flex gap-5 is-align-items-flex-start mb-6"
 					>
 						<div
+							className="is-flex is-align-items-center is-justify-content-center is-flex-shrink-0"
 							style={{
 								width: "36px",
 								height: "36px",
 								background: "#ffc451",
 								borderRadius: "50%",
-								display: "flex",
-								alignItems: "center",
-								justifyContent: "center",
-								flexShrink: 0,
 								fontSize: "1rem",
 							}}
 						>

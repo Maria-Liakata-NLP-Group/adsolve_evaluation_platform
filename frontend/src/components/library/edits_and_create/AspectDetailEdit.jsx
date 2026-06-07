@@ -84,9 +84,9 @@ const AspectDetailEdit = ({ aspect, paths, onSaved, onCancel }) => {
       />
 
       <label className="admin-label">Metrics</label>
-      <div style={{ marginBottom: "0.5rem" }}>
+      <div className="mb-2">
         {assignedMetrics.length === 0 && (
-          <p style={{ fontSize: "0.78rem", color: "#666", marginBottom: "0.5rem" }}>
+          <p className="mb-2" style={{ fontSize: "0.78rem", color: "#666" }}>
             No metrics assigned.
           </p>
         )}
@@ -115,8 +115,7 @@ const AspectDetailEdit = ({ aspect, paths, onSaved, onCancel }) => {
           <select
             defaultValue=""
             onChange={(e) => { addMetric(e.target.value); e.target.value = ""; }}
-            className="admin-input"
-            style={{ marginBottom: "1rem" }}
+            className="admin-input mb-4"
           >
             <option value="" disabled>Select a metric to add…</option>
             {availableToAdd.map((m) => (

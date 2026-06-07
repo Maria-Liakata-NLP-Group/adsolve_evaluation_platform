@@ -5,10 +5,10 @@
  * Used in both AspectDetail and MetricDetail.
  */
 const DescriptionSection = ({ description, label = "Description" }) => (
-	<div style={{ marginBottom: "1.5rem" }}>
+	<div className="mb-5">
 		<p
-			className="is-size-7 is-uppercase has-text-grey"
-			style={{ letterSpacing: "0.1em", marginBottom: "0.4rem" }}
+			className="is-size-7 is-uppercase has-text-grey ls-wide"
+			style={{ marginBottom: "0.4rem" }}
 		>
 			{label}
 		</p>

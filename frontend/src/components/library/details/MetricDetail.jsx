@@ -70,7 +70,7 @@ const MetricDetail = ({ metricId, onNavigateToAspect, onDeleted, onUpdated }) =>
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.25rem" }}>
+      <div className="is-flex is-justify-content-space-between is-align-items-flex-start mb-1">
         <p className="is-size-7 has-text-grey is-uppercase" style={{ letterSpacing: "0.08em" }}>
           Metric
         </p>
@@ -82,22 +82,22 @@ const MetricDetail = ({ metricId, onNavigateToAspect, onDeleted, onUpdated }) =>
         />
       </div>
 
-      <h2 className="title is-4" style={{ marginBottom: "1.5rem" }}>
+      <h2 className="title is-4 mb-5">
         {detail?.label}
       </h2>
 
       {deleteError && (
-        <p className="text-error" style={{ marginBottom: "1rem" }}>{deleteError}</p>
+        <p className="text-error mb-4">{deleteError}</p>
       )}
 
       <DescriptionSection description={detail?.description} />
-      <div style={{ marginBottom: "1rem" }}>
+      <div className="mb-4">
         <AssociatedItems label="Tags" items={toItems(detail?.tags)} loading={loading} />
       </div>
-      <div style={{ marginBottom: "1rem" }}>
+      <div className="mb-4">
         <AssociatedItems label="Supported Reference Modes" items={toItems(detail?.supported_reference_modes)} loading={loading} />
       </div>
-      <div style={{ marginBottom: "1.5rem" }}>
+      <div className="mb-5">
         <AssociatedItems label="Supported Compute Environments" items={toItems(detail?.supported_compute_environments)} loading={loading} />
       </div>
       <AssociatedItems label="Associated Aspects" items={detail?.aspects ?? []} loading={loading} onItemClick={onNavigateToAspect} />

@@ -74,14 +74,11 @@ const CreateMetricForm = ({ onCreated, onCancel }) => {
       <input
         value={derivedId || "—"}
         disabled
-        className="admin-input"
-        style={{
-          color: derivedId ? "#666" : "#e07070",
-          marginBottom: derivedId ? "0.75rem" : "0.25rem",
-        }}
+        className={`admin-input ${derivedId ? "mb-3" : "mb-1"}`}
+        style={{ color: derivedId ? "#666" : "#e07070" }}
       />
       {!derivedId && form.label.trim() && (
-        <p style={{ color: "#e07070", fontSize: "0.72rem", marginBottom: "0.75rem" }}>
+        <p className="text-error mb-3" style={{ fontSize: "0.72rem" }}>
           Label must contain at least one letter or number.
         </p>
       )}
@@ -91,8 +88,7 @@ const CreateMetricForm = ({ onCreated, onCancel }) => {
         value={form.label}
         onChange={(e) => setForm((p) => ({ ...p, label: e.target.value }))}
         placeholder="e.g. Conciseness"
-        className="admin-input"
-        style={{ marginBottom: "0.75rem" }}
+        className="admin-input mb-3"
         autoFocus
       />
 
@@ -102,8 +98,8 @@ const CreateMetricForm = ({ onCreated, onCancel }) => {
         onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
         rows={3}
         placeholder="Describe this metric…"
-        className="admin-input"
-        style={{ resize: "vertical", marginBottom: "0.75rem" }}
+        className="admin-input mb-3"
+        style={{ resize: "vertical" }}
       />
 
       <label className="admin-label">
@@ -113,8 +109,7 @@ const CreateMetricForm = ({ onCreated, onCancel }) => {
         value={form.tags}
         onChange={(e) => setForm((p) => ({ ...p, tags: e.target.value }))}
         placeholder="e.g. lexical, overlap"
-        className="admin-input"
-        style={{ marginBottom: "0.75rem" }}
+        className="admin-input mb-3"
       />
 
       <label className="admin-label">Supported Compute Environments</label>

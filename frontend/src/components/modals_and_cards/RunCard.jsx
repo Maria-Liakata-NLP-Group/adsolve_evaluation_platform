@@ -22,16 +22,13 @@ const groupByAspect = (metrics) => {
 };
 
 const SectionLabel = ({ children }) => (
-	<span
-		className="is-size-7 has-text-dark has-text-weight-bold"
-		style={{ marginRight: "0.5rem" }}
-	>
+	<span className="is-size-7 has-text-dark has-text-weight-bold mr-2">
 		{children}
 	</span>
 );
 
 const TagList = ({ items }) => (
-	<div className="tags" style={{ marginBottom: 0 }}>
+	<div className="tags mb-0">
 		{items.map((item) => (
 			<span key={item} className="tag is-primary">
 				{item}
@@ -51,14 +48,14 @@ const RunCard = ({ run, onNavigate }) => {
 
 	return (
 		<div
-			className="card"
-			style={{ marginBottom: "1.5rem", cursor: onNavigate ? "pointer" : "default" }}
+			className="card mb-5"
+			style={{ cursor: onNavigate ? "pointer" : "default" }}
 			onClick={onNavigate}
 		>
 			<div className="card-content">
 
 				{/* Header */}
-				<div style={{ marginBottom: "1rem" }}>
+				<div className="mb-4">
 					<h3 className="title is-5" style={{ marginBottom: "0.2rem" }}>
 						{run.title}
 					</h3>
@@ -72,7 +69,7 @@ const RunCard = ({ run, onNavigate }) => {
 
 				{/* Descriptions — only rendered when values are present */}
 				{run.task_description && (
-					<div style={{ marginBottom: "0.75rem" }}>
+					<div className="mb-3">
 						<p className="is-size-7">
 							<SectionLabel>Task Description</SectionLabel>
 							{run.task_description}
@@ -80,7 +77,7 @@ const RunCard = ({ run, onNavigate }) => {
 					</div>
 				)}
 				{run.data_source_description && (
-					<div style={{ marginBottom: "0.75rem" }}>
+					<div className="mb-3">
 						<p className="is-size-7">
 							<SectionLabel>Data Source Description</SectionLabel>
 							{run.data_source_description}
@@ -88,7 +85,7 @@ const RunCard = ({ run, onNavigate }) => {
 					</div>
 				)}
 				{run.notes && (
-					<div style={{ marginBottom: "0.75rem" }}>
+					<div className="mb-3">
 						<p className="is-size-7">
 							<SectionLabel>Notes</SectionLabel>
 							{run.notes}
@@ -99,16 +96,16 @@ const RunCard = ({ run, onNavigate }) => {
 				{/* Collapsible details */}
 				{showDetails && (
 					<>
-						<hr style={{ margin: "0.75rem 0" }} />
+						<hr className="my-3" />
 
-						<div style={{ marginBottom: "0.75rem" }}>
+						<div className="mb-3">
 							<p className="is-flex">
 								<SectionLabel>Datasets</SectionLabel>
 								<TagList items={(run.datasets ?? []).map((d) => d.name)} />
 							</p>
 						</div>
 
-						<div style={{ marginBottom: "0.75rem" }}>
+						<div className="mb-3">
 							<p className="is-flex">
 								<SectionLabel>Models</SectionLabel>
 								<TagList items={(run.models ?? []).map((m) => m.name)} />
@@ -122,16 +119,16 @@ const RunCard = ({ run, onNavigate }) => {
 							{aspectGroups.length === 0 ? (
 								<p className="is-size-7 has-text-grey is-italic">No aspects or metrics linked.</p>
 							) : (
-								<div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+								<div className="is-flex is-flex-direction-column gap-2">
 									{aspectGroups.map((group) => (
 										<div key={group.label} className="is-flex">
 											<span
-												className="has-text-weight-semibold is-size-7"
-												style={{ marginRight: "0.5rem", whiteSpace: "nowrap" }}
+												className="has-text-weight-semibold is-size-7 mr-2"
+												style={{ whiteSpace: "nowrap" }}
 											>
 												{group.label}
 											</span>
-											<div className="tags" style={{ marginBottom: 0 }}>
+											<div className="tags mb-0">
 												{group.metrics.map((m) => (
 													<span key={m.metric_id} className="tag is-primary">
 														{m.display_label}

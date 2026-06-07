@@ -153,8 +153,8 @@ const Dashboard = () => {
 	return (
 		<>
 			<div>
-				<h1 className="title" style={{ marginBottom: "0.25rem" }}>{run.title}</h1>
-				<p className="is-size-7 has-text-grey" style={{ marginBottom: "1rem" }}>Run ID: {run.id}</p>
+				<h1 className="title mb-1">{run.title}</h1>
+				<p className="is-size-7 has-text-grey mb-4">Run ID: {run.id}</p>
 
 				<section className="block">
 					<div className="is-flex">
@@ -226,12 +226,11 @@ const Dashboard = () => {
 								return groups.map(({ aspect_id, aspect_label, aspect_definition, metrics }) => (
 									<div
 										key={aspect_id ?? "__none__"}
-										style={{ marginBottom: "2rem" }}
+										className="mb-6"
 									>
 										{aspect_label && (
 											<div
-												className="section-label"
-												style={{ marginBottom: "0.75rem" }}
+												className="section-label mb-3"
 											>
 												{aspect_label}
 												<InfoTooltip

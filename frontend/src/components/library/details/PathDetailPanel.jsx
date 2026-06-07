@@ -145,36 +145,18 @@ const PathDetailPanel = ({
 	return (
 		<>
 			{/* Path heading */}
-			<div style={{ marginBottom: "1.5rem" }}>
-				<div
-					style={{
-						display: "flex",
-						justifyContent: "space-between",
-						alignItems: "flex-start",
-					}}
-				>
+			<div className="mb-5">
+				<div className="is-flex is-justify-content-space-between is-align-items-flex-start">
 					<div>
-						<p
-							className="is-size-7 has-text-grey"
-							style={{ marginBottom: "0.2rem" }}
-						>
-							<span
-								className="is-uppercase"
-								style={{ letterSpacing: "0.08em" }}
-							>
+						<p className="is-size-7 has-text-grey" style={{ marginBottom: "0.2rem" }}>
+							<span className="is-uppercase" style={{ letterSpacing: "0.08em" }}>
 								Use Case
 							</span>
 							{" · "}
 							{detail.use_case_label}
 						</p>
-						<p
-							className="is-size-7 has-text-grey"
-							style={{ marginBottom: "0.2rem" }}
-						>
-							<span
-								className="is-uppercase"
-								style={{ letterSpacing: "0.08em" }}
-							>
+						<p className="is-size-7 has-text-grey" style={{ marginBottom: "0.2rem" }}>
+							<span className="is-uppercase" style={{ letterSpacing: "0.08em" }}>
 								Task
 							</span>
 							{" · "}
@@ -212,20 +194,14 @@ const PathDetailPanel = ({
 						onCancel={() => setEditingPath(false)}
 					/>
 				) : (
-					<h2
-						className="title is-4"
-						style={{ marginTop: "0.5rem", marginBottom: 0 }}
-					>
+					<h2 className="title is-4 mt-2 mb-0">
 						{detail.data_source_label}
 					</h2>
 				)}
 			</div>
 
 			{deleteError && (
-				<p
-					className="text-error"
-					style={{ marginBottom: "1rem" }}
-				>
+				<p className="text-error mb-4">
 					{deleteError}
 				</p>
 			)}
@@ -244,10 +220,7 @@ const PathDetailPanel = ({
 			)}
 
 			{/* Recommended aspects */}
-			<p
-				className="is-size-7 is-uppercase has-text-grey is-flex is-align-items-center is-gap-1"
-				style={{ letterSpacing: "0.1em", marginBottom: "0.75rem" }}
-			>
+			<p className="is-size-7 is-uppercase has-text-grey is-flex is-align-items-center ls-wide mb-3">
 				<span>Recommended Aspects </span>
 				{isAdmin && (
 					<button
@@ -262,7 +235,7 @@ const PathDetailPanel = ({
 			{/* Add Aspect — admin only */}
 
 			{addingAspect && (
-				<div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+				<div className="is-flex is-align-items-center gap-2">
 					<select
 						value={selectedAspectToAdd}
 						onChange={(e) => setSelectedAspectToAdd(e.target.value)}
@@ -306,26 +279,17 @@ const PathDetailPanel = ({
 			)}
 
 			{removeAspectError && (
-				<p
-					className="text-error"
-					style={{ marginBottom: "0.75rem" }}
-				>
+				<p className="text-error mb-3">
 					{removeAspectError}
 				</p>
 			)}
 
 			{detail.aspects.length === 0 ? (
-				<p
-					className="has-text-grey is-italic"
-					style={{ marginBottom: "2rem" }}
-				>
+				<p className="has-text-grey is-italic mb-6">
 					No aspects defined for this path yet.
 				</p>
 			) : (
-				<div
-					className="columns is-multiline"
-					style={{ marginBottom: "1rem" }}
-				>
+				<div className="columns is-multiline mb-4">
 					{detail.aspects.map((aspect) => (
 						<div
 							key={aspect.id}
@@ -390,16 +354,10 @@ const PathDetailPanel = ({
 			)}
 
 			{/* Completed evaluation runs */}
-			<p
-				className="is-size-7 is-uppercase has-text-grey"
-				style={{ letterSpacing: "0.1em", marginBottom: "0.75rem" }}
-			>
+			<p className="is-size-7 is-uppercase has-text-grey ls-wide mb-3">
 				Completed Evaluation Runs
 			</p>
-			<p
-				className="is-size-7 has-text-grey"
-				style={{ marginBottom: "1rem" }}
-			>
+			<p className="is-size-7 has-text-grey mb-4">
 				Click one of the evaluation run cards to add a dataset or model to an
 				existing run, or{" "}
 				<button

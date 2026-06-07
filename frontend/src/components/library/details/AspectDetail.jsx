@@ -83,14 +83,7 @@ const AspectDetail = ({
 
 	return (
 		<>
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "space-between",
-					alignItems: "flex-start",
-					marginBottom: "0.25rem",
-				}}
-			>
+			<div className="is-flex is-justify-content-space-between is-align-items-flex-start mb-1">
 				<p
 					className="is-size-7 has-text-grey is-uppercase"
 					style={{ letterSpacing: "0.08em" }}
@@ -105,18 +98,12 @@ const AspectDetail = ({
 				/>
 			</div>
 
-			<h2
-				className="title is-4"
-				style={{ marginBottom: "1.5rem" }}
-			>
+			<h2 className="title is-4 mb-5">
 				{detail?.label}
 			</h2>
 
 			{deleteError && (
-				<p
-					className="text-error"
-					style={{ marginBottom: "1rem" }}
-				>
+				<p className="text-error mb-4">
 					{deleteError}
 				</p>
 			)}
@@ -129,11 +116,8 @@ const AspectDetail = ({
 				onItemClick={onNavigateToMetric}
 			/>
 
-			<div style={{ marginTop: "2rem" }}>
-				<p
-					className="is-size-7 is-uppercase has-text-grey"
-					style={{ letterSpacing: "0.1em", marginBottom: "0.75rem" }}
-				>
+			<div className="mt-6">
+				<p className="is-size-7 is-uppercase has-text-grey ls-wide mb-3">
 					Used in Tasks
 				</p>
 				{loading ? (

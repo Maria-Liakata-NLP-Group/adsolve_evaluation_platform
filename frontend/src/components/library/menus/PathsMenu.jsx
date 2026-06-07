@@ -38,14 +38,16 @@ const rowStyle = (depth, isSelected) => ({
 });
 
 const Chevron = ({ open }) => (
-	<span style={{
-		display: "inline-block",
-		fontSize: "0.65rem",
-		transform: open ? "rotate(90deg)" : "none",
-		transition: "transform 0.15s",
-		color: "var(--bulma-grey)",
-		flexShrink: 0,
-	}}>
+	<span
+		className="is-flex-shrink-0"
+		style={{
+			display: "inline-block",
+			fontSize: "0.65rem",
+			transform: open ? "rotate(90deg)" : "none",
+			transition: "transform 0.15s",
+			color: "var(--bulma-grey)",
+		}}
+	>
 		▶
 	</span>
 );
