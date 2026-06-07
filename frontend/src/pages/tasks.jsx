@@ -61,7 +61,7 @@ const Tasks = () => {
 						<RunCard
 							run={run}
 							onNavigate={() =>
-								navigate(`/use-cases/${useCaseId}/${run.path_id}/${run.id}`)
+								navigate(`/runs/${useCaseId}/${run.path_id}/${run.id}`)
 							}
 						/>
 					</div>

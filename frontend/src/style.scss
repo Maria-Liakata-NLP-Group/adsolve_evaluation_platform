@@ -2,12 +2,28 @@
 @use "bulma/sass/utilities/initial-variables" as iv;
 @import "bulma/bulma";
 
-/* ── Brand: override Bulma link + primary to brand gold ────────────
-   --bulma-link-invert-l must be forced dark because Bulma's auto
-   value (98% ≈ white) produces invisible text on a light gold bg.
-   --bulma-link-on-scheme-l matches the base lightness so links
-   render as our gold on the dark background. */
+/* ── Brand tokens ───────────────────────────────────────────────── */
 :root {
+  /* Colors */
+  --brand-dark: #151515;
+  --brand-gold: #ffc451;
+  --brand-gold-text: #ffc451;
+  --brand-body: #c8c8c8;
+  --brand-muted: #909090;
+  --brand-error: #e07070;
+
+  /* Spacing scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 0.75rem;
+  --space-lg: 1.25rem;
+  --space-xl: 2rem;
+
+  /* ── Bulma overrides: link + primary → brand gold ───────────────
+     --bulma-link-invert-l must be forced dark because Bulma's auto
+     value (98% ≈ white) produces invisible text on a light gold bg.
+     --bulma-link-on-scheme-l matches the base lightness so links
+     render as our gold on the dark background. */
   --bulma-link-h: 40deg;
   --bulma-link-s: 100%;
   --bulma-link-l: 66%;
@@ -19,6 +35,27 @@
   --bulma-primary-l: 66%;
   --bulma-primary-invert-l: 8%;
   --bulma-primary-on-scheme-l: 66%;
+}
+
+/* Use Poppins for Bulma title elements */
+.title {
+  font-family: "Poppins", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #111111;
+  color: var(--brand-body);
+  font-family: "Open Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html, body {
@@ -209,13 +246,92 @@ html, body {
   visibility: visible;
 }
 
+/* ── Typography ─────────────────────────────────────────────── */
+
+/* Uppercase gold sub-heading — use beneath a .title to label a section */
+.item-label {
+  font-family: "Raleway", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-gold-text);
+  margin-bottom: var(--space-sm);
+}
+
+/* Inline validation / error message */
+.text-error {
+  color: var(--brand-error);
+  font-size: 0.8rem;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+
+/* Shared shape for all btn-* classes */
+.btn-primary,
+.btn-outline,
+.btn-secondary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  padding: 0.75rem 1.75rem;
+  transition: opacity 0.15s;
+  &:hover { opacity: 0.85; }
+}
+
+/* Gold fill — primary call-to-action */
+.btn-primary {
+  background: var(--brand-gold);
+  color: var(--brand-dark);
+  border: none;
+}
+
+/* Gold border, transparent fill — secondary call-to-action */
+.btn-outline {
+  background: transparent;
+  color: #fff;
+  border: 2px solid var(--brand-gold);
+}
+
+/* Subtle grey border — tertiary actions */
+.btn-secondary {
+  background: transparent;
+  color: #aaa;
+  border: 1px solid #444;
+}
+
+/* No border — icon buttons and low-emphasis actions */
+.btn-ghost {
+  background: none;
+  border: none;
+  color: #aaa;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 0.78rem;
+}
+
+/* ── Layout ──────────────────────────────────────────────────── */
+
+/* Centered content column with standard page padding */
+.page-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--space-xl);
+}
+
 /* ── Admin UI: dashed add-item buttons ──────────────────────── */
 
 /* Gold dashed — used in library sidebar and detail panels */
 .admin-btn-add {
   background: rgba(255, 196, 81, 0.1);
   border: 1px solid rgba(255, 196, 81, 0.4);
-  color: #ffc451;
+  color: var(--brand-gold);
   border-radius: 50%;
   width: 1.75rem;
   height: 1.75rem;
@@ -233,7 +349,7 @@ html, body {
     line-height: 1;
   }
   &:hover {
-    background-color: #ffc451;
+    background-color: var(--brand-gold);
     color: black;
   }
 }
@@ -252,8 +368,8 @@ html, body {
 
 /* ── Admin UI: shared form + button styles ──────────────────── */
 .admin-btn-primary {
-  background: #ffc451;
-  color: #151515;
+  background: var(--brand-gold);
+  color: var(--brand-dark);
   border: none;
   padding: 0.3rem 0.8rem;
   border-radius: 4px;
@@ -304,7 +420,7 @@ html, body {
 
 .admin-edit-title {
   font-size: 0.72rem;
-  color: #ffc451;
+  color: var(--brand-gold);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;

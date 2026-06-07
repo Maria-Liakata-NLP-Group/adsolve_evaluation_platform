@@ -31,6 +31,7 @@ const Home = () => {
 					}}
 				/>
 
+				{/* AdSoLve logo */}
 				<svg
 					style={{
 						display: "block",
@@ -301,7 +302,11 @@ const Home = () => {
 								{title}
 							</h4>
 							<p
-								style={{ fontSize: "0.88rem", color: "var(--brand-muted)", lineHeight: 1.65 }}
+								style={{
+									fontSize: "0.88rem",
+									color: "var(--brand-muted)",
+									lineHeight: 1.65,
+								}}
 							>
 								{desc}
 							</p>

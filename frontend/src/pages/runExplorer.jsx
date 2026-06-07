@@ -80,8 +80,14 @@ const RunExplorer = () => {
 			</p>
 
 			{/* Filters */}
-			<div className="is-flex" style={{ gap: "1rem", marginBottom: "2rem", flexWrap: "wrap" }}>
-				<div className="field" style={{ marginBottom: 0 }}>
+			<div
+				className="is-flex"
+				style={{ gap: "1rem", marginBottom: "2rem", flexWrap: "wrap" }}
+			>
+				<div
+					className="field"
+					style={{ marginBottom: 0 }}
+				>
 					<div className="control">
 						<div className="select">
 							<select
@@ -90,7 +96,10 @@ const RunExplorer = () => {
 							>
 								<option value="">All use cases</option>
 								{useCases.map((uc) => (
-									<option key={uc.id} value={uc.id}>
+									<option
+										key={uc.id}
+										value={uc.id}
+									>
 										{uc.label}
 									</option>
 								))}
@@ -99,7 +108,10 @@ const RunExplorer = () => {
 					</div>
 				</div>
 
-				<div className="field" style={{ marginBottom: 0 }}>
+				<div
+					className="field"
+					style={{ marginBottom: 0 }}
+				>
 					<div className="control">
 						<div className="select">
 							<select
@@ -109,7 +121,10 @@ const RunExplorer = () => {
 							>
 								<option value="">All tasks</option>
 								{tasks.map((t) => (
-									<option key={t} value={t}>
+									<option
+										key={t}
+										value={t}
+									>
 										{t}
 									</option>
 								))}
@@ -122,18 +137,23 @@ const RunExplorer = () => {
 			{/* Run grid */}
 			<div className="columns is-multiline">
 				{filteredRuns.map((run) => (
-					<div key={run.id} className="column is-4">
+					<div
+						key={run.id}
+						className="column is-4"
+					>
 						<RunCard
 							run={run}
 							onNavigate={() =>
-								navigate(`/use-cases/${run.use_case_id}/${run.path_id}/${run.id}`)
+								navigate(`/runs/${run.use_case_id}/${run.path_id}/${run.id}`)
 							}
 						/>
 					</div>
 				))}
 				{filteredRuns.length === 0 && (
 					<div className="column">
-						<p className="has-text-grey is-italic">No runs match the selected filters.</p>
+						<p className="has-text-grey is-italic">
+							No runs match the selected filters.
+						</p>
 					</div>
 				)}
 			</div>

@@ -17,11 +17,6 @@ import CreateTaskForm from "../components/library/edits_and_create/CreateTaskFor
 
 const MODES = ["metrics", "aspects", "paths"];
 const MODE_LABELS = { aspects: "ASPECTS", metrics: "METRICS", paths: "TASKS" };
-const ADD_BUTTON_LABELS = {
-	aspects: "Aspect",
-	metrics: "Metric",
-	paths: "Task",
-};
 
 const Library = () => {
 	const [searchParams, setSearchParams] = useSearchParams();

@@ -438,7 +438,7 @@ const PathDetailPanel = ({
 								}}
 								onNavigate={() =>
 									navigate(
-										`/use-cases/${detail.use_case_id}/${run.path_id}/${run.id}`,
+										`/runs/${detail.use_case_id}/${run.path_id}/${run.id}`,
 									)
 								}
 							/>

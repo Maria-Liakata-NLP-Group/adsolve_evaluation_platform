@@ -13,7 +13,7 @@ import "./style.scss";
 const App = () => {
 	const location = useLocation();
 	const isHome = location.pathname === "/";
-	const isRuns = location.pathname === "/runs";
+	const isRuns = location.pathname.startsWith("/runs");
 
 	return (
 		<AdminProvider>
@@ -44,7 +44,7 @@ const App = () => {
 						element={<RunExplorer />}
 					/>
 					<Route
-						path="/use-cases/:useCaseId/:pathId/:runId"
+						path="/runs/:useCaseId/:pathId/:runId"
 						element={<Dashboard />}
 					/>
 					<Route
