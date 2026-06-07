@@ -148,7 +148,7 @@ const Library = () => {
 				</div>
 
 				{/* Item list */}
-				<div style={{ position: "relative", marginTop: "0.5rem" }}>
+				<div style={{ position: "relative", margin: "0.5rem 0.25rem" }}>
 					{isAdmin && (
 						<button
 							type="button"
