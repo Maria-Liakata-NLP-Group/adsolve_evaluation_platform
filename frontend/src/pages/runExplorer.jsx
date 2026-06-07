@@ -63,18 +63,12 @@ const RunExplorer = () => {
 			>
 				Evaluation Runs
 			</h1>
-			<p
-				className="subtitle is-6"
-				style={{ marginBottom: "1.75rem" }}
-			>
+			<p className="subtitle is-6 mb-5">
 				Browse and filter completed evaluation runs
 			</p>
 
 			{/* Filters */}
-			<div
-				className="is-flex is-flex-wrap-wrap gap-4"
-				style={{ marginBottom: "2rem" }}
-			>
+			<div className="is-flex is-flex-wrap-wrap gap-4 mb-6">
 				<div className="field mb-0">
 					<div className="control">
 						<div className="select">
@@ -124,7 +118,7 @@ const RunExplorer = () => {
 				{filteredRuns.map((run) => (
 					<div
 						key={run.id}
-						className="column is-4"
+						className="column is-4 is-flex"
 					>
 						<RunCard
 							run={run}

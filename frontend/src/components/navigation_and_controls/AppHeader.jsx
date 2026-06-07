@@ -15,13 +15,13 @@ const AppHeader = () => {
 		<>
 			<header
 				style={{
-					background: "#151515",
+					background: "var(--brand-dark)",
 					height: "48px",
 					display: "flex",
 					alignItems: "center",
 					padding: "0 1.5rem",
 					gap: "1rem",
-					borderBottom: "2px solid #ffc451",
+					borderBottom: "2px solid var(--brand-gold)",
 					position: "sticky",
 					top: 0,
 					zIndex: 100,
@@ -164,7 +164,7 @@ const AppHeader = () => {
 						border: "none",
 						cursor: "pointer",
 						padding: "0.25rem",
-						color: isAdmin ? "#ffc451" : "rgba(255,255,255,0.3)",
+						color: isAdmin ? "var(--brand-gold)" : "rgba(255,255,255,0.3)",
 						fontSize: "1rem",
 						lineHeight: 1,
 						flexShrink: 0,

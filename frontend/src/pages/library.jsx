@@ -101,12 +101,7 @@ const Library = () => {
 		);
 
 	return (
-		<div
-			className="is-flex"
-			style={{
-				minHeight: "calc(100vh - 40px)",
-			}}
-		>
+		<>
 			{/* Left panel */}
 			<div
 				className="is-flex is-flex-direction-column is-flex-shrink-0"
@@ -122,9 +117,7 @@ const Library = () => {
 						borderBottom: "1px solid var(--bulma-border)",
 					}}
 				>
-					<div
-						className="buttons has-addons mb-0"
-					>
+					<div className="buttons has-addons mb-0">
 						{MODES.map((m) => (
 							<button
 								key={m}
@@ -253,7 +246,7 @@ const Library = () => {
 					/>
 				)}
 			</div>
-		</div>
+		</>
 	);
 };
 

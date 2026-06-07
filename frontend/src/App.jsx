@@ -10,26 +10,31 @@ import IntrinsicMetrics from "./pages/intrinsicMetrics";
 import Library from "./pages/library";
 import "./style.scss";
 
+const getStyle = (isHome, isLibrary) => {
+	if (isHome) return {};
+	else if (isLibrary)
+		return {
+			display: "flex",
+			flexGrow: "1",
+		};
+	else
+		return {
+			maxWidth: "1400px",
+			margin: "0 auto",
+			width: "100%",
+			padding: "0 2rem",
+		};
+};
+
 const App = () => {
 	const location = useLocation();
 	const isHome = location.pathname === "/";
-	const isRuns = location.pathname.startsWith("/runs");
+	const isLibrary = location.pathname.startsWith("/library");
 
 	return (
 		<AdminProvider>
 			{!isHome && <AppHeader />}
-			<div
-				style={
-					isRuns
-						? {
-								maxWidth: "1400px",
-								margin: "0 auto",
-								width: "100%",
-								padding: "0 2rem",
-							}
-						: {}
-				}
-			>
+			<div style={getStyle(isHome, isLibrary)}>
 				<Routes>
 					<Route
 						path="/"
