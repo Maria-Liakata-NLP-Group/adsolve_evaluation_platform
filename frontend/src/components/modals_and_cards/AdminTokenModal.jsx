@@ -53,7 +53,7 @@ const AdminTokenModal = ({ isOpen, onClose }) => {
               You are signed in as admin.
             </p>
             <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-              <button type="button" onClick={onClose} style={secondaryBtn}>Cancel</button>
+              <button type="button" onClick={onClose} className="btn-secondary" style={secondaryBtn}>Cancel</button>
               <button type="button" onClick={handleLogout} style={dangerBtn}>Sign out</button>
             </div>
           </>
@@ -81,11 +81,12 @@ const AdminTokenModal = ({ isOpen, onClose }) => {
               </p>
             )}
             <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-              <button type="button" onClick={onClose} style={secondaryBtn}>Cancel</button>
+              <button type="button" onClick={onClose} className="btn-secondary" style={secondaryBtn}>Cancel</button>
               <button
                 type="button"
                 onClick={handleLogin}
                 disabled={loading || !tokenInput}
+                className="btn-primary"
                 style={{ ...primaryBtn, opacity: loading || !tokenInput ? 0.5 : 1 }}
               >
                 {loading ? "Verifying…" : "Verify"}
@@ -99,15 +100,13 @@ const AdminTokenModal = ({ isOpen, onClose }) => {
 };
 
 const primaryBtn = {
-  background: "#ffc451", color: "#151515", border: "none",
-  padding: "0.45rem 1rem", borderRadius: "4px",
-  fontFamily: '"Raleway", sans-serif', fontWeight: 700,
-  fontSize: "0.82rem", cursor: "pointer",
+  padding: "0.45rem 1rem",
+  fontSize: "0.82rem",
 };
 
 const secondaryBtn = {
-  background: "transparent", color: "#aaa", border: "1px solid #444",
-  padding: "0.45rem 1rem", borderRadius: "4px", fontSize: "0.82rem", cursor: "pointer",
+  padding: "0.45rem 1rem",
+  fontSize: "0.82rem",
 };
 
 const dangerBtn = {

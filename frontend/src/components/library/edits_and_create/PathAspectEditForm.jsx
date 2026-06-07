@@ -162,7 +162,7 @@ const PathAspectEditForm = ({ aspect, pathId, runMetricIds, onSave, onCancel }) 
         </select>
       )}
 
-      {saveError && <p style={{ color: "#e07070", fontSize: "0.8rem" }}>{saveError}</p>}
+      {saveError && <p className="text-error">{saveError}</p>}
     </div>
   );
 };

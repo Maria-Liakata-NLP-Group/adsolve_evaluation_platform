@@ -114,7 +114,8 @@ const AspectDetail = ({
 
 			{deleteError && (
 				<p
-					style={{ color: "#e07070", fontSize: "0.8rem", marginBottom: "1rem" }}
+					className="text-error"
+					style={{ marginBottom: "1rem" }}
 				>
 					{deleteError}
 				</p>

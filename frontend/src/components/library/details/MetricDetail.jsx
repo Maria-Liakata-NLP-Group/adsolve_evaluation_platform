@@ -87,7 +87,7 @@ const MetricDetail = ({ metricId, onNavigateToAspect, onDeleted, onUpdated }) =>
       </h2>
 
       {deleteError && (
-        <p style={{ color: "#e07070", fontSize: "0.8rem", marginBottom: "1rem" }}>{deleteError}</p>
+        <p className="text-error" style={{ marginBottom: "1rem" }}>{deleteError}</p>
       )}
 
       <DescriptionSection description={detail?.description} />

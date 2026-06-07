@@ -145,7 +145,7 @@ const CreateMetricForm = ({ onCreated, onCancel }) => {
         ))}
       </div>
 
-      {error && <p style={{ color: "#e07070", fontSize: "0.8rem" }}>{error}</p>}
+      {error && <p className="text-error">{error}</p>}
     </>
   );
 };

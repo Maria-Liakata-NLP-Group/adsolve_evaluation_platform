@@ -32,23 +32,14 @@ const Tasks = () => {
 		<div>
 			<Breadcrumbs labels={useCaseLabel ? { [useCaseId]: useCaseLabel } : {}} />
 			<h1
-				style={{
-					fontFamily: '"Poppins", sans-serif',
-					fontSize: "1.6rem",
-					fontWeight: 700,
-					color: "#151515",
-					margin: "1.5rem 0 0.25rem",
-				}}
+				className="title is-4"
+				style={{ margin: "1.5rem 0 0.25rem" }}
 			>
 				{useCaseLabel ?? "Evaluation Runs"}
 			</h1>
 			<p
-				style={{
-					fontFamily: '"Raleway", sans-serif',
-					fontSize: "0.9rem",
-					color: "#888",
-					marginBottom: "1.75rem",
-				}}
+				className="subtitle is-6"
+				style={{ marginBottom: "1.75rem" }}
 			>
 				Select a run to view evaluation results
 			</p>

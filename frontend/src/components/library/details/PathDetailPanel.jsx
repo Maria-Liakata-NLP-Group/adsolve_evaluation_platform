@@ -223,7 +223,8 @@ const PathDetailPanel = ({
 
 			{deleteError && (
 				<p
-					style={{ color: "#e07070", fontSize: "0.8rem", marginBottom: "1rem" }}
+					className="text-error"
+					style={{ marginBottom: "1rem" }}
 				>
 					{deleteError}
 				</p>
@@ -306,11 +307,8 @@ const PathDetailPanel = ({
 
 			{removeAspectError && (
 				<p
-					style={{
-						color: "#e07070",
-						fontSize: "0.8rem",
-						marginBottom: "0.75rem",
-					}}
+					className="text-error"
+					style={{ marginBottom: "0.75rem" }}
 				>
 					{removeAspectError}
 				</p>

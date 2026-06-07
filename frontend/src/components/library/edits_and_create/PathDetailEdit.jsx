@@ -70,7 +70,7 @@ const PathDetailEdit = ({ path, onSaved, onCancel }) => {
         style={{ resize: "vertical", marginBottom: "0.75rem" }}
       />
 
-      {saveError && <p style={{ color: "#e07070", fontSize: "0.8rem" }}>{saveError}</p>}
+      {saveError && <p className="text-error">{saveError}</p>}
     </>
   );
 };

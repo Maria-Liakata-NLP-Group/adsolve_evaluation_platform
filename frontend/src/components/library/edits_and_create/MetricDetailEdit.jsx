@@ -114,7 +114,7 @@ const MetricDetailEdit = ({ metric, onSaved, onCancel }) => {
         ))}
       </div>
 
-      {saveError && <p style={{ color: "#e07070", fontSize: "0.8rem" }}>{saveError}</p>}
+      {saveError && <p className="text-error">{saveError}</p>}
     </>
   );
 };

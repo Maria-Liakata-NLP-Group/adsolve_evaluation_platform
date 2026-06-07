@@ -151,7 +151,7 @@ const CreateTaskForm = ({ onCreated, onCancel }) => {
         style={{ resize: "vertical", marginBottom: "0.75rem" }}
       />
 
-      {error && <p style={{ color: "#e07070", fontSize: "0.8rem" }}>{error}</p>}
+      {error && <p className="text-error">{error}</p>}
     </>
   );
 };

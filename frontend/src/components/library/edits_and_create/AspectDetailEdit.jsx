@@ -126,7 +126,7 @@ const AspectDetailEdit = ({ aspect, paths, onSaved, onCancel }) => {
         </>
       )}
 
-      {saveError && <p style={{ color: "#e07070", fontSize: "0.8rem" }}>{saveError}</p>}
+      {saveError && <p className="text-error">{saveError}</p>}
     </>
   );
 };

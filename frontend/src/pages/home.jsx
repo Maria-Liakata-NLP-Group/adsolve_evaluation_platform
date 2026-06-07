@@ -135,35 +135,15 @@ const Home = () => {
 				>
 					<button
 						onClick={() => navigate("/runs")}
-						style={{
-							background: "#ffc451",
-							color: "#151515",
-							border: "none",
-							padding: "0.8rem 2rem",
-							borderRadius: "4px",
-							fontFamily: '"Raleway", sans-serif',
-							fontSize: "0.92rem",
-							fontWeight: 700,
-							cursor: "pointer",
-							letterSpacing: "0.03em",
-						}}
+						className="btn-primary"
+						style={{ padding: "0.8rem 2rem", letterSpacing: "0.03em" }}
 					>
 						Explore Runs
 					</button>
 					<button
 						onClick={() => navigate("/library")}
-						style={{
-							background: "transparent",
-							color: "#fff",
-							border: "2px solid #ffc451",
-							padding: "0.8rem 2rem",
-							borderRadius: "4px",
-							fontFamily: '"Raleway", sans-serif',
-							fontSize: "0.92rem",
-							fontWeight: 700,
-							cursor: "pointer",
-							letterSpacing: "0.03em",
-						}}
+						className="btn-outline"
+						style={{ padding: "0.8rem 2rem", letterSpacing: "0.03em" }}
 					>
 						Evaluation Builder
 					</button>
@@ -289,15 +269,8 @@ const Home = () => {
 						</div>
 						<div>
 							<h4
-								style={{
-									fontFamily: '"Raleway", sans-serif',
-									fontSize: "0.8rem",
-									fontWeight: 700,
-									letterSpacing: "0.1em",
-									textTransform: "uppercase",
-									color: "var(--brand-gold-text)",
-									marginBottom: "0.35rem",
-								}}
+								className="item-label"
+								style={{ marginBottom: "0.35rem" }}
 							>
 								{title}
 							</h4>
