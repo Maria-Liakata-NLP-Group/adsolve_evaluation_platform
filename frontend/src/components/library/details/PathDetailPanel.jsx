@@ -148,15 +148,27 @@ const PathDetailPanel = ({
 			<div className="mb-5">
 				<div className="is-flex is-justify-content-space-between is-align-items-flex-start">
 					<div>
-						<p className="is-size-7 has-text-grey" style={{ marginBottom: "0.2rem" }}>
-							<span className="is-uppercase" style={{ letterSpacing: "0.08em" }}>
+						<p
+							className="is-size-7 has-text-grey"
+							style={{ marginBottom: "0.2rem" }}
+						>
+							<span
+								className="is-uppercase"
+								style={{ letterSpacing: "0.08em" }}
+							>
 								Use Case
 							</span>
 							{" · "}
 							{detail.use_case_label}
 						</p>
-						<p className="is-size-7 has-text-grey" style={{ marginBottom: "0.2rem" }}>
-							<span className="is-uppercase" style={{ letterSpacing: "0.08em" }}>
+						<p
+							className="is-size-7 has-text-grey"
+							style={{ marginBottom: "0.2rem" }}
+						>
+							<span
+								className="is-uppercase"
+								style={{ letterSpacing: "0.08em" }}
+							>
 								Task
 							</span>
 							{" · "}
@@ -194,17 +206,11 @@ const PathDetailPanel = ({
 						onCancel={() => setEditingPath(false)}
 					/>
 				) : (
-					<h2 className="title is-4 mt-2 mb-0">
-						{detail.data_source_label}
-					</h2>
+					<h2 className="title is-4 mt-2 mb-0">{detail.data_source_label}</h2>
 				)}
 			</div>
 
-			{deleteError && (
-				<p className="text-error mb-4">
-					{deleteError}
-				</p>
-			)}
+			{deleteError && <p className="text-error mb-4">{deleteError}</p>}
 
 			{!editingPath && (
 				<>
@@ -220,7 +226,7 @@ const PathDetailPanel = ({
 			)}
 
 			{/* Recommended aspects */}
-			<p className="is-size-7 is-uppercase has-text-grey is-flex is-align-items-center ls-wide mb-3">
+			<p className="is-size-7 is-uppercase has-text-grey is-flex is-align-items-center ls-wide mb-3 gap-2">
 				<span>Recommended Aspects </span>
 				{isAdmin && (
 					<button
@@ -279,9 +285,7 @@ const PathDetailPanel = ({
 			)}
 
 			{removeAspectError && (
-				<p className="text-error mb-3">
-					{removeAspectError}
-				</p>
+				<p className="text-error mb-3">{removeAspectError}</p>
 			)}
 
 			{detail.aspects.length === 0 ? (
@@ -293,7 +297,7 @@ const PathDetailPanel = ({
 					{detail.aspects.map((aspect) => (
 						<div
 							key={aspect.id}
-							className="column is-6"
+							className="column is-6 is-flex"
 						>
 							{editingAspectId === aspect.id ? (
 								<PathAspectEditForm

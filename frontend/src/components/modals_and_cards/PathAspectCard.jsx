@@ -127,27 +127,40 @@ const PathAspectCard = ({
 				onClick={onClick}
 				style={onClick ? { cursor: "pointer" } : undefined}
 			>
-				<div className="card-content">
-					{children}
+				<div
+					className="card-content is-flex is-flex-direction-column is-align-items-space-between"
+					style={{ height: "100%" }}
+				>
+					<div className="is-flex-grow-1">{children}</div>
+
 					<div className="buttons mt-3">
 						<button
 							type="button"
 							className="button is-small is-info is-light"
-							onClick={(e) => { e.stopPropagation(); setActivePopup("examples"); }}
+							onClick={(e) => {
+								e.stopPropagation();
+								setActivePopup("examples");
+							}}
 						>
 							Examples
 						</button>
 						<button
 							type="button"
 							className="button is-small is-warning is-light"
-							onClick={(e) => { e.stopPropagation(); setActivePopup("stakeholder_requirements"); }}
+							onClick={(e) => {
+								e.stopPropagation();
+								setActivePopup("stakeholder_requirements");
+							}}
 						>
 							Stakeholder Requirements
 						</button>
 						<button
 							type="button"
 							className="button is-small is-success is-light"
-							onClick={(e) => { e.stopPropagation(); setActivePopup("metrics"); }}
+							onClick={(e) => {
+								e.stopPropagation();
+								setActivePopup("metrics");
+							}}
 						>
 							Metrics
 						</button>

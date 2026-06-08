@@ -98,15 +98,9 @@ const AspectDetail = ({
 				/>
 			</div>
 
-			<h2 className="title is-4 mb-5">
-				{detail?.label}
-			</h2>
+			<h2 className="title is-4 mb-5">{detail?.label}</h2>
 
-			{deleteError && (
-				<p className="text-error mb-4">
-					{deleteError}
-				</p>
-			)}
+			{deleteError && <p className="text-error mb-4">{deleteError}</p>}
 
 			<DescriptionSection description={detail?.description} />
 			<AssociatedItems
@@ -129,7 +123,7 @@ const AspectDetail = ({
 						{paths.map((path) => (
 							<div
 								key={path.path_id}
-								className="column is-6"
+								className="column is-6 is-flex"
 							>
 								<PathAspectCard
 									label={detail?.label}

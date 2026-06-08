@@ -161,7 +161,6 @@ const RunCard = ({ run, onNavigate }) => {
 				<button
 					type="button"
 					className="card-footer-item button is-ghost is-size-7"
-					style={{ border: "none", color: "var(--bulma-link)" }}
 					onClick={toggleDetails}
 				>
 					{showDetails ? "Hide details" : "Show details"}
