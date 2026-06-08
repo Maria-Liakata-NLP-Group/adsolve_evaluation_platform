@@ -39,10 +39,10 @@ const MetricsScatterPlot = ({
 				tempMeta.push({ docId: id, tag: tags[i], metricId: aspect });
 
 				if (id === highlightedId && tags[i] === highlightedTag) {
-					tempColours.push("rgba(255, 0, 0, 1)");
-					tempSizes.push(16);
+					tempColours.push("rgb(255, 196, 81)");
+					tempSizes.push(22);
 				} else {
-					tempColours.push("rgba(0, 0, 255, 0.5)");
+					tempColours.push("rgba(200, 200, 200, 0.7)");
 					tempSizes.push(12);
 				}
 			}
@@ -71,7 +71,7 @@ const MetricsScatterPlot = ({
 		marker: {
 			symbol: "line-ns-open",
 			size: 16,
-			color: "blue",
+			color: "rgba(220, 220, 220, 0.9)",
 			line: { width: 2 },
 		},
 		hoverinfo: "skip",
@@ -91,8 +91,17 @@ const MetricsScatterPlot = ({
 		},
 	];
 
+	// Matches text-white-muted — used for axis labels, tick text, and the info icon.
+	const labelColor = "rgba(200, 200, 200, 0.9)";
+
+	const axisStyle = {
+		color: labelColor,
+		gridcolor: "rgba(255, 255, 255, 0.06)",
+		zerolinecolor: "rgba(255, 255, 255, 0.1)",
+	};
+
 	const layout = {
-		xaxis: { title: "X Axis" },
+		xaxis: { title: "X Axis", ...axisStyle },
 		yaxis: {
 			title: "Y Label",
 			type: "category",
@@ -100,10 +109,14 @@ const MetricsScatterPlot = ({
 			categoryarray: tags,
 			autorange: "reversed",
 			automargin: true,
+			...axisStyle,
 		},
-		margin: { l: 70, r: 20, t: 10, b: 20, pad: 0 },
+		plot_bgcolor: "transparent",
+		paper_bgcolor: "transparent",
+		margin: { l: 70, r: 20, t: 30, b: 20, pad: 0 },
 		width: 700,
 		height: tags.length * 30 + 60,
+		font: { color: labelColor },
 	};
 
 	const handlePointClick = (event) => {
@@ -115,12 +128,15 @@ const MetricsScatterPlot = ({
 	return (
 		<div className="p-4">
 			<div className="is-flex is-align-items-center mb-1">
-				<span style={{ fontSize: "0.85rem", fontWeight: 600, color: "#333" }}>
-					{metric}
-				</span>
+				<span className="ls-tight text-white-muted">{metric}</span>
 				<InfoTooltip
 					text={metricDescription}
-					onClick={aspect ? () => navigate(`/library?mode=metrics&id=${aspect}`) : undefined}
+					color={labelColor}
+					onClick={
+						aspect
+							? () => navigate(`/library?mode=metrics&id=${aspect}`)
+							: undefined
+					}
 				/>
 			</div>
 			<Plot

@@ -53,6 +53,13 @@
 
 /* ── Background utilities ────────────────────────────────────── */
 .bg-dark { background: var(--brand-dark); }
+.bg-light { background: var(--brand-body); }
+
+/* Slightly raised dark surface — for grouping on a dark page */
+.bg-surface {
+  background: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
 
 /* ── Text color utilities (for dark backgrounds) ─────────────── */
 .text-white-muted { color: rgba(255, 255, 255, 0.72); } /* readable body text */

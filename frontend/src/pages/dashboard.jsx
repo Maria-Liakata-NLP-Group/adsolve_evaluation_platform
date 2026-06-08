@@ -78,10 +78,7 @@ const Dashboard = () => {
 	// Update breadcrumbs once run title is known
 	useEffect(() => {
 		if (!run) return;
-		setBreadcrumbs([
-			{ label: "Runs", path: "/runs" },
-			{ label: run.title },
-		]);
+		setBreadcrumbs([{ label: "Runs", path: "/runs" }, { label: run.title }]);
 	}, [run, setBreadcrumbs]);
 
 	// Fetch dashboard data when run or active filter changes
@@ -152,7 +149,7 @@ const Dashboard = () => {
 
 	return (
 		<>
-			<div>
+			<div className="mt-6">
 				<h1 className="title mb-1">{run.title}</h1>
 				<p className="is-size-7 has-text-grey mb-4">Run ID: {run.id}</p>
 
@@ -203,7 +200,7 @@ const Dashboard = () => {
 				</section>
 
 				<section className="block">
-					<div className="is-flex">
+					<div className="is-flex gap-5">
 						<div>
 							{(() => {
 								// Group metrics by aspect, preserving insertion order from the API.
@@ -223,44 +220,60 @@ const Dashboard = () => {
 									groups[seenAspects.get(key)].metrics.push([metricId, entry]);
 								}
 
-								return groups.map(({ aspect_id, aspect_label, aspect_definition, metrics }) => (
-									<div
-										key={aspect_id ?? "__none__"}
-										className="mb-6"
-									>
-										{aspect_label && (
-											<div
-												className="section-label mb-3"
-											>
-												{aspect_label}
-												<InfoTooltip
-													text={aspect_definition}
-													onClick={aspect_id ? () => navigate(`/library?mode=aspects&id=${aspect_id}`) : undefined}
-												/>
+								return groups.map(
+									({ aspect_id, aspect_label, aspect_definition, metrics }) => (
+										<div
+											key={aspect_id ?? "__none__"}
+											className="mb-6"
+										>
+											{aspect_label && (
+												<div className="section-label mb-3">
+													{aspect_label}
+													<InfoTooltip
+														text={aspect_definition}
+														onClick={
+															aspect_id
+																? () =>
+																		navigate(
+																			`/library?mode=aspects&id=${aspect_id}`,
+																		)
+																: undefined
+														}
+													/>
+												</div>
+											)}
+											<div className="is-rounded bg-surface">
+												{metrics.map(
+													([
+														metricId,
+														{
+															metric,
+															metric_description,
+															means,
+															tags,
+															dataPoints,
+															documentIds,
+														},
+													]) => (
+														<MetricsScatterPlot
+															key={metricId}
+															dataPoints={dataPoints}
+															documentIds={documentIds}
+															highlightedId={modalDetails?.highlightDocId}
+															highlightedTag={modalDetails?.tag}
+															showDetails={handleShowDetails}
+															aspect={metricId}
+															metric={metric}
+															metricDescription={metric_description}
+															means={means}
+															tags={tags}
+														/>
+													),
+												)}
 											</div>
-										)}
-										{metrics.map(
-											([
-												metricId,
-												{ metric, metric_description, means, tags, dataPoints, documentIds },
-											]) => (
-												<MetricsScatterPlot
-													key={metricId}
-													dataPoints={dataPoints}
-													documentIds={documentIds}
-													highlightedId={modalDetails?.highlightDocId}
-													highlightedTag={modalDetails?.tag}
-													showDetails={handleShowDetails}
-													aspect={metricId}
-													metric={metric}
-													metricDescription={metric_description}
-													means={means}
-													tags={tags}
-												/>
-											),
-										)}
-									</div>
-								));
+										</div>
+									),
+								);
 							})()}
 						</div>
 						<div>

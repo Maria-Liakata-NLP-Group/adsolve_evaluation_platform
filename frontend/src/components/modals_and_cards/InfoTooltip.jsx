@@ -5,7 +5,8 @@ const NO_DESCRIPTION = "No description available yet.";
 
 // Inline styles on the icon bypass cascade issues from parent containers
 // (e.g. text-transform:uppercase from .section-label turning "i" into "I").
-const iconStyle = {
+// Returns a style object for the icon, overriding color so it can match surrounding text.
+const makeIconStyle = (color) => ({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
@@ -13,8 +14,8 @@ const iconStyle = {
 	height: "1.1rem",
 	minWidth: "1.1rem",
 	borderRadius: "50%",
-	border: "1.5px solid var(--brand-gold)",
-	color: "var(--brand-gold-text)",
+	border: `1.5px solid ${color}`,
+	color,
 	fontSize: "0.65rem",
 	fontFamily: '"Raleway", sans-serif',
 	fontWeight: 700,
@@ -24,16 +25,16 @@ const iconStyle = {
 	lineHeight: 1,
 	userSelect: "none",
 	flexShrink: 0,
-};
+});
 
-const InfoTooltip = ({ text, onClick }) => (
+const InfoTooltip = ({ text, onClick, color = "var(--brand-gold)" }) => (
 	<span
 		className="info-tooltip"
 		aria-label={text ?? NO_DESCRIPTION}
 	>
 		<span
 			className="info-tooltip__icon"
-			style={onClick ? { ...iconStyle, cursor: "pointer" } : iconStyle}
+			style={onClick ? { ...makeIconStyle(color), cursor: "pointer" } : makeIconStyle(color)}
 			onClick={onClick}
 			role={onClick ? "button" : undefined}
 			tabIndex={onClick ? 0 : undefined}
@@ -63,4 +64,5 @@ export default InfoTooltip;
 InfoTooltip.propTypes = {
 	text: PropTypes.string,
 	onClick: PropTypes.func || null,
+	color: PropTypes.string,
 };
