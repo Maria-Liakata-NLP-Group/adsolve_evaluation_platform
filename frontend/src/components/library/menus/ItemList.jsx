@@ -15,9 +15,7 @@ const ItemList = ({ items, selectedId, onSelectItem }) =>
 				padding: "0.45rem 0.75rem",
 				borderRadius: "6px",
 				border: "none",
-				background:
-					selectedId === item.id ? "var(--bulma-link-light)" : "transparent",
-				color: selectedId === item.id ? "var(--bulma-link)" : "inherit",
+				color: selectedId === item.id ? "var(--brand-gold-text)" : "inherit",
 				fontWeight: selectedId === item.id ? 600 : 400,
 				fontSize: "0.85rem",
 				cursor: "pointer",

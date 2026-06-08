@@ -30,8 +30,7 @@ const rowStyle = (depth, isSelected) => ({
 	paddingLeft: `${0.5 + depth * 0.9}rem`,
 	border: "none",
 	borderRadius: "5px",
-	background: isSelected ? "var(--bulma-link-light)" : "transparent",
-	color: isSelected ? "var(--bulma-link)" : "inherit",
+	color: isSelected ? "var(--brand-gold-text)" : "inherit",
 	fontWeight: isSelected ? 600 : 400,
 	fontSize: "0.85rem",
 	cursor: "pointer",
@@ -102,32 +101,34 @@ const PathsMenu = ({ paths, selectedId, onSelectPath }) => {
 							<span>{useCase.label}</span>
 						</button>
 
-						{ucOpen && Object.entries(useCase.tasks).map(([taskId, task]) => {
-							const taskOpen = expandedTasks.has(taskId);
-							return (
-								<div key={taskId}>
-									<button
-										type="button"
-										style={rowStyle(1, false)}
-										onClick={() => toggleTask(taskId)}
-									>
-										<Chevron open={taskOpen} />
-										<span style={{ color: "var(--bulma-grey-dark)" }}>{task.label}</span>
-									</button>
-
-									{taskOpen && task.sources.map((source) => (
+						{ucOpen &&
+							Object.entries(useCase.tasks).map(([taskId, task]) => {
+								const taskOpen = expandedTasks.has(taskId);
+								return (
+									<div key={taskId}>
 										<button
-											key={source.pathId}
 											type="button"
-											style={rowStyle(2, selectedId === source.pathId)}
-											onClick={() => onSelectPath(source.pathId)}
+											style={rowStyle(1, false)}
+											onClick={() => toggleTask(taskId)}
 										>
-											<span>{source.label}</span>
+											<Chevron open={taskOpen} />
+											<span>{task.label}</span>
 										</button>
-									))}
-								</div>
-							);
-						})}
+
+										{taskOpen &&
+											task.sources.map((source) => (
+												<button
+													key={source.pathId}
+													type="button"
+													style={rowStyle(3, selectedId === source.pathId)}
+													onClick={() => onSelectPath(source.pathId)}
+												>
+													<span>{source.label}</span>
+												</button>
+											))}
+									</div>
+								);
+							})}
 					</div>
 				);
 			})}
