@@ -1,0 +1,303 @@
+/** @format */
+
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useBreadcrumbs } from "../components/navigation_and_controls/BreadcrumbContext";
+import DocumentDisplay from "../components/dashboard/documentDisplay";
+import InfoTooltip from "../components/modals_and_cards/InfoTooltip";
+import MetricsScatterPlot from "../components/dashboard/metricsScatterPlot";
+import { getDashboard, getDocument, getRunById } from "../api/runs";
+
+const buildChartData = (dashData, byDataset, currentId, datasets, models) => {
+	const result = {};
+
+	for (const {
+		metric_id,
+		display_label,
+		aspect_id,
+		aspect_label,
+		aspect_definition,
+		metric_description,
+	} of dashData.metrics) {
+		const relevantScores = dashData.scores.filter(
+			(s) =>
+				s.metric_id === metric_id &&
+				(byDataset ? s.dataset_id === currentId : s.model_id === currentId),
+		);
+
+		result[metric_id] = {
+			metric: display_label,
+			aspect_id: aspect_id ?? null,
+			aspect_label: aspect_label ?? null,
+			aspect_definition: aspect_definition ?? null,
+			metric_description: metric_description ?? null,
+			means: relevantScores.map((s) => s.mean_score),
+			tags: relevantScores.map((s) =>
+				byDataset
+					? (models.find((m) => m.id === s.model_id)?.name ??
+						String(s.model_id))
+					: (datasets.find((d) => d.id === s.dataset_id)?.name ??
+						String(s.dataset_id)),
+			),
+			dataPoints: relevantScores.map((s) =>
+				s.document_scores.map((d) => d.score),
+			),
+			documentIds: relevantScores.map((s) =>
+				s.document_scores.map((d) => d.doc_id),
+			),
+		};
+	}
+
+	return result;
+};
+
+const Dashboard = () => {
+	const { runId } = useParams();
+	const navigate = useNavigate();
+	const { setBreadcrumbs } = useBreadcrumbs();
+	const [run, setRun] = useState(null);
+	const [currentDatasetId, setCurrentDatasetId] = useState(null);
+	const [currentModelId, setCurrentModelId] = useState(null);
+	const [dashData, setDashData] = useState(null);
+	const [chartData, setChartData] = useState({});
+	const [modalDetails, setModalDetails] = useState(null);
+	const [error, setError] = useState(null);
+
+	// Fetch run metadata once when runId changes
+	useEffect(() => {
+		if (!runId) return;
+		getRunById(runId)
+			.then((r) => {
+				setRun(r);
+				if (r.datasets.length > 0) setCurrentDatasetId(r.datasets[0].id);
+			})
+			.catch((err) => setError(err.message));
+		return () => setBreadcrumbs([]);
+	}, [runId, setBreadcrumbs]);
+
+	// Update breadcrumbs once run title is known
+	useEffect(() => {
+		if (!run) return;
+		setBreadcrumbs([{ label: "Runs", path: "/runs" }, { label: run.title }]);
+	}, [run, setBreadcrumbs]);
+
+	// Fetch dashboard data when run or active filter changes
+	useEffect(() => {
+		if (!run) return;
+		const filter =
+			currentDatasetId != null
+				? { datasetId: currentDatasetId }
+				: currentModelId != null
+					? { modelId: currentModelId }
+					: {};
+
+		getDashboard(run.id, filter)
+			.then(setDashData)
+			.catch((err) => setError(err.message));
+	}, [run, currentDatasetId, currentModelId]);
+
+	// Derive chart-ready data from raw dashboard response
+	useEffect(() => {
+		if (!dashData || !run) return;
+		const byDataset = currentDatasetId != null;
+		const currentId = byDataset ? currentDatasetId : currentModelId;
+		setChartData(
+			buildChartData(dashData, byDataset, currentId, run.datasets, run.models),
+		);
+	}, [dashData, run, currentDatasetId, currentModelId]);
+
+	// Lazily fetch document detail on scatter-plot point click
+	const handleShowDetails = useCallback(
+		async ({ docId, tag, metricId, value }) => {
+			if (!run) return;
+			try {
+				const doc = await getDocument(run.id, docId);
+				const output = doc.outputs.find((o) => o.model === tag);
+				const sentDetail = output?.scores?.[metricId]?.sentence_detail;
+				setModalDetails({
+					gold: doc.gold_summary,
+					llm_sents: sentDetail
+						? sentDetail.sents
+						: [output?.llm_summary ?? ""],
+					llm_sent_scores: sentDetail ? sentDetail.scores : [],
+					documentId: doc.external_id,
+					highlightDocId: docId,
+					tag,
+					aspect: metricId,
+					value,
+					input: output?.input ?? [],
+				});
+			} catch {
+				// keep previous modal if fetch fails
+			}
+		},
+		[run],
+	);
+
+	const clickOnDataset = (id) => {
+		setCurrentDatasetId(id);
+		setCurrentModelId(null);
+	};
+
+	const clickOnModel = (id) => {
+		setCurrentModelId(id);
+		setCurrentDatasetId(null);
+	};
+
+	if (error) return <div>Error: {error}</div>;
+	if (!run) return <div>Loading…</div>;
+
+	return (
+		<>
+			<div className="mt-6">
+				<h1 className="title mb-1">{run.title}</h1>
+				<p className="is-size-7 has-text-grey mb-4">Run ID: {run.id}</p>
+
+				<section className="block">
+					<div className="is-flex">
+						<div className="is-flex is-align-items-center mr-5">
+							<div style={{ width: "80px" }}>Datasets:</div>
+							<div className="tabs is-toggle">
+								<ul>
+									{run.datasets.map((dataset) => (
+										<li
+											key={dataset.id}
+											className={
+												currentDatasetId === dataset.id ? "is-active" : ""
+											}
+											onClick={() => clickOnDataset(dataset.id)}
+										>
+											<a>
+												<span>{dataset.name}</span>
+											</a>
+										</li>
+									))}
+								</ul>
+							</div>
+							<button className="button dark ml-2 is-small">Add dataset</button>
+						</div>
+
+						<div className="is-flex is-align-items-center">
+							<div style={{ width: "80px" }}>Models:</div>
+							<div className="tabs is-toggle">
+								<ul>
+									{run.models.map((model) => (
+										<li
+											key={model.id}
+											className={currentModelId === model.id ? "is-active" : ""}
+											onClick={() => clickOnModel(model.id)}
+										>
+											<a>
+												<span>{model.name}</span>
+											</a>
+										</li>
+									))}
+								</ul>
+							</div>
+							<button className="button ml-2 is-small">Add model</button>
+						</div>
+					</div>
+				</section>
+
+				<section className="block">
+					<div className="is-flex gap-5">
+						<div className="is-flex is-flex-direction-column gap-5">
+							{(() => {
+								// Group metrics by aspect, preserving insertion order from the API.
+								const groups = [];
+								const seenAspects = new Map();
+								for (const [metricId, entry] of Object.entries(chartData)) {
+									const key = entry.aspect_id ?? "__none__";
+									if (!seenAspects.has(key)) {
+										seenAspects.set(key, groups.length);
+										groups.push({
+											aspect_id: entry.aspect_id,
+											aspect_label: entry.aspect_label,
+											aspect_definition: entry.aspect_definition,
+											metrics: [],
+										});
+									}
+									groups[seenAspects.get(key)].metrics.push([metricId, entry]);
+								}
+
+								return groups.map(
+									({ aspect_id, aspect_label, aspect_definition, metrics }) => (
+										<div key={aspect_id ?? "__none__"}>
+											{aspect_label && (
+												<div className="section-label mb-3">
+													{aspect_label}
+													<InfoTooltip
+														text={aspect_definition}
+														onClick={
+															aspect_id
+																? () =>
+																		navigate(
+																			`/library?mode=aspects&id=${aspect_id}`,
+																		)
+																: undefined
+														}
+													/>
+												</div>
+											)}
+											<div className="is-rounded bg-surface">
+												{metrics.map(
+													([
+														metricId,
+														{
+															metric,
+															metric_description,
+															means,
+															tags,
+															dataPoints,
+															documentIds,
+														},
+													]) => (
+														<MetricsScatterPlot
+															key={metricId}
+															dataPoints={dataPoints}
+															documentIds={documentIds}
+															highlightedId={modalDetails?.highlightDocId}
+															highlightedTag={modalDetails?.tag}
+															showDetails={handleShowDetails}
+															aspect={metricId}
+															metric={metric}
+															metricDescription={metric_description}
+															means={means}
+															tags={tags}
+														/>
+													),
+												)}
+											</div>
+										</div>
+									),
+								);
+							})()}
+						</div>
+						<div className="is-flex-grow-1 min-w-0 sticky-top-col">
+							<div className="section-label mb-3">
+								Document Details
+								<InfoTooltip
+									text={
+										"Inspect LLM outputs and, if available, the input on which it was created the gold standard reference against which it was evaluated."
+									}
+								/>
+							</div>
+							<DocumentDisplay
+								gold={modalDetails?.gold}
+								llm={modalDetails?.llm_sents}
+								input={modalDetails?.input}
+								documentScore={modalDetails?.value}
+								scores={modalDetails?.llm_sent_scores}
+								tag={modalDetails?.tag}
+								documentId={modalDetails?.documentId}
+								aspect={modalDetails?.aspect}
+							/>
+						</div>
+					</div>
+				</section>
+			</div>
+		</>
+	);
+};
+
+export default Dashboard;

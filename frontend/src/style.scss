@@ -1,0 +1,586 @@
+@use "bulma/sass/utilities/mixins";
+@use "bulma/sass/utilities/initial-variables" as iv;
+@import "bulma/bulma";
+
+/* ── Brand tokens ───────────────────────────────────────────────── */
+:root {
+  /* Colors */
+  --brand-dark: #151515;
+  --brand-gold: #ffc451;
+  --brand-gold-text: #ffc451;
+  --brand-body: #c8c8c8;
+  --brand-muted: #909090;
+  --brand-error: #e07070;
+
+  /* Font families */
+  --font-heading: "Poppins", sans-serif;
+  --font-ui: "Raleway", sans-serif;
+  --font-body: "Open Sans", sans-serif;
+
+  /* Spacing scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 0.75rem;
+  --space-lg: 1.25rem;
+  --space-xl: 2rem;
+
+  /* ── Bulma overrides: link + primary → brand gold ───────────────
+     --bulma-link-invert-l must be forced dark because Bulma's auto
+     value (98% ≈ white) produces invisible text on a light gold bg.
+     --bulma-link-on-scheme-l matches the base lightness so links
+     render as our gold on the dark background. */
+  --bulma-link-h: 40deg;
+  --bulma-link-s: 100%;
+  --bulma-link-l: 66%;
+  --bulma-link-invert-l: 8%;
+  --bulma-link-on-scheme-l: 66%;
+
+  --bulma-primary-h: 40deg;
+  --bulma-primary-s: 100%;
+  --bulma-primary-l: 66%;
+  --bulma-primary-invert-l: 8%;
+  --bulma-primary-on-scheme-l: 66%;
+}
+
+/* Use Poppins for Bulma title elements */
+.title {
+  font-family: "Poppins", sans-serif;
+}
+
+/* ── Font family utilities ───────────────────────────────────── */
+.font-ui      { font-family: var(--font-ui); }
+.font-heading { font-family: var(--font-heading); }
+
+/* ── Background utilities ────────────────────────────────────── */
+.bg-dark { background: var(--brand-dark); }
+.bg-light { background: var(--brand-body); }
+
+/* Slightly raised dark surface — for grouping on a dark page */
+.bg-surface {
+  background: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Text color utilities (for dark backgrounds) ─────────────── */
+.text-white-muted { color: rgba(255, 255, 255, 0.72); } /* readable body text */
+.text-white-dim   { color: rgba(255, 255, 255, 0.45); } /* subtle/secondary text */
+.has-text-dark { color: #666 !important; }
+/* ── Letter-spacing utilities ────────────────────────────────── */
+.ls-wide  { letter-spacing: 0.1em; }  /* section labels, item headings */
+.ls-tight { letter-spacing: 0.03em; } /* buttons */
+
+/* ── Flex sizing utilities ───────────────────────────────────── */
+.min-w-0   { min-width: 0; }  /* allows flex items to shrink below content size */
+.min-h-0   { min-height: 0; } /* same, for column flex items */
+
+/* Fills remaining flex space and scrolls vertically when content overflows */
+.scroll-fill {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Sticks a flex column below the fixed navbar.
+   - align-self:flex-start prevents cross-axis stretch, which is required
+     for sticky to activate (element must be shorter than its container).
+   - height:calc(100vh-58px) fills the viewport so the column extends to
+     the bottom; when stuck this same height is preserved.
+   - display:flex+flex-direction:column lets children use flex-grow to fill. */
+.sticky-top-col {
+  position: sticky;
+  top: 58px;
+  align-self: flex-start;
+  height: calc(100vh - 58px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Gap utilities (Bulma doesn't provide these) ─────────────── */
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.gap-5 { gap: 1.5rem; }
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--brand-dark);
+  color: var(--brand-body);
+  font-family: "Open Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  max-width: 100vw;
+  /* clip prevents horizontal overflow without creating a scroll container,
+     which would otherwise break position:sticky on descendant elements. */
+  overflow-x: clip;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Brand: section labels ──────────────────────────────────── */
+.section-label {
+  font-family: "Raleway", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-gold-text);
+  margin-bottom: 1.25rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--brand-gold);
+}
+
+/* ── Brand: breadcrumb active item ──────────────────────────── */
+.breadcrumb li.is-active a {
+  color: var(--brand-gold-text) !important;
+  font-weight: 600;
+}
+
+/* ── Brand: card hover (ContentSquare) ──────────────────────── */
+.box.has-border {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #e8e8e8;
+  border-radius: 6px;
+  position: relative;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    cursor: pointer;
+    border-color: var(--brand-gold) !important;
+    box-shadow: 0 2px 12px rgba(255, 196, 81, 0.2) !important;
+    transform: none;
+  }
+}
+
+/* ── Utility ────────────────────────────────────────────────── */
+.is-square {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.has-border {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #e8e8e8;
+}
+
+.is-rounded,
+.has-rounded {
+  border-radius: 0.5rem;
+}
+
+.block {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.block:first-of-type {
+  margin-top: 2rem;
+}
+
+.tags {
+  gap: 0.4rem;
+}
+
+.tag {
+  white-space: normal;
+  height: auto;
+
+  &.is-loading {
+    position: relative;
+    pointer-events: none;
+
+    &:after {
+      @include mixins.loader;
+      position: absolute;
+      top: calc(50% - 0.5rem);
+      left: calc(50% - 0.5rem);
+      width: 1rem;
+      height: 1rem;
+      border-width: 0.25em;
+    }
+  }
+}
+
+/* ── Info tooltip ───────────────────────────────────────────────── */
+.info-tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  cursor: default;
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--brand-gold);
+    color: var(--brand-gold-text);
+    font-size: 0.6rem;
+    font-family: "Raleway", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  &__body {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 0.4rem);
+    transform: translateX(-50%);
+    width: 220px;
+    background: #1e1e1e;
+    color: #f5f5f5;
+    font-family: "Open Sans", sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.45;
+    padding: 0.5rem 0.65rem;
+    border-radius: 6px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+    transition: opacity 0.15s, visibility 0.15s;
+    z-index: 100;
+    white-space: normal;
+    text-align: left;
+  }
+
+  &:hover &__body {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+.timeline-dot {
+  position: absolute;
+  width: var(--bulma-size-large);
+  height: var(--bulma-size-large);
+  border-radius: 50%;
+  border: 1px solid black;
+}
+
+.timeline-dot:hover {
+  cursor: pointer;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  font-weight: bold;
+  border-radius: 50%;
+  border: 1px solid black;
+  text-align: center;
+  width: 2rem;
+  height: 2rem;
+  user-select: none;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 0.5rem;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+/* ── Typography ─────────────────────────────────────────────── */
+
+/* Uppercase gold sub-heading — use beneath a .title to label a section */
+.item-label {
+  font-family: "Raleway", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-gold-text);
+  margin-bottom: var(--space-sm);
+}
+
+/* Inline validation / error message */
+.text-error {
+  color: var(--brand-error);
+  font-size: 0.8rem;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+
+/* Shared shape for all btn-* classes */
+.btn-primary,
+.btn-outline,
+.btn-secondary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  padding: 0.75rem 1.75rem;
+  transition: opacity 0.15s;
+  &:hover { opacity: 0.85; }
+}
+
+/* Gold fill — primary call-to-action */
+.btn-primary {
+  background: var(--brand-gold);
+  color: var(--brand-dark);
+  border: none;
+}
+
+/* Gold border, transparent fill — secondary call-to-action */
+.btn-outline {
+  background: transparent;
+  color: #fff;
+  border: 2px solid var(--brand-gold);
+}
+
+/* Subtle grey border — tertiary actions */
+.btn-secondary {
+  background: transparent;
+  color: #aaa;
+  border: 1px solid #444;
+}
+
+/* No border — icon buttons and low-emphasis actions */
+.btn-ghost {
+  background: none;
+  border: none;
+  color: #aaa;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 0.78rem;
+}
+
+/* ── Layout ──────────────────────────────────────────────────── */
+
+/* Centered content column with standard page padding */
+.page-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--space-xl);
+}
+
+/* ── Admin UI: dashed add-item buttons ──────────────────────── */
+
+/* Gold dashed — used in library sidebar and detail panels */
+.admin-btn-add {
+  background: rgba(255, 196, 81, 0.1);
+  border: 1px solid rgba(255, 196, 81, 0.4);
+  color: var(--brand-gold);
+  border-radius: 50%;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  cursor: pointer;
+  &::before {
+    content: "+";
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+  &:hover {
+    background-color: var(--brand-gold);
+    color: black;
+  }
+}
+
+/* Grey dashed — used inline within forms (e.g. "+ Add requirement") */
+.admin-btn-add-inline {
+  background: none;
+  border: 1px dashed #555;
+  color: #aaa;
+  border-radius: 4px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+}
+
+/* ── Admin UI: shared form + button styles ──────────────────── */
+.admin-btn-primary {
+  background: var(--brand-gold);
+  color: var(--brand-dark);
+  border: none;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-family: "Raleway", sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.admin-btn-secondary {
+  background: transparent;
+  color: #aaa;
+  border: 1px solid #444;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.admin-label {
+  display: block;
+  font-size: 0.7rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+  margin-top: 0.75rem;
+}
+
+.admin-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #fff;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+/* ── Admin UI: inline edit form header ──────────────────────── */
+.admin-edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.admin-edit-title {
+  font-size: 0.72rem;
+  color: var(--brand-gold);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.admin-button-group {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.admin-metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.3rem 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  margin-bottom: 0.25rem;
+}
+
+.admin-metric-label {
+  font-size: 0.82rem;
+  color: #ccc;
+}
+
+.admin-metric-remove {
+  background: none;
+  border: none;
+  font-size: 0.78rem;
+  padding: 0 0.25rem;
+  color: #e07070;
+  cursor: pointer;
+}
+
+.admin-metric-remove--locked {
+  background: none;
+  border: none;
+  font-size: 0.78rem;
+  padding: 0 0.25rem;
+  color: #555;
+  cursor: not-allowed;
+}
+
+.admin-checkbox-group {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.admin-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: #ccc;
+  cursor: pointer;
+}
+
+/* ── Admin UI: inline item action buttons (Edit / Delete) ───── */
+.admin-item-actions {
+  display: flex;
+  align-self: flex-start;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.admin-btn-edit,
+.admin-btn-delete,
+.admin-btn-delete--disabled {
+  padding: 0.28rem 0.7rem;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-btn-edit {
+  background: transparent;
+  border: 1px solid #444;
+  color: var(--brand-gold-text);
+}
+
+.admin-btn-delete {
+  background: rgba(139, 32, 32, 0.15);
+  border: 1px solid #8b2020;
+  color: #e07070;
+}
+
+.admin-btn-delete--disabled {
+  background: transparent;
+  border: 1px solid #444;
+  color: #555;
+  cursor: not-allowed;
+}

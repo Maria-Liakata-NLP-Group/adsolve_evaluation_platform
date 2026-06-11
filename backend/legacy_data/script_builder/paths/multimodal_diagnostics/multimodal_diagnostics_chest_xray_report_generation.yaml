@@ -1,0 +1,63 @@
+# @format
+
+id: medical_diagnostics_chest_xray_report_generation
+use_case: medical_diagnostics
+task: report_generation
+data_source:
+  id: chest_xrays
+  label: Chest X-rays
+  description: Chest X-ray images and associated request context used as input for triage and preliminary radiology report generation.
+
+aspects:
+  clinical_significance:
+    definition: The report should capture the clinically important findings in the X-ray and prioritise information that is relevant for diagnosis, triage, and downstream radiology review.
+    examples:
+      title: Examples
+      original_case:
+        - Chest X-ray shows a right lower lobe opacity consistent with pneumonia.
+        - Mild cardiomegaly is present.
+        - No pleural effusion or pneumothorax.
+        - The request is to assess possible infection.
+      good_summary: Right lower lobe airspace opacity concerning for pneumonia. Mild cardiomegaly. No pleural effusion or pneumothorax.
+      why_good: The report foregrounds the clinically important abnormality and includes supporting findings relevant to the imaging request.
+      bad_summary: Chest X-ray obtained. Cardiomediastinal silhouette noted. Lungs assessed. No additional comments.
+      why_bad: The report is too vague and fails to communicate the clinically significant finding needed for diagnosis and triage.
+    stakeholder_requirements:
+      title: Mapped Requirements
+      items:
+        - Must be clinically correct.
+        - Must not omit relevant information.
+        - Must contain clinical information relevant to the X-ray requester.
+        - Must support quick identification of severe cases.
+    metrics:
+      - green_score
+      - bertscore
+      - radcliq
+      - radnli
+      - radgraph
+      - rouge
+      - bleu
+
+  conciseness:
+    definition: The report should be brief and focused, containing only the clinically relevant information needed for the request without unnecessary or distracting detail.
+    examples:
+      title: Examples
+      original_case:
+        - Chest X-ray shows no focal consolidation.
+        - Mild bibasal atelectatic change.
+        - No pleural effusion or pneumothorax.
+        - Request is to assess acute respiratory symptoms.
+      good_summary: Mild bibasal atelectatic change. No focal consolidation, pleural effusion, or pneumothorax.
+      why_good: The report is short, clinically focused, and excludes irrelevant filler while retaining the findings needed by the requester.
+      bad_summary: Chest radiograph performed in standard fashion. Cardiomediastinal contours are reviewed. There are mild bibasal changes which may or may not be significant in some contexts, with several otherwise unremarkable appearances across the thorax.
+      why_bad: The report is unnecessarily wordy and includes detail that does not help the requester interpret the X-ray efficiently.
+    stakeholder_requirements:
+      title: Mapped Requirements
+      items:
+        - Must be concise.
+        - Must not add information not relevant to the X-ray request.
+        - Must save time interpreting X-rays and writing reports.
+    metrics:
+      - evidence_appropriateness
+      - rouge_n
+      - rouge_l

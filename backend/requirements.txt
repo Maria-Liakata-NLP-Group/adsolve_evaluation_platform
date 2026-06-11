@@ -1,0 +1,8 @@
+py-readability-metrics
+pandas
+SQLAlchemy
+psycopg2-binary
+PyYAML
+fastapi
+uvicorn[standard]
+httpx
