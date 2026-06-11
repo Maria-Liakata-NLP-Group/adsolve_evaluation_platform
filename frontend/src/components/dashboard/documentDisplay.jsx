@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import PropTypes from "prop-types";
-import InputDisplay from "../modals_and_cards/inputDisplay";
 
 const getScoreColour = (score) => {
 	if (score == null) return "transparent";
@@ -25,6 +24,40 @@ const mdToHtml = (markdown) => {
 	return <span dangerouslySetInnerHTML={{ __html: safeHtml }} />;
 };
 
+const createInputContent = (inp, index) => {
+	// check if inp starts with "/images/"
+	if (inp.startsWith("/images/")) {
+		return (
+			<div
+				key={index}
+				className="mt-1 mb-1"
+				style={{
+					flex: "1 1 0px",
+					backgroundImage: `url(${inp})`,
+					backgroundSize: "contain", // scale image to fit box
+					backgroundRepeat: "no-repeat", // prevent tiling
+					backgroundPosition: "center", // center it
+					backgroundColor: "black", // optional background
+					width: "100%", // take full width of container
+					maxWidth: "580px", // cap width so it doesn't stretch too far
+					borderRadius: "8px",
+				}}
+			/>
+		);
+	} else {
+		return <p key={index}>{inp}</p>;
+	}
+};
+
+const getInputContent = (input) => {
+	console.log(input);
+	return (
+		<div className="is-flex is-flex-direction-column scroll-fill">
+			{input.map((inp, index) => createInputContent(inp, index))}
+		</div>
+	);
+};
+
 const getLLMContent = (
 	llm,
 	documentScore,
@@ -32,8 +65,9 @@ const getLLMContent = (
 	documentId,
 	aspect,
 	tag,
-	inputButton
+	inputButton,
 ) => {
+	if (llm.length === 0) return null;
 	const documentIdText = documentId ? `Summary of document ${documentId}` : "";
 	const tagText = tag ? ` for ${tag}.` : "";
 	const aspectText =
@@ -68,12 +102,7 @@ const getLLMContent = (
 						{documentIdText} {tagText} {aspectText} {aspectDetail}
 					</b>
 				</p>
-				<p
-					className="pt-3"
-					style={{ height: "40vh", overflowY: "scroll" }}
-				>
-					{summary}
-				</p>
+				<p className="pt-3 scroll-fill">{summary}</p>
 			</>
 		);
 	} else {
@@ -85,12 +114,7 @@ const getLLMContent = (
 						{documentIdText} {tagText} {aspectText}
 					</b>
 				</p>
-				<p
-					className="pt-3"
-					style={{ height: "40vh", overflowY: "scroll" }}
-				>
-					{mdToHtml(llm[0])}
-				</p>
+				<p className="pt-3 scroll-fill">{mdToHtml(llm[0])}</p>
 			</>
 		);
 	}
@@ -103,22 +127,17 @@ const getGoldContent = (gold, documentId) => {
 			<p className="pt-5">
 				<b>{documentIdText}</b>
 			</p>
-			<p
-				className="pt-3"
-				style={{ height: "40vh", overflowY: "scroll" }}
-			>
-				{gold}
-			</p>
+			<p className="pt-3 scroll-fill">{gold}</p>
 		</>
 	);
 };
 
 const defaultSentence =
-	"Please select a datapoint from the metrics to the left to view summaries.";
+	"Please select a datapoint in the scatter plot to view details.";
 
 const DocumentDisplay = ({
-	llm = [defaultSentence],
-	gold = defaultSentence,
+	llm = [],
+	gold = "",
 	input = [],
 	scores = [],
 	documentId = "",
@@ -127,71 +146,65 @@ const DocumentDisplay = ({
 	documentScore = "",
 }) => {
 	const [selection, setSelection] = useState("LLM");
-	const [showInput, setShowInput] = useState(false);
 	const handleSelectionChange = (newSelection) => {
 		setSelection(newSelection);
 	};
 	useEffect(() => {
 		console.log(documentScore);
 	}, [documentScore]);
-	const inputButton =
-		input.length > 0 ? (
-			<button
-				className={"button"}
-				onClick={() => setShowInput(true)}
-			>
-				Show Input
-			</button>
-		) : (
-			<></>
-		);
+
 	return (
-		<>
-			<InputDisplay
-				input={input}
-				active={showInput}
-				onClose={() => setShowInput(false)}
-			/>
-			<div className="tabs is-toggle">
-				<ul>
-					<li
-						className={selection === "LLM" ? "is-active" : ""}
+		<div
+			className="is-rounded p-5 bg-surface is-flex-grow-1 min-w-0 is-flex is-flex-direction-column"
+			style={{ overflowWrap: "break-word" }}
+		>
+			<div className="buttons has-addons mb-0">
+				{input.length > 0 && (
+					<button
+						type="button"
+						className={`button is-small  ${selection === "Input" ? "is-link is-selected" : ""}`}
+						style={{ flex: "1 1 0" }}
+						onClick={() => handleSelectionChange("Input")}
+					>
+						Input
+					</button>
+				)}
+				{llm.length > 0 && (
+					<button
+						type="button"
+						className={`button is-small  ${selection === "LLM" ? "is-link is-selected" : ""}`}
+						style={{ flex: "1 1 0" }}
 						onClick={() => handleSelectionChange("LLM")}
 					>
-						<a>
-							<span>LLM Summary</span>
-						</a>
-					</li>
-					<li
-						className={selection === "Gold" ? "is-active" : ""}
+						LLM Summary
+					</button>
+				)}
+				{gold && (
+					<button
+						type="button"
+						className={`button is-small  ${selection === "Gold" ? "is-link is-selected" : ""}`}
+						style={{ flex: "1 1 0" }}
 						onClick={() => handleSelectionChange("Gold")}
 					>
-						<a>
-							<span>Gold Summary</span>
-						</a>
-					</li>
-				</ul>
+						Gold Summary
+					</button>
+				)}
 			</div>
-			<div
-				className="is-box has-border is-rounded p-5"
-				style={{
-					maxWidth: "40vw",
-					overflowWrap: "break-word",
-				}}
-			>
-				{selection === "LLM"
-					? getLLMContent(
-							llm,
-							documentScore,
-							scores,
-							documentId,
-							aspect,
-							tag,
-							inputButton
-					  )
-					: getGoldContent(gold, documentId)}
-			</div>
-		</>
+
+			{selection === "Input" && getInputContent(input)}
+			{selection === "LLM" &&
+				getLLMContent(
+					llm,
+					documentScore,
+					scores,
+					documentId,
+					aspect,
+					tag,
+					null,
+				)}
+			{selection === "Gold" && getGoldContent(gold, documentId)}
+			{!documentScore && defaultSentence}
+		</div>
 	);
 };
 
@@ -210,8 +223,8 @@ DocumentDisplay.propTypes = {
 };
 
 DocumentDisplay.defaultProps = {
-	llm: [defaultSentence],
-	gold: defaultSentence,
+	llm: [],
+	gold: "",
 	scores: [],
 	documentId: "",
 	aspect: "",

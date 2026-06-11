@@ -52,7 +52,7 @@ const buildChartData = (dashData, byDataset, currentId, datasets, models) => {
 };
 
 const Dashboard = () => {
-	const { useCaseId, pathId, runId } = useParams();
+	const { runId } = useParams();
 	const navigate = useNavigate();
 	const { setBreadcrumbs } = useBreadcrumbs();
 	const [run, setRun] = useState(null);
@@ -73,7 +73,7 @@ const Dashboard = () => {
 			})
 			.catch((err) => setError(err.message));
 		return () => setBreadcrumbs([]);
-	}, [runId]);
+	}, [runId, setBreadcrumbs]);
 
 	// Update breadcrumbs once run title is known
 	useEffect(() => {
@@ -201,7 +201,7 @@ const Dashboard = () => {
 
 				<section className="block">
 					<div className="is-flex gap-5">
-						<div>
+						<div className="is-flex is-flex-direction-column gap-5">
 							{(() => {
 								// Group metrics by aspect, preserving insertion order from the API.
 								const groups = [];
@@ -222,10 +222,7 @@ const Dashboard = () => {
 
 								return groups.map(
 									({ aspect_id, aspect_label, aspect_definition, metrics }) => (
-										<div
-											key={aspect_id ?? "__none__"}
-											className="mb-6"
-										>
+										<div key={aspect_id ?? "__none__"}>
 											{aspect_label && (
 												<div className="section-label mb-3">
 													{aspect_label}
@@ -276,7 +273,15 @@ const Dashboard = () => {
 								);
 							})()}
 						</div>
-						<div>
+						<div className="is-flex-grow-1 min-w-0 sticky-top-col">
+							<div className="section-label mb-3">
+								Document Details
+								<InfoTooltip
+									text={
+										"Inspect LLM outputs and, if available, the input on which it was created the gold standard reference against which it was evaluated."
+									}
+								/>
+							</div>
 							<DocumentDisplay
 								gold={modalDetails?.gold}
 								llm={modalDetails?.llm_sents}

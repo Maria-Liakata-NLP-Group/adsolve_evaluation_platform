@@ -1,6 +1,5 @@
 /** @format */
 
-import { useState } from "react";
 import PropTypes from "prop-types";
 
 // Group metrics by their aspect, preserving aspect order of first appearance.
@@ -40,13 +39,12 @@ const TagList = ({ items }) => (
 	</div>
 );
 
-const RunCard = ({ run, onNavigate }) => {
-	const [showDetails, setShowDetails] = useState(false);
+const RunCard = ({ run, onNavigate, showDetails, onToggleDetails }) => {
 	const aspectGroups = groupByAspect(run.metrics ?? []);
 
 	const toggleDetails = (e) => {
 		e.stopPropagation();
-		setShowDetails((prev) => !prev);
+		onToggleDetails();
 	};
 
 	return (
@@ -173,6 +171,8 @@ const RunCard = ({ run, onNavigate }) => {
 SectionLabel.propTypes = { children: PropTypes.node.isRequired };
 TagList.propTypes = { items: PropTypes.arrayOf(PropTypes.string).isRequired };
 RunCard.propTypes = {
+	showDetails: PropTypes.bool.isRequired,
+	onToggleDetails: PropTypes.func.isRequired,
 	run: PropTypes.shape({
 		title: PropTypes.string,
 		use_case_label: PropTypes.string,

@@ -1,6 +1,6 @@
 /** @format */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBreadcrumbs } from "../components/navigation_and_controls/BreadcrumbContext";
 import RunCard from "../components/modals_and_cards/RunCard";
@@ -13,6 +13,27 @@ const RunExplorer = () => {
 	const [error, setError] = useState(null);
 	const [selectedUseCaseId, setSelectedUseCaseId] = useState("");
 	const [selectedTaskLabel, setSelectedTaskLabel] = useState("");
+	const [expandedId, setExpandedId] = useState(null);
+	const [lockedHeights, setLockedHeights] = useState({});
+	const columnRefs = useRef({});
+
+	// Lock all non-expanding columns to their current pixel height so they
+	// don't grow when a sibling card expands. Release locks on collapse.
+	const handleToggleDetails = (runId) => {
+		if (expandedId === runId) {
+			setExpandedId(null);
+			setLockedHeights({});
+		} else {
+			const heights = {};
+			for (const [id, el] of Object.entries(columnRefs.current)) {
+				if (el && String(id) !== String(runId)) {
+					heights[id] = el.getBoundingClientRect().height;
+				}
+			}
+			setLockedHeights(heights);
+			setExpandedId(runId);
+		}
+	};
 
 	useEffect(() => {
 		setBreadcrumbs([{ label: "Runs" }]);
@@ -118,10 +139,14 @@ const RunExplorer = () => {
 				{filteredRuns.map((run) => (
 					<div
 						key={run.id}
+						ref={(el) => { columnRefs.current[run.id] = el; }}
 						className="column is-4 is-flex"
+						style={lockedHeights[run.id] ? { height: `${lockedHeights[run.id]}px` } : undefined}
 					>
 						<RunCard
 							run={run}
+							showDetails={expandedId === run.id}
+							onToggleDetails={() => handleToggleDetails(run.id)}
 							onNavigate={() =>
 								navigate(`/runs/${run.use_case_id}/${run.path_id}/${run.id}`)
 							}
