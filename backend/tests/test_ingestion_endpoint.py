@@ -34,7 +34,12 @@ def _body(**overrides: Any) -> dict[str, Any]:
 def _cleanup() -> None:
     """Remove everything these tests create, including their throwaway path."""
     session = _SessionLocal()
-    session.execute(sql_text("DELETE FROM evaluation_runs WHERE title = :t"), {"t": TEST_TITLE})
+    # Scoped to the (path_id, title) unique constraint: keying on title alone
+    # could cascade into a real run that happens to share the title.
+    session.execute(
+        sql_text("DELETE FROM evaluation_runs WHERE path_id = :p AND title = :t"),
+        {"p": TEST_PATH_ID, "t": TEST_TITLE},
+    )
     session.execute(sql_text("""
         DELETE FROM documents
         WHERE dataset_id IN (SELECT id FROM datasets WHERE name = :d)

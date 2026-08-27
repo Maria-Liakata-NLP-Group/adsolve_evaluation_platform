@@ -1,5 +1,9 @@
 import os
+import subprocess
+import sys
 from pathlib import Path
+
+import pytest
 
 from api.env import load_environment
 
@@ -36,7 +40,25 @@ def test_load_environment_ignores_missing_file(tmp_path: Path) -> None:
 
 
 def test_importing_api_package_loads_the_env_file() -> None:
-    """Importing `api` must populate os.environ before submodules read it."""
-    import api  # noqa: F401  — import triggers load_environment()
+    """A scrubbed subprocess proves api/__init__.py is what populates os.environ.
 
-    assert os.environ.get("ADMIN_TOKEN")
+    Asserting on this process's os.environ cannot fail: conftest.py sets
+    ADMIN_TOKEN in a session-scoped autouse fixture that runs first.
+    """
+    backend_dir = Path(__file__).resolve().parent.parent
+    if not (backend_dir / ".env").exists():
+        pytest.skip("backend/.env is absent; nothing for api/__init__.py to load")
+
+    result = subprocess.run(
+        [sys.executable, "-c", "import api, os; print(os.environ.get('ADMIN_TOKEN', ''))"],
+        cwd=backend_dir,
+        env={"PATH": os.environ.get("PATH", "")},
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+
+    assert result.stdout.strip(), (
+        "api/__init__.py did not load ADMIN_TOKEN from backend/.env "
+        f"(stderr: {result.stderr})"
+    )
