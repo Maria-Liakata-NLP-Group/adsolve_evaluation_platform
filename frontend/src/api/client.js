@@ -9,13 +9,21 @@ export class ApiError extends Error {
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
-// Reads error detail from JSON body when available; handles dict details (e.g. 409 conflicts)
+// Turns a FastAPI 'detail' into a readable string. Detail is a string for
+// simple errors, a list for validation failures, or an object for conflicts.
+const detailToMessage = (detail, status, path) => {
+  if (typeof detail === "string") return detail;
+  if (Array.isArray(detail)) {
+    return detail
+      .map((entry) => (typeof entry === "string" ? entry : entry.msg ?? JSON.stringify(entry)))
+      .join(" ");
+  }
+  return detail?.message ?? `API error ${status}: ${path}`;
+};
+
 const parseError = async (response, path) => {
   const data = await response.json().catch(() => ({}));
-  const detail = data.detail;
-  const msg = typeof detail === "string" ? detail
-    : detail?.message ?? `API error ${response.status}: ${path}`;
-  return new ApiError(response.status, msg);
+  return new ApiError(response.status, detailToMessage(data.detail, response.status, path));
 };
 
 export const get = async (path, headers = {}) => {
