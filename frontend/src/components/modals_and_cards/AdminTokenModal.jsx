@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { useAdmin } from "../../hooks/useAdmin";
 
+// A 401 means the token itself was rejected. Anything else is a server-side
+// problem (e.g. 503 when ADMIN_TOKEN is not configured) and the server's own
+// message is more useful than a generic "invalid token".
+const loginErrorMessage = (error) =>
+  error.status === 401
+    ? "Invalid token. Please try again."
+    : error.message || "Could not verify token. Please try again.";
+
 const AdminTokenModal = ({ isOpen, onClose }) => {
   const { isAdmin, login, logout } = useAdmin();
   const [tokenInput, setTokenInput] = useState("");
@@ -18,8 +26,8 @@ const AdminTokenModal = ({ isOpen, onClose }) => {
       await login(tokenInput);
       setTokenInput("");
       onClose();
-    } catch {
-      setError("Invalid token. Please try again.");
+    } catch (err) {
+      setError(loginErrorMessage(err));
     } finally {
       setLoading(false);
     }

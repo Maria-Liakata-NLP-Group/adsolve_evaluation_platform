@@ -20,7 +20,7 @@ const parseError = async (response, path) => {
 
 export const get = async (path, headers = {}) => {
   const response = await fetch(`${BASE_URL}${path}`, { headers });
-  if (!response.ok) throw new ApiError(response.status, `API error ${response.status}: ${path}`);
+  if (!response.ok) throw await parseError(response, path);
   return response.json();
 };
 
