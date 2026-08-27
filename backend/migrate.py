@@ -142,8 +142,10 @@ SCHEMA_STATEMENTS = [
     """,
     """
     CREATE TABLE IF NOT EXISTS datasets (
-        id   SERIAL PRIMARY KEY,
-        name TEXT   NOT NULL UNIQUE
+        id        SERIAL  PRIMARY KEY,
+        name      TEXT    NOT NULL UNIQUE,
+        -- Sensitive datasets persist numeric scores only, never raw text.
+        sensitive BOOLEAN NOT NULL DEFAULT FALSE
     )
     """,
     """
