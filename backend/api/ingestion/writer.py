@@ -84,12 +84,18 @@ def _upsert_run(db: Session, request: IngestRequest) -> int:
 def _clear_previous_results(db: Session, run_id: int) -> None:
     """Remove a previous ingest's rows so re-ingesting cannot leave stale data.
 
-    document_metric_scores is removed by cascade from metric_scores.
+    document_metric_scores is removed by cascade from metric_scores. The
+    run_datasets / run_models links go too: re-ingesting after correcting a
+    mistyped dataset or model name would otherwise leave the old link behind,
+    showing a dashboard entry with no scores behind it. _link_run re-inserts
+    both immediately afterwards, so clearing them here is safe.
     """
     for statement in (
         "DELETE FROM metric_scores WHERE run_id = :run_id",
         "DELETE FROM model_outputs WHERE run_id = :run_id",
         "DELETE FROM run_metrics WHERE run_id = :run_id",
+        "DELETE FROM run_datasets WHERE run_id = :run_id",
+        "DELETE FROM run_models WHERE run_id = :run_id",
     ):
         db.execute(text(statement), {"run_id": run_id})
 
@@ -229,6 +235,25 @@ def write_run(db: Session, request: IngestRequest, parsed: ParsedRun) -> int:
     dataset_id = _upsert_dataset(db, request.dataset.name, sensitive)
     model_id = _upsert_model(db, request.model.name)
     run_id = _upsert_run(db, request)
+
+    # Re-ingest clears the WHOLE run, which is what "re-uploading corrects a bad
+    # upload" needs. But runs can hold results for several models (the seeded
+    # bundles do), so a title collision with a differently-modelled run would
+    # silently delete the other models' results. Refuse it instead.
+    other_models = db.execute(
+        text("""
+            SELECT m.name FROM run_models rm
+            JOIN models m ON m.id = rm.model_id
+            WHERE rm.run_id = :run_id AND rm.model_id <> :model_id
+        """),
+        {"run_id": run_id, "model_id": model_id},
+    ).scalars().all()
+    if other_models:
+        raise IngestValidationError([
+            f"Run '{request.title}' already holds results for "
+            f"{', '.join(other_models)}. Re-ingesting would delete them. "
+            "Use a different run title."
+        ])
 
     _clear_previous_results(db, run_id)
     _link_run(db, run_id, dataset_id, model_id)

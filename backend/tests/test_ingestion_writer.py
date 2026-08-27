@@ -14,15 +14,16 @@ TEST_PATH_ID = "ingestion_writer_test_path"
 TEST_TITLE = "Ingestion writer test run"
 TEST_DATASET = "Ingestion writer test dataset"
 TEST_MODEL = "Ingestion writer test model"
+OTHER_MODEL = "Ingestion writer test model (other)"
 
 
-def _body(sensitive: bool = False) -> dict[str, Any]:
+def _body(sensitive: bool = False, model: str = TEST_MODEL) -> dict[str, Any]:
     return {
         "path_id": TEST_PATH_ID,
         "title": TEST_TITLE,
         "notes": "written by the test suite",
         "dataset": {"name": TEST_DATASET, "sensitive": sensitive},
-        "model": {"name": TEST_MODEL},
+        "model": {"name": model},
         "gold_summaries": {"doc-a": "gold text"},
         "llm_summaries": {"doc-a": "generated text"},
         "inputs": {"doc-a": ["raw source turn"]},
@@ -57,13 +58,21 @@ def _create_test_path(db: Session) -> None:
 
 def _cleanup(db: Session) -> None:
     """Remove every row the test could have created, in FK-safe order."""
-    db.execute(sql_text("DELETE FROM evaluation_runs WHERE title = :t"), {"t": TEST_TITLE})
+    # Scoped to the (path_id, title) unique constraint: keying on title alone
+    # could cascade into a real run that happens to share the title.
+    db.execute(
+        sql_text("DELETE FROM evaluation_runs WHERE path_id = :p AND title = :t"),
+        {"p": TEST_PATH_ID, "t": TEST_TITLE},
+    )
     db.execute(sql_text("""
         DELETE FROM documents
         WHERE dataset_id IN (SELECT id FROM datasets WHERE name = :d)
     """), {"d": TEST_DATASET})
     db.execute(sql_text("DELETE FROM datasets WHERE name = :d"), {"d": TEST_DATASET})
-    db.execute(sql_text("DELETE FROM models WHERE name = :m"), {"m": TEST_MODEL})
+    db.execute(
+        sql_text("DELETE FROM models WHERE name IN (:m, :other)"),
+        {"m": TEST_MODEL, "other": OTHER_MODEL},
+    )
     db.execute(sql_text("DELETE FROM paths WHERE id = :id"), {"id": TEST_PATH_ID})
     db.commit()
 
@@ -78,8 +87,8 @@ def db() -> Iterator[Session]:
     session.close()
 
 
-def _ingest(db: Session, sensitive: bool = False) -> int:
-    request = IngestRequest.model_validate(_body(sensitive=sensitive))
+def _ingest(db: Session, sensitive: bool = False, model: str = TEST_MODEL) -> int:
+    request = IngestRequest.model_validate(_body(sensitive=sensitive, model=model))
     parsed = parse_run(request, known_metric_ids(db))
     run_id = write_run(db, request, parsed)
     db.commit()
@@ -209,6 +218,49 @@ def test_reingesting_updates_rather_than_duplicating(db: Session) -> None:
     assert first_run_id == second_run_id
     assert run_count == 1
     assert score_count == 1
+
+
+def test_reingesting_clears_every_per_run_table(db: Session) -> None:
+    """_clear_previous_results must wipe model_outputs, run_metrics, run_datasets
+    and run_models along with metric_scores — re-ingesting should leave each of
+    them at exactly what a single ingest produces, never duplicated or stale."""
+    first_run_id = _ingest(db)
+    second_run_id = _ingest(db)
+    assert first_run_id == second_run_id
+
+    counts = {
+        "model_outputs": db.execute(sql_text(
+            "SELECT COUNT(*) FROM model_outputs WHERE run_id = :id"
+        ), {"id": second_run_id}).scalar_one(),
+        "run_metrics": db.execute(sql_text(
+            "SELECT COUNT(*) FROM run_metrics WHERE run_id = :id"
+        ), {"id": second_run_id}).scalar_one(),
+        "run_datasets": db.execute(sql_text(
+            "SELECT COUNT(*) FROM run_datasets WHERE run_id = :id"
+        ), {"id": second_run_id}).scalar_one(),
+        "run_models": db.execute(sql_text(
+            "SELECT COUNT(*) FROM run_models WHERE run_id = :id"
+        ), {"id": second_run_id}).scalar_one(),
+    }
+
+    # The seeded body supplies one model output (doc-a), one metric (fc_document),
+    # and links exactly one dataset and one model to the run.
+    assert counts["model_outputs"] == 1
+    assert counts["run_metrics"] == 1
+    assert counts["run_datasets"] == 1
+    assert counts["run_models"] == 1
+
+
+def test_reingesting_under_a_different_model_is_refused(db: Session) -> None:
+    """A title collision with a differently-modelled run must be refused, since
+    re-ingest clears the whole run and would silently delete the other model's
+    results otherwise."""
+    _ingest(db, model=TEST_MODEL)
+
+    with pytest.raises(IngestValidationError) as exc:
+        _ingest(db, model=OTHER_MODEL)
+
+    assert any(TEST_MODEL in e for e in exc.value.errors)
 
 
 def test_reingesting_with_the_same_sensitivity_succeeds(db: Session) -> None:
