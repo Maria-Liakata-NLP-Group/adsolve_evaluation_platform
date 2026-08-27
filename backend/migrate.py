@@ -469,6 +469,23 @@ def _seed_result_file(conn, json_file: Path, path_id: str) -> None:
 
     # ── datasets / models / metrics ───────────────────────────────────────────
     dataset_ids = _upsert_names(conn, "datasets", meta["datasets"])
+
+    # The seed is a second writer that does not go through the ingest writer's
+    # sensitivity enforcement. _upsert_names returns an EXISTING dataset id when
+    # the name already exists, so a name collision with a dataset an admin marked
+    # sensitive would write gold summaries, LLM summaries, inputs and sentence
+    # detail into it. A sensitive dataset must hold numeric scores only, so skip.
+    sensitive_names = conn.execute(
+        text("SELECT name FROM datasets WHERE id = ANY(:ids) AND sensitive"),
+        {"ids": list(dataset_ids.values())},
+    ).scalars().all()
+    if sensitive_names:
+        print(
+            f"  Skipping {json_file.name}: dataset(s) {', '.join(sensitive_names)} "
+            "are marked sensitive and must not receive seeded text."
+        )
+        return
+
     model_ids = _upsert_names(conn, "models", meta["models"])
 
     for ds_id in dataset_ids.values():
