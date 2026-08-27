@@ -44,7 +44,6 @@ const CreateNewRun = ({ pathId, onCancel }) => {
 	} = usePathConfig();
 
 	const [selectedUseCaseId, setSelectedUseCaseId] = useState("");
-	const [selectedTaskId, setSelectedTaskId] = useState("");
 	const [selectedDataSourceId, setSelectedDataSourceId] = useState("");
 	const [selectedAspects, setSelectedAspects] = useState([]);
 	const [selectedInfra, setSelectedInfra] = useState({
@@ -71,7 +70,6 @@ const CreateNewRun = ({ pathId, onCancel }) => {
 		const path = paths.find((p) => p.id === pathId);
 		if (!path) return;
 		setSelectedUseCaseId(path.use_case_id);
-		setSelectedTaskId(path.task_id);
 		setSelectedDataSourceId(path.data_source_id);
 		setSelectedAspects([]);
 		setSelectedInfra(getDefaultInfraSelection(infrastructure));
@@ -95,17 +93,9 @@ const CreateNewRun = ({ pathId, onCancel }) => {
 	const canShowAspects = canShowInfrastructure && !!pathConfig && !pathConfigLoading;
 	const hasAspectData = aspectCards.length > 0;
 
-	const isInfraComplete =
-		selectedInfra.compute_environment.length > 0 &&
-		selectedInfra.reference_mode.length > 0;
-
-	const canGenerate =
-		!!runTitle.trim() &&
-		!!selectedUseCaseId &&
-		!!selectedTaskId &&
-		!!selectedDataSourceId &&
-		isInfraComplete &&
-		selectedAspects.length > 0;
+	// Only the run title reaches the ingest request; aspect and infrastructure
+	// selections are retained for the future "calculate" mode, not this one.
+	const canGenerate = !!runTitle.trim();
 
 	const onToggleInfraOption = (groupId, optionId) => {
 		setSelectedInfra((prev) => {
