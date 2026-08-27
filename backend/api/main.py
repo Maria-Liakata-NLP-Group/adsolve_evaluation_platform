@@ -3,6 +3,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from .ingestion.router import router as ingestion_router
 from .routers import config, documents, runs
 
 app = FastAPI(title="AdSoLve Evaluation API")
@@ -20,3 +21,4 @@ if _origins:
 app.include_router(config.router)
 app.include_router(runs.router)
 app.include_router(documents.router)
+app.include_router(ingestion_router)
