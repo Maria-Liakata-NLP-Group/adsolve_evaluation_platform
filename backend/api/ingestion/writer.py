@@ -8,7 +8,7 @@ from typing import Any, Optional
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from .parser import ParsedRun
+from .parser import IngestValidationError, ParsedRun
 from .schemas import IngestRequest
 
 
@@ -23,10 +23,31 @@ def _as_jsonb(value: Any) -> Optional[str]:
 
 
 def _upsert_dataset(db: Session, name: str, sensitive: bool) -> int:
+    """Insert the dataset, or fetch it — refusing to change an existing flag.
+
+    Flipping `sensitive` here would leave text from earlier runs in place while
+    reporting the dataset as sensitive, which is a false guarantee. Changing the
+    flag has to be a deliberate decision that also purges existing content, so
+    ingest refuses rather than doing it silently.
+    """
+    existing = db.execute(
+        text("SELECT id, sensitive FROM datasets WHERE name = :name"),
+        {"name": name},
+    ).mappings().one_or_none()
+
+    if existing is not None:
+        if existing["sensitive"] != sensitive:
+            raise IngestValidationError([
+                f"Dataset '{name}' already exists with sensitive="
+                f"{existing['sensitive']}; ingest will not change it to {sensitive}. "
+                "Runs already stored for this dataset would keep their text. "
+                "Use a different dataset name, or change the flag deliberately."
+            ])
+        return existing["id"]
+
     return db.execute(
         text("""
             INSERT INTO datasets (name, sensitive) VALUES (:name, :sensitive)
-            ON CONFLICT (name) DO UPDATE SET sensitive = EXCLUDED.sensitive
             RETURNING id
         """),
         {"name": name, "sensitive": sensitive},

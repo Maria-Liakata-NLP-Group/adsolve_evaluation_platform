@@ -6,7 +6,7 @@ from sqlalchemy import text as sql_text
 from sqlalchemy.orm import Session
 
 from api.db import _SessionLocal
-from api.ingestion.parser import parse_run
+from api.ingestion.parser import IngestValidationError, parse_run
 from api.ingestion.schemas import IngestRequest
 from api.ingestion.writer import known_metric_ids, write_run
 
@@ -209,3 +209,21 @@ def test_reingesting_updates_rather_than_duplicating(db: Session) -> None:
     assert first_run_id == second_run_id
     assert run_count == 1
     assert score_count == 1
+
+
+def test_reingesting_with_the_same_sensitivity_succeeds(db: Session) -> None:
+    """The guard must not block an ordinary re-ingest."""
+    first_run_id = _ingest(db)
+    second_run_id = _ingest(db)
+
+    assert first_run_id == second_run_id
+
+
+def test_changing_sensitivity_on_an_existing_dataset_is_rejected(db: Session) -> None:
+    """Flipping the flag would leave earlier runs' text in place — refuse it."""
+    _ingest(db, sensitive=False)
+
+    with pytest.raises(IngestValidationError) as exc:
+        _ingest(db, sensitive=True)
+
+    assert any("already exists with sensitive" in e for e in exc.value.errors)
