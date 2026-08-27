@@ -1,1 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Raleway:wght@300;400;500;600;700&family=Poppins:wght@400;600;700;800&display=swap');
+
+/* Run submission: mode chooser and attach-results form */
+.run-mode-choice {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.run-mode-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ddd;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.run-mode-button.is-active {
+  border-color: #f5c451;
+  color: #f5c451;
+}
+
+.run-mode-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.run-attach-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}

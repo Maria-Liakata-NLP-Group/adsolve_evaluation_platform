@@ -1,18 +1,11 @@
 /** @format */
 
 import { useEffect, useMemo, useState } from "react";
+import PropTypes from "prop-types";
 import PathAspectCard from "../../modals_and_cards/PathAspectCard";
+import RunSubmission from "./RunSubmission";
 import { getPath } from "../../../api/config";
 import { usePathConfig } from "../../../hooks/usePathConfig";
-
-const getAvailableDataSources = (useCaseId, taskId, paths) =>
-	(paths || [])
-		.filter((p) => p.use_case_id === useCaseId && p.task_id === taskId)
-		.map((p) => ({
-			id: p.data_source_id,
-			label: p.data_source_label,
-			pathId: p.id,
-		}));
 
 const getAspectCards = (pathConfig) => {
 	if (!pathConfig?.aspects) return [];
@@ -44,7 +37,6 @@ const getFilteredMetrics = (aspect, selectedCompute, selectedReference) =>
 
 const CreateNewRun = ({ pathId, onCancel }) => {
 	const {
-		useCases,
 		paths,
 		infrastructure,
 		loading,
@@ -92,11 +84,6 @@ const CreateNewRun = ({ pathId, onCancel }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loading]);
 
-	const availableDataSources = useMemo(
-		() => getAvailableDataSources(selectedUseCaseId, selectedTaskId, paths),
-		[selectedUseCaseId, selectedTaskId, paths],
-	);
-
 	const aspectCards = useMemo(() => getAspectCards(pathConfig), [pathConfig]);
 
 	const selectedPath = useMemo(
@@ -138,34 +125,6 @@ const CreateNewRun = ({ pathId, onCancel }) => {
 			prev.includes(aspectId)
 				? prev.filter((id) => id !== aspectId)
 				: [...prev, aspectId],
-		);
-	};
-
-	const onGenerate = () => {
-		const useCase = useCases.find((uc) => uc.id === selectedUseCaseId);
-		const dataSource = availableDataSources.find(
-			(ds) => ds.id === selectedDataSourceId,
-		);
-		const taskLabel =
-			paths.find(
-				(p) =>
-					p.use_case_id === selectedUseCaseId && p.task_id === selectedTaskId,
-			)?.task_label ?? selectedTaskId;
-
-		// eslint-disable-next-line no-alert
-		alert(
-			[
-				`Title: ${runTitle}`,
-				runDescription ? `Description: ${runDescription}` : null,
-				`Use Case: ${useCase?.label ?? selectedUseCaseId}`,
-				`Task: ${taskLabel}`,
-				`Data Source: ${dataSource?.label ?? selectedDataSourceId}`,
-				`Compute: ${selectedInfra.compute_environment.join(", ")}`,
-				`Reference Mode: ${selectedInfra.reference_mode.join(", ")}`,
-				`Aspects: ${selectedAspects.join(", ")}`,
-			]
-				.filter(Boolean)
-				.join("\n"),
 		);
 	};
 
@@ -339,25 +298,21 @@ const CreateNewRun = ({ pathId, onCancel }) => {
 				</section>
 			)}
 
-			<section className="block is-flex is-align-items-center gap-3">
-				<button
-					type="button"
-					className="button is-primary is-large"
-					disabled={!canGenerate}
-					onClick={onGenerate}
-				>
-					Generate evaluation script
-				</button>
-				<button
-					type="button"
-					className="button is-large"
-					onClick={onCancel}
-				>
-					Cancel
-				</button>
-			</section>
+			<RunSubmission
+				pathId={pathId}
+				useCaseId={selectedUseCaseId}
+				title={runTitle}
+				notes={runDescription}
+				disabled={!canGenerate}
+				onCancel={onCancel}
+			/>
 		</div>
 	);
+};
+
+CreateNewRun.propTypes = {
+	pathId: PropTypes.string.isRequired,
+	onCancel: PropTypes.func.isRequired,
 };
 
 export default CreateNewRun;
