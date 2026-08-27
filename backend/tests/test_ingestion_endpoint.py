@@ -133,6 +133,19 @@ def test_ingest_rejects_misaligned_scores(client: TestClient) -> None:
     assert "document_level" in str(response.json()["detail"])
 
 
+def test_ingest_rejects_changing_dataset_sensitivity(client: TestClient) -> None:
+    """write_run raises IngestValidationError here — it must surface as 422, not 500."""
+    first = client.post("/api/runs/ingest", json=_body(), headers=HEADERS)
+    assert first.status_code == 201
+
+    flipped = _body()
+    flipped["dataset"] = {"name": TEST_DATASET, "sensitive": True}
+    response = client.post("/api/runs/ingest", json=flipped, headers=HEADERS)
+
+    assert response.status_code == 422
+    assert "already exists with sensitive" in str(response.json()["detail"])
+
+
 def test_a_rejected_ingest_writes_nothing(client: TestClient) -> None:
     client.post("/api/runs/ingest", json=_body(results={
         "document_ids": ["doc-a", "doc-b"],
