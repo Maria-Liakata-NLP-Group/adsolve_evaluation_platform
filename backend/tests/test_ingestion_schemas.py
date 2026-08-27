@@ -1,10 +1,12 @@
+from typing import Any
+
 import pytest
 from pydantic import ValidationError
 
 from api.ingestion.schemas import IngestRequest, ResultsSpec
 
 
-def _minimal_body(**overrides) -> dict:
+def _minimal_body(**overrides: Any) -> dict[str, Any]:
     """A valid ingest body; override single keys per test."""
     body = {
         "path_id": "example_path",
@@ -20,7 +22,7 @@ def _minimal_body(**overrides) -> dict:
     return body
 
 
-def test_metric_keys_are_collected_from_top_level():
+def test_metric_keys_are_collected_from_top_level() -> None:
     """Raw metric output lists metric ids beside document_ids, not under 'metrics'."""
     results = ResultsSpec.model_validate({
         "document_ids": ["doc-a"],
@@ -33,7 +35,7 @@ def test_metric_keys_are_collected_from_top_level():
     assert results.metrics["mhic"].mean == 0.7
 
 
-def test_detail_is_optional():
+def test_detail_is_optional() -> None:
     results = ResultsSpec.model_validate({
         "document_ids": ["doc-a"],
         "intra_nli": {"mean": 0.5, "document_level": [0.5]},
@@ -42,7 +44,7 @@ def test_detail_is_optional():
     assert results.metrics["intra_nli"].detail is None
 
 
-def test_detail_is_preserved_when_present():
+def test_detail_is_preserved_when_present() -> None:
     results = ResultsSpec.model_validate({
         "document_ids": ["doc-a"],
         "fc_document": {
@@ -57,7 +59,7 @@ def test_detail_is_preserved_when_present():
     ]
 
 
-def test_data_sections_are_taken_verbatim():
+def test_data_sections_are_taken_verbatim() -> None:
     """Each section mirrors one file on disk and is stored unchanged."""
     request = IngestRequest.model_validate(_minimal_body(
         inputs={"doc-a": ["first turn", "second turn"]},
@@ -70,7 +72,7 @@ def test_data_sections_are_taken_verbatim():
     assert request.gold_summaries == {"doc-a": "reference summary"}
 
 
-def test_inputs_accept_any_json_shape():
+def test_inputs_accept_any_json_shape() -> None:
     """Radiology inputs are [indication, image, image]; therapy inputs are turns."""
     request = IngestRequest.model_validate(_minimal_body(
         inputs={"doc-a": ["Indication: none", "/images/frontal.png", "/images/lateral.png"]}
@@ -79,7 +81,7 @@ def test_inputs_accept_any_json_shape():
     assert len(request.inputs["doc-a"]) == 3
 
 
-def test_data_sections_default_to_empty():
+def test_data_sections_default_to_empty() -> None:
     request = IngestRequest.model_validate(_minimal_body())
 
     assert request.inputs == {}
@@ -87,7 +89,7 @@ def test_data_sections_default_to_empty():
     assert request.gold_summaries == {}
 
 
-def test_sensitive_defaults_to_false():
+def test_sensitive_defaults_to_false() -> None:
     request = IngestRequest.model_validate(_minimal_body(
         dataset={"name": "Test dataset"}
     ))
@@ -95,13 +97,13 @@ def test_sensitive_defaults_to_false():
     assert request.dataset.sensitive is False
 
 
-def test_empty_document_ids_is_rejected():
+def test_empty_document_ids_is_rejected() -> None:
     with pytest.raises(ValidationError):
         IngestRequest.model_validate(_minimal_body(
             results={"document_ids": []}
         ))
 
 
-def test_blank_title_is_rejected():
+def test_blank_title_is_rejected() -> None:
     with pytest.raises(ValidationError):
         IngestRequest.model_validate(_minimal_body(title=""))
