@@ -435,10 +435,19 @@ def test_delete_path_success(client, seeded_ids):
 
 
 def test_delete_path_blocked_when_has_runs(client):
-    """Seeded paths all have evaluation runs — deleting one must return 409."""
+    """A path that has evaluation runs must return 409 rather than be deleted.
+
+    Selects a path known to have runs instead of taking whichever path sorts
+    first. The earlier version deleted paths[0] outright whenever it happened to
+    have no runs, destroying real data in the development database.
+    """
     headers = {"X-Admin-Token": TEST_TOKEN}
-    paths = client.get("/api/paths").json()
-    response = client.delete(f"/api/paths/{paths[0]['id']}", headers=headers)
+    runs = client.get("/api/runs").json()
+    paths_with_runs = [run["path_id"] for run in runs if run.get("path_id")]
+    if not paths_with_runs:
+        pytest.skip("No path with evaluation runs to test the delete guard against")
+
+    response = client.delete(f"/api/paths/{paths_with_runs[0]}", headers=headers)
     assert response.status_code == 409
     assert "detail" in response.json()
 
