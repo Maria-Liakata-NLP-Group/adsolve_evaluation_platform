@@ -30,6 +30,10 @@ const adminHeaders = (token) => ({ "X-Admin-Token": token });
 export const verifyAdminToken = (token) =>
   get("/api/admin/verify", adminHeaders(token));
 
+// Ingests a completed evaluation run; resolves to { run_id }
+export const ingestRun = (payload, token) =>
+  post("/api/runs/ingest", payload, adminHeaders(token));
+
 export const createMetric = (data, token) =>
   post("/api/metrics", data, adminHeaders(token));
 

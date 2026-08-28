@@ -1,3 +1,7 @@
 .superpowers
 docs
 .claude
+
+# Database dumps — never commit; they hold real (clinical) data.
+*.dump
+*.sql

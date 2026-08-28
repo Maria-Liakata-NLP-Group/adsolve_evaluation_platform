@@ -45,12 +45,18 @@ const createInputContent = (inp, index) => {
 			/>
 		);
 	} else {
-		return <p key={index}>{inp}</p>;
+		return (
+			<p
+				key={index}
+				className="mt-5"
+			>
+				{inp}
+			</p>
+		);
 	}
 };
 
 const getInputContent = (input) => {
-	console.log(input);
 	return (
 		<div className="is-flex is-flex-direction-column scroll-fill">
 			{input.map((inp, index) => createInputContent(inp, index))}
@@ -149,10 +155,6 @@ const DocumentDisplay = ({
 	const handleSelectionChange = (newSelection) => {
 		setSelection(newSelection);
 	};
-	useEffect(() => {
-		console.log(documentScore);
-	}, [documentScore]);
-
 	return (
 		<div
 			className="is-rounded p-5 bg-surface is-flex-grow-1 min-w-0 is-flex is-flex-direction-column"
