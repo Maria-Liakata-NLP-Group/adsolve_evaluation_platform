@@ -33,3 +33,37 @@
   gap: 1rem;
   margin-bottom: 1rem;
 }
+
+/* Why the calculate mode is unavailable, shown under the mode chooser */
+.run-mode-note {
+  opacity: 0.7;
+  margin-top: -0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Which metrics a calculation will compute, shown before dispatch */
+.run-metric-summary {
+  margin-bottom: 1.25rem;
+}
+
+/* Progress of a calculation running on the metric service */
+.job-status-panel {
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 1.5rem;
+}
+
+.job-status-line {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  color: #f5c451;
+}
+
+.job-status-line.is-failed {
+  color: #e06c6c;
+}
+
+.job-status-id {
+  opacity: 0.6;
+  margin-bottom: 1rem;
+}

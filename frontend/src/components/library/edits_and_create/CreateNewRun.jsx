@@ -93,8 +93,25 @@ const CreateNewRun = ({ pathId, onCancel }) => {
 	const canShowAspects = canShowInfrastructure && !!pathConfig && !pathConfigLoading;
 	const hasAspectData = aspectCards.length > 0;
 
-	// Only the run title reaches the ingest request; aspect and infrastructure
-	// selections are retained for the future "calculate" mode, not this one.
+	// The metrics the selected aspects contribute, after infrastructure
+	// filtering. These are what "calculate now" submits; attaching a results
+	// file ignores them.
+	const selectedMetricIds = useMemo(() => {
+		const ids = aspectCards
+			.filter((aspect) => selectedAspects.includes(aspect.id))
+			.flatMap((aspect) =>
+				getFilteredMetrics(
+					aspect,
+					selectedInfra.compute_environment,
+					selectedInfra.reference_mode,
+				),
+			)
+			.map((metric) => metric.id);
+		return [...new Set(ids)];
+	}, [aspectCards, selectedAspects, selectedInfra]);
+
+	// Only the run title is required to submit; a calculation additionally
+	// needs metrics, which RunSubmission checks for its own mode.
 	const canGenerate = !!runTitle.trim();
 
 	const onToggleInfraOption = (groupId, optionId) => {
@@ -293,6 +310,7 @@ const CreateNewRun = ({ pathId, onCancel }) => {
 				useCaseId={selectedUseCaseId}
 				title={runTitle}
 				notes={runDescription}
+				selectedMetricIds={selectedMetricIds}
 				disabled={!canGenerate}
 				onCancel={onCancel}
 			/>

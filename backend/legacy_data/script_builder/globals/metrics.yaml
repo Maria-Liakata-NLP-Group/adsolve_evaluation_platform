@@ -218,3 +218,29 @@ metrics:
         - cloud_inference
       reference_mode:
         - reference_based
+
+  fact_recall:
+    label: FActScore Recall
+    description: Share of the reference summary's atomic claims that are present in the generated summary.
+    tags:
+      - reference_based
+      - claim_based
+    supported_infrastructure:
+      compute_environment:
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_based
+
+  fact_precision:
+    label: FActScore Precision
+    description: Share of the generated summary's atomic claims that are supported by the reference summary.
+    tags:
+      - reference_based
+      - claim_based
+    supported_infrastructure:
+      compute_environment:
+        - gpu_available
+        - cloud_inference
+      reference_mode:
+        - reference_based

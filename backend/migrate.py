@@ -219,6 +219,23 @@ SCHEMA_STATEMENTS = [
         UNIQUE (metric_score_id, document_id)
     )
     """,
+    # One row per calculation submitted to the metric API. `id` is minted here
+    # before submitting so it can go in the callback URL; `metric_job_id` is the
+    # API's own id, used only for polling. No dataset content is ever stored.
+    """
+    CREATE TABLE IF NOT EXISTS evaluation_jobs (
+        id            TEXT      PRIMARY KEY,
+        metric_job_id TEXT,
+        path_id       TEXT      NOT NULL REFERENCES paths(id),
+        title         TEXT      NOT NULL,
+        notes         TEXT,
+        status        TEXT      NOT NULL,
+        error         TEXT,
+        run_id        INTEGER   REFERENCES evaluation_runs(id) ON DELETE SET NULL,
+        submitted_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        finished_at   TIMESTAMPTZ
+    )
+    """,
 ]
 
 

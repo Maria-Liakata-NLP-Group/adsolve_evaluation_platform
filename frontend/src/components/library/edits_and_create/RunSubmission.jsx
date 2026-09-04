@@ -1,10 +1,12 @@
 /** @format */
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { ingestRun } from "../../../api/config";
+import { getCalculableMetrics, submitEvaluation } from "../../../api/evaluations";
 import { useAdmin } from "../../../hooks/useAdmin";
+import EvaluationJobStatus from "./EvaluationJobStatus";
 
 // Reads a File as parsed JSON, rejecting with a readable message on failure.
 const readJsonFile = (file) =>
@@ -24,7 +26,19 @@ const readJsonFile = (file) =>
 // The source-data and summaries files are optional; an empty map means "not supplied".
 const readOptionalJsonFile = async (file) => (file ? readJsonFile(file) : {});
 
-const RunSubmission = ({ pathId, useCaseId, title, notes, disabled, onCancel }) => {
+// Which reference data the chosen metrics need: a subset of {"gold", "posts"}.
+const requiredReferences = (metrics) =>
+  new Set(metrics.map((metric) => metric.requires).filter(Boolean));
+
+const RunSubmission = ({
+  pathId,
+  useCaseId,
+  title,
+  notes,
+  selectedMetricIds,
+  disabled,
+  onCancel,
+}) => {
   const { token } = useAdmin();
   const navigate = useNavigate();
 
@@ -34,41 +48,118 @@ const RunSubmission = ({ pathId, useCaseId, title, notes, disabled, onCancel }) 
   const [sensitive, setSensitive] = useState(false);
   const [resultsFile, setResultsFile] = useState(null);
   const [summariesFile, setSummariesFile] = useState(null);
+  const [goldFile, setGoldFile] = useState(null);
   const [sourceFile, setSourceFile] = useState(null);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [jobId, setJobId] = useState(null);
 
+  // Everything the metric service can compute and this platform can store.
+  const [calculableMetrics, setCalculableMetrics] = useState([]);
+  const [calculateUnavailable, setCalculateUnavailable] = useState(
+    "Checking the metric calculation service…",
+  );
+
+  // Tracked in a ref so picking a mode does not re-trigger the lookup below.
+  const modeChosen = useRef(false);
+  const chooseMode = (next) => {
+    modeChosen.current = true;
+    setMode(next);
+  };
+
+  useEffect(() => {
+    if (!token) {
+      setCalculateUnavailable("Sign in as an admin to calculate metrics.");
+      return;
+    }
+    getCalculableMetrics(token)
+      .then((metrics) => {
+        setCalculableMetrics(metrics);
+        setCalculateUnavailable(null);
+        // Calculating is the primary path once the service is reachable;
+        // attaching a results file is the fallback, not the default.
+        if (!modeChosen.current) setMode("calculate");
+      })
+      // A 503 here means the service is not configured for this deployment.
+      .catch((err) => setCalculateUnavailable(err.message));
+  }, [token]);
+
+  // The selected aspects' metrics, narrowed to those actually computable now.
+  const runnableMetrics = useMemo(
+    () =>
+      calculableMetrics.filter(
+        (metric) => selectedMetricIds.includes(metric.id) && metric.available,
+      ),
+    [calculableMetrics, selectedMetricIds],
+  );
+
+  const references = useMemo(
+    () => requiredReferences(runnableMetrics),
+    [runnableMetrics],
+  );
+  const needsGold = references.has("gold");
+  const needsPosts = references.has("posts");
+
+  const isCalculate = mode === "calculate";
   const canSubmit =
     !disabled &&
     !submitting &&
     !!datasetName.trim() &&
     !!modelName.trim() &&
-    !!resultsFile;
+    (isCalculate
+      ? runnableMetrics.length > 0 &&
+        !!summariesFile &&
+        (!needsGold || !!goldFile) &&
+        (!needsPosts || !!sourceFile)
+      : !!resultsFile);
+
+  const identity = {
+    path_id: pathId,
+    title,
+    notes: notes || null,
+    dataset: { name: datasetName.trim(), sensitive },
+    model: { name: modelName.trim() },
+  };
+
+  const handleAttach = async () => {
+    // Each file goes into the body under its own key, unchanged.
+    const [results, llmSummaries, inputs] = await Promise.all([
+      readJsonFile(resultsFile),
+      readOptionalJsonFile(summariesFile),
+      readOptionalJsonFile(sourceFile),
+    ]);
+    const { run_id: runId } = await ingestRun(
+      { ...identity, inputs, llm_summaries: llmSummaries, results },
+      token,
+    );
+    navigate(`/runs/${useCaseId}/${pathId}/${runId}`);
+  };
+
+  const handleCalculate = async () => {
+    // Content is forwarded to the metric service, never stored by the platform.
+    const [llmSummaries, goldSummaries, inputs] = await Promise.all([
+      readJsonFile(summariesFile),
+      readOptionalJsonFile(goldFile),
+      readOptionalJsonFile(sourceFile),
+    ]);
+    const { job_id: newJobId } = await submitEvaluation(
+      {
+        ...identity,
+        metrics: runnableMetrics.map((metric) => metric.id),
+        llm_summaries: llmSummaries,
+        gold_summaries: goldSummaries,
+        inputs,
+      },
+      token,
+    );
+    setJobId(newJobId);
+  };
 
   const handleSubmit = async () => {
     setError(null);
     setSubmitting(true);
     try {
-      // Each file goes into the body under its own key, unchanged.
-      const [results, llmSummaries, inputs] = await Promise.all([
-        readJsonFile(resultsFile),
-        readOptionalJsonFile(summariesFile),
-        readOptionalJsonFile(sourceFile),
-      ]);
-      const { run_id: runId } = await ingestRun(
-        {
-          path_id: pathId,
-          title,
-          notes: notes || null,
-          dataset: { name: datasetName.trim(), sensitive },
-          model: { name: modelName.trim() },
-          inputs,
-          llm_summaries: llmSummaries,
-          results,
-        },
-        token,
-      );
-      navigate(`/runs/${useCaseId}/${pathId}/${runId}`);
+      await (isCalculate ? handleCalculate() : handleAttach());
     } catch (err) {
       // ApiError.message already carries the server's validation text.
       setError(err.message);
@@ -77,25 +168,72 @@ const RunSubmission = ({ pathId, useCaseId, title, notes, disabled, onCancel }) 
     }
   };
 
+  // Once dispatched, the form is replaced by the job's progress.
+  if (jobId) {
+    return (
+      <EvaluationJobStatus
+        jobId={jobId}
+        useCaseId={useCaseId}
+        pathId={pathId}
+        onDone={onCancel}
+      />
+    );
+  }
+
   return (
     <section className="block">
       <div className="run-mode-choice">
         <button
           type="button"
-          className="run-mode-button"
-          disabled
-          title="Requires the metric calculation service"
+          className={`run-mode-button ${isCalculate ? "is-active" : ""}`}
+          disabled={!!calculateUnavailable}
+          title={calculateUnavailable ?? "Compute metrics now"}
+          onClick={() => chooseMode("calculate")}
         >
-          Calculate now (not yet available)
+          Calculate now
         </button>
         <button
           type="button"
           className={`run-mode-button ${mode === "attach" ? "is-active" : ""}`}
-          onClick={() => setMode("attach")}
+          onClick={() => chooseMode("attach")}
         >
           Attach results JSON
         </button>
       </div>
+
+      {/* Say why calculating is unavailable rather than just grey out the button. */}
+      {calculateUnavailable && (
+        <p className="content is-small run-mode-note">
+          Calculating is unavailable: {calculateUnavailable}
+        </p>
+      )}
+
+      {isCalculate && (
+        <div className="run-metric-summary">
+          {runnableMetrics.length > 0 ? (
+            <>
+              <p className="content is-small mb-2">
+                {runnableMetrics.length} metric
+                {runnableMetrics.length === 1 ? "" : "s"} will be computed:
+              </p>
+              <div className="tags">
+                {runnableMetrics.map((metric) => (
+                  <span key={metric.id} className="tag">
+                    {metric.label}
+                  </span>
+                ))}
+              </div>
+            </>
+          ) : (
+            <article className="message is-warning">
+              <div className="message-body">
+                Select at least one aspect whose metrics the calculation service
+                can compute.
+              </div>
+            </article>
+          )}
+        </div>
+      )}
 
       <div className="run-attach-fields">
         <div className="field">
@@ -124,22 +262,24 @@ const RunSubmission = ({ pathId, useCaseId, title, notes, disabled, onCancel }) 
           />
         </div>
 
-        <div className="field">
-          <label className="label is-small" htmlFor="results-file">
-            Results JSON (required)
-          </label>
-          <input
-            id="results-file"
-            className="input"
-            type="file"
-            accept="application/json,.json"
-            onChange={(e) => setResultsFile(e.target.files?.[0] ?? null)}
-          />
-        </div>
+        {!isCalculate && (
+          <div className="field">
+            <label className="label is-small" htmlFor="results-file">
+              Results JSON (required)
+            </label>
+            <input
+              id="results-file"
+              className="input"
+              type="file"
+              accept="application/json,.json"
+              onChange={(e) => setResultsFile(e.target.files?.[0] ?? null)}
+            />
+          </div>
+        )}
 
         <div className="field">
           <label className="label is-small" htmlFor="summaries-file">
-            Model summaries (optional)
+            Model summaries {isCalculate ? "(required)" : "(optional)"}
           </label>
           <input
             id="summaries-file"
@@ -150,9 +290,24 @@ const RunSubmission = ({ pathId, useCaseId, title, notes, disabled, onCancel }) 
           />
         </div>
 
+        {isCalculate && (
+          <div className="field">
+            <label className="label is-small" htmlFor="gold-file">
+              Reference summaries {needsGold ? "(required)" : "(optional)"}
+            </label>
+            <input
+              id="gold-file"
+              className="input"
+              type="file"
+              accept="application/json,.json"
+              onChange={(e) => setGoldFile(e.target.files?.[0] ?? null)}
+            />
+          </div>
+        )}
+
         <div className="field">
           <label className="label is-small" htmlFor="source-file">
-            Source data (optional)
+            Source data {isCalculate && needsPosts ? "(required)" : "(optional)"}
           </label>
           <input
             id="source-file"
@@ -183,7 +338,13 @@ const RunSubmission = ({ pathId, useCaseId, title, notes, disabled, onCancel }) 
           disabled={!canSubmit}
           onClick={handleSubmit}
         >
-          {submitting ? "Uploading…" : "Create run"}
+          {submitting
+            ? isCalculate
+              ? "Submitting…"
+              : "Uploading…"
+            : isCalculate
+              ? "Calculate metrics"
+              : "Create run"}
         </button>
         <button type="button" className="button is-large" onClick={onCancel}>
           Cancel
@@ -198,12 +359,14 @@ RunSubmission.propTypes = {
   useCaseId: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   notes: PropTypes.string,
+  selectedMetricIds: PropTypes.arrayOf(PropTypes.string),
   disabled: PropTypes.bool,
   onCancel: PropTypes.func.isRequired,
 };
 
 RunSubmission.defaultProps = {
   notes: "",
+  selectedMetricIds: [],
   disabled: false,
 };
 
